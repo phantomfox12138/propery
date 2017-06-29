@@ -4,16 +4,16 @@
     <item
         android:id="@+id/action_home"
         android:icon="@drawable/ic_action_home"
-        android:title="Home" />
+        android:title="物业服务" />
 
     <item
-        android:id="@+id/action_explore"
+        android:id="@+id/action_around"
         android:icon="@drawable/ic_action_explore"
-        android:title="Explore" />
+        android:title="周边" />
 
     <item
-        android:id="@+id/action_me"
+        android:id="@+id/action_community"
         android:icon="@drawable/ic_action_me"
-        android:title="Me" />
+        android:title="园区社区" />
 
 </menu>

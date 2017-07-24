@@ -83,7 +83,7 @@ public class HomeListAdapter extends
         
         String images = obj.getString("image");
         
-        if (StringUtil.isNullOrEmpty(images))
+        if (!StringUtil.isNullOrEmpty(images))
         {
             String[] imgs = images.split(",");
             

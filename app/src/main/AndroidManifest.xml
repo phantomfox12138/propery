@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:Android="http://schemas.android.com/apk/res-auto"
     package="com.junjingit.propery">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".ProperyApplication"
@@ -35,6 +42,67 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".NotifyDetailActivity"
+            android:theme="@style/OverFlowMenuTheme">
+            <intent-filter>
+                <action android:name="com.junjignit.propery.NOTIFY_DETAIL" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".QuoteDetailActivity"
+            android:theme="@style/NormalAppTheme">
+            <intent-filter>
+                <action android:name="com.junjing.propery.QUOTE_DETAIL" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".QuoteEditorActivity"
+            android:theme="@style/NormalAppTheme">
+            <intent-filter>
+                <action android:name="com.junjing.propery.QUOTE_EDITOR" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".imageloader.ImageLoadActivity"
+            android:theme="@style/NormalAppTheme">
+            <intent-filter>
+                <action android:name="com.junjing.propery.IMAGE_LOADER" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ImageDetailActivity" />
+        <activity
+            android:name=".CycleActivity"
+            android:theme="@style/OverFlowMenuTheme">
+            <intent-filter>
+                <action android:name="com.junjing.propery.CYCLE_LIST" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".CreateCycleActivity">
+            <intent-filter>
+                <action android:name="com.junjing.propery.CREATE_CYCLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
         </activity>
     </application>
 

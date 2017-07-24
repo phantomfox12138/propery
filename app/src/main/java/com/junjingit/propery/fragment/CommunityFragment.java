@@ -1,30 +1,209 @@
 package com.junjingit.propery.fragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.FindCallback;
 import com.junjingit.propery.R;
+import com.tiancaicc.springfloatingactionmenu.MenuItemView;
+import com.tiancaicc.springfloatingactionmenu.SpringFloatingActionMenu;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class CommunityFragment extends Fragment
+public class CommunityFragment extends Fragment implements View.OnClickListener
 {
+    private static final String TAG = "CommunityFragment";
     
-    public CommunityFragment()
-    {
-        // Required empty public constructor
-    }
+    private View mRootView;
+    
+    private TabLayout mTabLayout;
+    
+    private ViewPager mCommunityVp;
+    
+    private List<Fragment> mFragments;
+    
+    private CommunityAdapter mCommunityAdapter;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_community, container, false);
+        if (mRootView == null)
+        {
+            mRootView = inflater.inflate(R.layout.fragment_community, null);
+            
+            initView();
+        }
+        
+        ViewGroup parent = (ViewGroup) mRootView.getParent();
+        if (parent != null)
+        {
+            parent.removeView(mRootView);
+        }
+        
+        return mRootView;
+    }
+    
+    private View initTabName(String name)
+    {
+        View v = LayoutInflater.from(getActivity())
+                .inflate(R.layout.community_tab_layout, null);
+        
+        TextView title = v.findViewById(R.id.tab_name);
+        title.setTextColor(Color.WHITE);
+        title.setText(name);
+        
+        return v;
+    }
+    
+    private void initData()
+    {
+        
+        final AVQuery<AVObject> pubStatusList = new AVQuery<>("Public_Status");
+        
+        pubStatusList.whereNotEqualTo("cycle_id", "123");
+        pubStatusList.orderByDescending("createdAt");
+        
+        pubStatusList.findInBackground(new FindCallback<AVObject>()
+        {
+            @Override
+            public void done(List<AVObject> list, AVException e)
+            {
+                if (null == e)
+                {
+                    Log.d(TAG, "list size = " + list.size());
+                    
+                    ((ActiveFragment) mFragments.get(0)).getActiveAdapter()
+                            .setListData(list);
+                    
+                    notifyDataSetChanged();
+                    //                    mCommunityAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+    
+    private void notifyDataSetChanged()
+    {
+        ((ActiveFragment) mFragments.get(0)).notifyDataSetChanged();
+        
+    }
+    
+    private void initView()
+    {
+        
+        mTabLayout = mRootView.findViewById(R.id.tab_layout);
+        mCommunityVp = mRootView.findViewById(R.id.community_vp);
+        
+        mTabLayout.addTab(mTabLayout.newTab().setCustomView(initTabName("动态")));
+        mTabLayout.addTab(mTabLayout.newTab().setCustomView(initTabName("关注")));
+        
+        mFragments = new ArrayList<>();
+        
+        mFragments.add(new ActiveFragment());
+        mFragments.add(new FocusFragment());
+        
+        mCommunityAdapter = new CommunityAdapter(getFragmentManager());
+        mCommunityAdapter.setList(mFragments);
+        
+        mCommunityVp.setAdapter(mCommunityAdapter);
+        
+        initData();
+        mTabLayout.setupWithViewPager(mCommunityVp, true);
+        
+        //        mTabLayout.setTabGravity(Gravity.CENTER);
+        //        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
+        
+        mTabLayout.removeAllTabs();
+        
+        mTabLayout.addTab(mTabLayout.newTab().setCustomView(initTabName("动态")));
+        mTabLayout.addTab(mTabLayout.newTab().setCustomView(initTabName("关注")));
+        //        mTabLayout.getTabAt(0).setText("动态");
+        //        mTabLayout.getTabAt(1).setText("关注");
+        
+        Log.d(TAG,
+                "tab textview = "
+                        + mTabLayout.getTabAt(0)
+                                .getCustomView()
+                                .findViewById(R.id.tab_name));
+        
+        mTabLayout.setTabTextColors(Color.WHITE, Color.WHITE);
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
+        {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab)
+            {
+                mCommunityVp.setCurrentItem(tab.getPosition());
+            }
+            
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab)
+            {
+                
+            }
+            
+            @Override
+            public void onTabReselected(TabLayout.Tab tab)
+            {
+                
+            }
+        });
+        
+    }
+    
+    @Override
+    public void onClick(View view)
+    {
+        Log.d("TAG eg", "onclick");
+        MenuItemView menuItemView = (MenuItemView) view;
+        Toast.makeText(getActivity(),
+                menuItemView.getLabelTextView().getText(),
+                Toast.LENGTH_SHORT).show();
+    }
+    
+    class CommunityAdapter extends FragmentPagerAdapter
+    {
+        
+        private List<Fragment> list;
+        
+        public void setList(List<Fragment> list)
+        {
+            this.list = list;
+        }
+        
+        public CommunityAdapter(FragmentManager fm)
+        {
+            super(fm);
+        }
+        
+        @Override
+        public Fragment getItem(int position)
+        {
+            return list.get(position);
+        }
+        
+        @Override
+        public int getCount()
+        {
+            return list.size();
+        }
     }
     
 }

@@ -4,7 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.SaveCallback;
+import com.junjingit.propery.common.FusionAction;
 
 public class WelcomeActivity extends AppCompatActivity
 {
@@ -16,6 +20,7 @@ public class WelcomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_welcome);
         
         initView();
+        
     }
     
     private void initView()

@@ -14,17 +14,25 @@ import com.junjingit.propery.R;
 public class AroundFragment extends Fragment
 {
     
-    public AroundFragment()
-    {
-        // Required empty public constructor
-    }
+    private View mRootView;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_around, container, false);
+        if (mRootView == null)
+        {
+            mRootView = inflater.inflate(R.layout.fragment_around, null);
+            //            initView();
+        }
+        
+        ViewGroup parent = (ViewGroup) mRootView.getParent();
+        if (parent != null)
+        {
+            parent.removeView(mRootView);
+        }
+        
+        return mRootView;
     }
     
 }

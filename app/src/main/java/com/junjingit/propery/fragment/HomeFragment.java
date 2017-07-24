@@ -2,6 +2,7 @@ package com.junjingit.propery.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,38 +23,56 @@ public class HomeFragment extends Fragment
     
     private RecyclerView mHomeList;
     
-    private Toolbar mToolbarTb;
+    private SwipeRefreshLayout mRefresh;
+    
+    private HomeListAdapter mHomeAdapter;
+    
+    public HomeListAdapter getHomeAdapter()
+    {
+        return mHomeAdapter;
+    }
+    
+    public void notifyDataSetChanged()
+    {
+        mHomeAdapter.notifyDataSetChanged();
+        
+        mRefresh.setRefreshing(false);
+    }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        mRootView = inflater.inflate(R.layout.fragment_home, container, false);
+        if (mRootView == null)
+        {
+            mRootView = inflater.inflate(R.layout.fragment_home, null);
+            initView();
+        }
+        
+        ViewGroup parent = (ViewGroup) mRootView.getParent();
+        if (parent != null)
+        {
+            parent.removeView(mRootView);
+        }
         
         return mRootView;
     }
     
     private void initView()
     {
-        mToolbarTb = mRootView.findViewById(R.id.tb_toolbar);
         mHomeList = mRootView.findViewById(R.id.rv_content);
+        mRefresh = mRootView.findViewById(R.id.srl_refresh);
         
-        if (mToolbarTb != null)
-        {
-            mToolbarTb.setNavigationIcon(R.mipmap.ic_launcher_round);
-            ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbarTb);
-            
-            ((AppCompatActivity) getActivity()).getSupportActionBar()
-                    .setHomeButtonEnabled(true);
-            ((AppCompatActivity) getActivity()).getSupportActionBar()
-                    .setDisplayHomeAsUpEnabled(true);
-        }
+        mHomeAdapter = new HomeListAdapter(getActivity());
+        mHomeAdapter.setFrom("home");
         
-        HomeListAdapter adapter = new HomeListAdapter(getActivity());
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         mHomeList.setLayoutManager(llm);
         
-        mHomeList.setAdapter(adapter);
+        mHomeList.setAdapter(mHomeAdapter);
+        
+        mRefresh.setRefreshing(true);
+        
     }
     
 }

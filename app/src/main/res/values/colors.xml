@@ -2,6 +2,7 @@
 <resources>
     <color name="blue">#3F51B5</color>
     <color name="blue_dark">#303F9F</color>
+    <color name="light_white">#eeffffff</color>
 
     <color name="red">#FF4081</color>
 
@@ -12,4 +13,19 @@
     <color name="white">#fff</color>
 
     <color name="gray">#999</color>
+
+    <color name="nav_item_icon_tint_color">#333</color>
+    <color name="nav_item_text_color">#333</color>
+
+    <color name="light_blue">#529ecc</color>
+
+    <color name="text_color">#949ca8</color>
+
+    <color name="chat">#559fca</color>
+    <color name="quote">#f0983c</color>
+    <color name="link">#5abb8b</color>
+    <color name="audio">#a67fc0</color>
+    <color name="photo">#d75f45</color>
+    <color name="text">#444444</color>
+    <color name="video">#748089</color>
 </resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/item1"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/navItem1"
+            android:icon="@drawable/ic_action_location_found_dark"
+            android:title="Home" />
+    </group>
+
+    <group
+        android:id="@+id/item2"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/navItem2"
+            android:icon="@drawable/ic_action_location_found_dark"
+            android:title="About" />
+    </group>
+    <group
+        android:id="@+id/item3"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/navItem3"
+            android:icon="@drawable/ic_action_location_found_dark"
+            android:title="Blog" />
+    </group>
+
+    <group
+        android:id="@+id/item4"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/navItem4"
+            android:icon="@drawable/ic_action_location_found_dark"
+            android:title="Contact" />
+    </group>
+
+</menu>

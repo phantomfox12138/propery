@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="com.junjingit.propery.CycleActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/cycle_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:adjustViewBounds="true"
+        android:background="@color/blue"
+        android:fitsSystemWindows="true"
+        app:layout_collapseMode="pin"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="加圈子"
+        app:titleTextColor="@color/white" />
+
+    <Button
+        android:id="@+id/create_cycle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="创建圈子" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/cycle_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

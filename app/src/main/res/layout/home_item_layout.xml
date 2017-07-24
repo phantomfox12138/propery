@@ -37,27 +37,55 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/iv_cover">
+                android:layout_alignTop="@id/iv_cover">
 
-            <ImageView
-                android:id="@+id/iv_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                <ImageView
+                    android:id="@+id/iv_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_8"
+                    android:src="@mipmap/ic_launcher_round"
+                    android:transitionName="transName" />
 
-                android:layout_margin="@dimen/dp_8"
-                android:src="@mipmap/ic_launcher_round"/>
+                <TextView
+                    android:id="@+id/tv_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/iv_icon"
+                    android:text="安卓笔记侠"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_16" />
 
-            <TextView
-                android:id="@+id/tv_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="安卓笔记侠"
-                android:layout_centerVertical="true"
-                android:textColor="@color/white"
-                android:layout_toRightOf="@id/iv_icon"
-                android:textSize="@dimen/sp_16" />
+                <TextView
+                    android:id="@+id/cycle_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:text="登山俱乐部"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_12" />
 
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/iv_cover"
+                android:background="#88000000"
+                android:ellipsize="end"
+                android:lines="1"
+                android:paddingBottom="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_16"
+                android:text="园区活动"
+                android:textColor="@color/white"
+
+                android:textSize="@dimen/sp_16" />
 
 
             <TextView
@@ -68,34 +96,89 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
+                android:ellipsize="end"
                 android:lineSpacingMultiplier="1.2"
                 android:lines="2"
-                android:ellipsize="end"
                 android:text="Android Developer's notes.\n和一个久经沙场的码农的喃喃自语。"
                 android:textColor="#757575"
                 android:textSize="@dimen/sp_14" />
 
-            <Button
-                android:id="@+id/btn_share"
-                style="?borderlessButtonStyle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
                 android:layout_below="@id/tv_content"
-                android:background="@color/white"
-                android:text="SHARE"
-                android:textColor="#FF9800"
-                android:textSize="@dimen/sp_16" />
+                android:layout_marginBottom="@dimen/dp_8"
+                android:orientation="horizontal">
 
-            <Button
-                style="?borderlessButtonStyle"
-                android:layout_width="wrap_content"
+
+                <RelativeLayout
+                    android:id="@+id/desc_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp">
+
+
+                    <TextView
+                        android:id="@+id/item_desc_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:text="0"
+                        android:textColor="#FF9800" />
+
+                    <ImageView
+                        android:id="@+id/item_btn_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dp_8"
+                        android:layout_toLeftOf="@id/item_desc_count"
+                        android:src="@drawable/desc" />
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/zan_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+
+                    <TextView
+                        android:id="@+id/item_zan_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:text="0"
+                        android:textColor="#FF9800" />
+
+                    <ImageView
+                        android:id="@+id/item_btn_zan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_8"
+                        android:layout_toLeftOf="@id/item_zan_count"
+                        android:src="@mipmap/zan" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/update_time"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@id/btn_share"
-                android:layout_toRightOf="@id/btn_share"
-                android:background="@color/white"
-                android:text="EXPLORE"
-                android:textColor="#FF9800"
-                android:textSize="@dimen/sp_16" />
+                android:layout_alignParentBottom="true"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingLeft="@dimen/dp_16"
+                android:text="2017-07-17"
+                android:textColor="@android:color/darker_gray" />
 
         </RelativeLayout>
 

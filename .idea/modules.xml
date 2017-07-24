@@ -3,9 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Propery.iml" filepath="$PROJECT_DIR$/Propery.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/collapsibletext/collapsibletext.iml" filepath="$PROJECT_DIR$/collapsibletext/collapsibletext.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/propery/propery.iml" filepath="$PROJECT_DIR$/propery/propery.iml" />
     </modules>
   </component>
 </project>

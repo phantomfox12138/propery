@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,36 +82,42 @@ public class HomeListAdapter extends
         final AVObject obj = mListData.get(position);
         
         String images = obj.getString("image");
-        String[] imgs = images.split(",");
         
-        ImageLoader.getInstance().loadImage(imgs[0], new ImageLoadingListener()
+        if (StringUtil.isNullOrEmpty(images))
         {
-            @Override
-            public void onLoadingStarted(String imageUri, View view)
-            {
-                
-            }
+            String[] imgs = images.split(",");
             
-            @Override
-            public void onLoadingFailed(String imageUri, View view,
-                    FailReason failReason)
-            {
-                
-            }
-            
-            @Override
-            public void onLoadingComplete(String imageUri, View view,
-                    Bitmap loadedImage)
-            {
-                holder.imgContent.setImageBitmap(loadedImage);
-            }
-            
-            @Override
-            public void onLoadingCancelled(String imageUri, View view)
-            {
-                
-            }
-        });
+            ImageLoader.getInstance().loadImage(imgs[0],
+                    new ImageLoadingListener()
+                    {
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view)
+                        {
+                            
+                        }
+                        
+                        @Override
+                        public void onLoadingFailed(String imageUri, View view,
+                                FailReason failReason)
+                        {
+                            
+                        }
+                        
+                        @Override
+                        public void onLoadingComplete(String imageUri,
+                                View view, Bitmap loadedImage)
+                        {
+                            holder.imgContent.setImageBitmap(loadedImage);
+                        }
+                        
+                        @Override
+                        public void onLoadingCancelled(String imageUri,
+                                View view)
+                        {
+                            
+                        }
+                    });
+        }
         
         holder.userName.setText(mListData.get(position).getString("userId"));
         holder.msgContent.setText(mListData.get(position).getString("message"));

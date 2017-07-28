@@ -5,16 +5,22 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.junjingit.propery.Focus;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVRelation;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
 import com.junjingit.propery.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,46 +28,72 @@ import java.util.List;
  */
 public class FocusFragment extends Fragment
 {
+    private static final String TAG = "FocusFragment";
+    
     private View mRootView;
     
     private RecyclerView mFocusList;
+    
+    private List<AVObject> mFocusCycleList = new ArrayList<>();
+    
+    private FocusListAdapter mAdapter;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        if (mRootView == null)
-        {
-            mRootView = inflater.inflate(R.layout.fragment_focus, null);
-            initView();
-        }
+        mRootView = inflater.inflate(R.layout.fragment_focus, null);
         
-        ViewGroup parent = (ViewGroup) mRootView.getParent();
-        if (parent != null)
-        {
-            parent.removeView(mRootView);
-        }
+        initData();
+        
+        initView();
         
         return mRootView;
+    }
+    
+    private void initData()
+    {
+        AVRelation<AVObject> relation = AVUser.getCurrentUser()
+                .getRelation("cycle");
+        
+        relation.getQuery().findInBackground(new FindCallback<AVObject>()
+        {
+            @Override
+            public void done(List<AVObject> list, AVException e)
+            {
+                if (null == e && null != list)
+                {
+                    Log.d(TAG, "count = " + list.size());
+                    
+                    mFocusCycleList.clear();
+                    mFocusCycleList.addAll(list);
+                    
+                    mAdapter.notifyDataSetChanged();
+                    
+                }
+            }
+        });
     }
     
     private void initView()
     {
         mFocusList = mRootView.findViewById(R.id.focus_list);
         
-        FocusListAdapter adapter = new FocusListAdapter(getActivity());
+        mAdapter = new FocusListAdapter(getActivity());
+        mAdapter.setList(mFocusCycleList);
+        
         mFocusList.setLayoutManager(new LinearLayoutManager(getActivity()));
         
-        mFocusList.setAdapter(adapter);
+        mFocusList.setAdapter(mAdapter);
     }
     
     class FocusListAdapter extends RecyclerView.Adapter<FocusHolder>
     {
         private Context context;
         
-        private List<Focus> list;
+        private List<AVObject> list;
         
-        public void setList(List<Focus> list)
+        public void setList(List<AVObject> list)
         {
             this.list = list;
         }
@@ -81,16 +113,37 @@ public class FocusFragment extends Fragment
         }
         
         @Override
-        public void onBindViewHolder(FocusHolder holder, int position)
+        public void onBindViewHolder(final FocusHolder holder, int position)
         {
+            AVObject object = list.get(position);
             
+            holder.name.setText(object.getString("cycle_name"));
+            
+            AVQuery<AVObject> query = new AVQuery<>("Public_Status");
+            query.whereEqualTo("cycle_id", object.getObjectId());
+            query.orderByDescending("createdAt");
+            
+            query.findInBackground(new FindCallback<AVObject>()
+            {
+                @Override
+                public void done(List<AVObject> list, AVException e)
+                {
+                    if (null == e && null != list && list.size() > 0)
+                    {
+                        holder.msgPerview.setText(list.get(0)
+                                .getString("message"));
+                        
+                        holder.updateTime.setText(list.get(0)
+                                .getString("createdAt"));
+                    }
+                }
+            });
         }
         
         @Override
         public int getItemCount()
         {
-            return 10;
-            //            return null != list ? list.size() : 0;
+            return null != list ? list.size() : 0;
         }
     }
     
@@ -98,7 +151,7 @@ public class FocusFragment extends Fragment
     {
         ImageView icon;
         
-        TextView userName;
+        TextView name;
         
         TextView msgPerview;
         
@@ -109,7 +162,7 @@ public class FocusFragment extends Fragment
             super(itemView);
             
             icon = itemView.findViewById(R.id.item_icon);
-            userName = itemView.findViewById(R.id.item_user_id);
+            name = itemView.findViewById(R.id.item_user_id);
             msgPerview = itemView.findViewById(R.id.item_msg_perview);
             updateTime = itemView.findViewById(R.id.item_time);
         }

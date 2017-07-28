@@ -39,8 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:text="2017-07-14" />
+                android:layout_alignParentRight="true" />
         </RelativeLayout>
 
         <TextView
@@ -51,7 +50,6 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:lines="1"
-            android:text="打个招呼"
             android:textColor="@android:color/darker_gray" />
     </LinearLayout>
 

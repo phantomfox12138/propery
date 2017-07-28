@@ -29,9 +29,10 @@
             <ImageView
                 android:id="@+id/iv_cover"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_200"
                 android:adjustViewBounds="true"
                 android:contentDescription="@null"
+                android:scaleType="fitXY"
                 android:src="@mipmap/header" />
 
             <RelativeLayout

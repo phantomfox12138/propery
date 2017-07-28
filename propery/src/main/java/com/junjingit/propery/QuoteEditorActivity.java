@@ -25,7 +25,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +51,9 @@ public class QuoteEditorActivity extends AppCompatActivity
     private TextView mLocationText;
     
     private TextView mSendBtn;
+    
+    //    private TagListView mTagList;
+    //    private TagListView mTagList2;
     
     private ImagePerviewAdapter mImageAdapter;
     
@@ -111,7 +113,67 @@ public class QuoteEditorActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quote_editor);
         
+        initData();
+        
         initView();
+    }
+    
+    private void initData()
+    {
+        //        mTagList = (TagListView) findViewById(R.id.tag_list);
+        //        mTagList2 = (TagListView) findViewById(R.id.tag_list2);
+        //        
+        //        mTagList.setOnTagCheckedChangedListener(new TagListView.OnTagCheckedChangedListener()
+        //        {
+        //            @Override
+        //            public void onTagCheckedChanged(TagView tagView, Tag tag)
+        //            {
+        //                mTagList.removeTag(tag);
+        //                mTagList2.addTag(tag);
+        //
+        //            }
+        //        });
+        //        
+        //        mTagList2.setOnTagCheckedChangedListener(new TagListView.OnTagCheckedChangedListener()
+        //        {
+        //            @Override
+        //            public void onTagCheckedChanged(TagView tagView, Tag tag)
+        //            {
+        //                mTagList2.removeTag(tag);
+        //                mTagList.addTag(tag);
+        //                
+        //            }
+        //        });
+        //        
+        //        AVUser.getCurrentUser()
+        //                .getRelation("cycle")
+        //                .getQuery()
+        //                .findInBackground(new FindCallback<AVObject>()
+        //                {
+        //                    @Override
+        //                    public void done(List<AVObject> list, AVException e)
+        //                    {
+        //                        if (null == e && null != list && list.size() > 0)
+        //                        {
+        //                            List<Tag> tags = new ArrayList<Tag>();
+        //                            
+        //                            for (int i = 0; i < list.size(); i++)
+        //                            {
+        //                                Tag tag = new Tag();
+        //                                tag.setId(i);
+        //                                tag.setTitle(list.get(i)
+        //                                        .getString("cycle_name"));
+        //                                tag.setChecked(true);
+        //                                
+        //                                tags.add(tag);
+        //                            }
+        //                            
+        //                            mTagList.setTags(tags);
+        //                            mTagList2.setTags(tags);
+        //                        }
+        //                    }
+        //                });
+        
     }
     
     private void initPosition()

@@ -1,1 +1,1 @@
-include ':propery', ':library', ':collapsibletext'
+include ':propery', ':library', ':collapsibletext', ':lib'

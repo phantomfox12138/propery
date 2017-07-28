@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/cycle_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:paddingLeft="@dimen/dp_8"
+        android:src="@mipmap/ic_launcher_round" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/cycle_icon"
+        android:paddingLeft="@dimen/dp_8">
+
+        <TextView
+            android:id="@+id/cycle_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="专业老司机"
+            android:textColor="#444"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/cycle_focus_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cycle_name"
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="123个人关注"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/focus_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_4"
+            android:padding="@dimen/dp_8"
+            android:text="关注"
+            android:textColor="@color/blue" />
+
+    </RelativeLayout>
+</RelativeLayout>

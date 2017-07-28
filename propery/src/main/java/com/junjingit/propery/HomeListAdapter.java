@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.avos.avoscloud.AVCloudQueryResult;
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
@@ -26,10 +27,16 @@ import com.avos.avoscloud.CloudQueryCallback;
 import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -47,9 +54,22 @@ public class HomeListAdapter extends
     
     private String mFrom;
     
+    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+    
+    private DisplayImageOptions options;
+    
     public HomeListAdapter(Context context)
     {
         this.mContext = context;
+        
+        options = new DisplayImageOptions.Builder()//.showImageOnLoading(R.drawable.ic_stub)
+        //.showImageForEmptyUri(R.drawable.ic_empty)
+        //.showImageOnFail(R.drawable.ic_error)
+        .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
+                //.displayer(new RoundedBitmapDisplayer(20))
+                .build();
     }
     
     public void setFrom(String from)
@@ -82,41 +102,60 @@ public class HomeListAdapter extends
         final AVObject obj = mListData.get(position);
         
         String images = obj.getString("image");
+        String imgName = obj.getString("image_name");
         
-        if (!StringUtil.isNullOrEmpty(images))
+        if (!StringUtil.isNullOrEmpty(images)
+                && !StringUtil.isNullOrEmpty(imgName))
         {
             String[] imgs = images.split(",");
+            String[] names = imgName.split(",");
             
-            ImageLoader.getInstance().loadImage(imgs[0],
-                    new ImageLoadingListener()
-                    {
-                        @Override
-                        public void onLoadingStarted(String imageUri, View view)
-                        {
-                            
-                        }
-                        
-                        @Override
-                        public void onLoadingFailed(String imageUri, View view,
-                                FailReason failReason)
-                        {
-                            
-                        }
-                        
-                        @Override
-                        public void onLoadingComplete(String imageUri,
-                                View view, Bitmap loadedImage)
-                        {
-                            holder.imgContent.setImageBitmap(loadedImage);
-                        }
-                        
-                        @Override
-                        public void onLoadingCancelled(String imageUri,
-                                View view)
-                        {
-                            
-                        }
-                    });
+            AVFile file = new AVFile(names[0], imgs[0],
+                    new HashMap<String, Object>());
+            String thumbUrl = file.getThumbnailUrl(true, 1920, 1080);
+            
+            ImageLoader.getInstance().displayImage(thumbUrl,
+                    holder.imgContent,
+                    options,
+                    animateFirstListener);
+            
+            //            ImageLoader.getInstance().loadImage(thumbUrl,
+            //                    new ImageLoadingListener()
+            //                    {
+            //                        @Override
+            //                        public void onLoadingStarted(String imageUri, View view)
+            //                        {
+            //                            
+            //                        }
+            //                        
+            //                        @Override
+            //                        public void onLoadingFailed(String imageUri, View view,
+            //                                FailReason failReason)
+            //                        {
+            //                            
+            //                        }
+            //                        
+            //                        @Override
+            //                        public void onLoadingComplete(String imageUri,
+            //                                View view, Bitmap loadedImage)
+            //                        {
+            //                            holder.imgContent.setImageBitmap(loadedImage);
+            //                        }
+            //                        
+            //                        @Override
+            //                        public void onLoadingCancelled(String imageUri,
+            //                                View view)
+            //                        {
+            //                            
+            //                        }
+            //                    });
+        }
+        else
+        {
+            holder.imgContent.setImageResource(mContext.getResources()
+                    .getIdentifier("ic_palette_0" + position % 4,
+                            "mipmap",
+                            mContext.getPackageName()));
         }
         
         holder.userName.setText(mListData.get(position).getString("userId"));
@@ -300,6 +339,31 @@ public class HomeListAdapter extends
             zanCount = itemView.findViewById(R.id.item_zan_count);
             zanLayout = itemView.findViewById(R.id.zan_layout);
             updateTime = itemView.findViewById(R.id.update_time);
+        }
+    }
+    
+    private class AnimateFirstDisplayListener extends
+            SimpleImageLoadingListener
+    {
+        
+        final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
+        
+        @Override
+        public void onLoadingComplete(String imageUri, View view,
+                Bitmap loadedImage)
+        {
+            if (loadedImage != null)
+            {
+                ImageView imageView = (ImageView) view;
+                boolean firstDisplay = !displayedImages.contains(imageUri);
+                if (firstDisplay)
+                {
+                    FadeInBitmapDisplayer.animate(imageView, 500);
+                    displayedImages.add(imageUri);
+                }
+                
+                //                notifyDataSetChanged();
+            }
         }
     }
 }

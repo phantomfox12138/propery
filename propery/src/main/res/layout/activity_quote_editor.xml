@@ -89,6 +89,46 @@
                 android:text="所在位置" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="发布到：" />
+
+            <com.junjingit.propery.widget.tag.TagListView xmlns:f="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/tag_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dp_24"
+                android:paddingBottom="@dimen/common_margin"
+                android:paddingLeft="@dimen/common_margin"
+                android:paddingRight="@dimen/common_margin"
+                android:paddingTop="@dimen/dp_16"
+                f:horizontalSpacing="@dimen/tag_horizontal_spacing"
+                f:orientation="horizontal"
+                f:verticalSpacing="@dimen/tag_vertical_spacing" />
+
+            <com.junjingit.propery.widget.tag.TagListView xmlns:f="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/tag_list2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dp_24"
+                android:paddingBottom="@dimen/common_margin"
+                android:paddingLeft="@dimen/common_margin"
+                android:paddingRight="@dimen/common_margin"
+                android:paddingTop="@dimen/dp_16"
+                f:horizontalSpacing="@dimen/tag_horizontal_spacing"
+                f:orientation="horizontal"
+                f:verticalSpacing="@dimen/tag_vertical_spacing" />
+
+
+        </LinearLayout>
+
     </LinearLayout>
 
 

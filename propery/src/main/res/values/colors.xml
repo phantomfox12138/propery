@@ -28,4 +28,11 @@
     <color name="photo">#d75f45</color>
     <color name="text">#444444</color>
     <color name="video">#748089</color>
+
+
+    <color name="primary">#5CACEE</color>
+    <color name="primary_dark">#6495ED</color>
+    <color name="primary_darker">#63B8FF</color>
+    <color name="accent">#FFFFFF</color>
+    <color name="iron">#CCCCCC</color>
 </resources>

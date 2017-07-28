@@ -36,7 +36,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity">
+        <activity
+            android:name=".LoginNewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/loginTheme">
             <intent-filter>
                 <action android:name="com.junjingit.propery.LOGIN_ACTION" />
 
@@ -103,6 +106,24 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
+        </activity>
+        <activity
+            android:name=".RegisterActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.junjingit.propery.REGISTER_ACTION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ForgetActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.junjingit.propery.FORGET_ACTION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -30,9 +30,9 @@
     <color name="video">#748089</color>
 
 
-    <color name="primary">#5CACEE</color>
-    <color name="primary_dark">#6495ED</color>
-    <color name="primary_darker">#63B8FF</color>
+    <color name="primary">#0380ff</color>
+    <color name="primary_dark">#0380ff</color>
+    <color name="primary_darker">#0380ff</color>
     <color name="accent">#FFFFFF</color>
     <color name="iron">#CCCCCC</color>
 </resources>

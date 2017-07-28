@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,8 @@ public class LoginNewActivity extends AppCompatActivity {
     TextView mRegisterTxt;
     @Bind(R.id.forget_psd)
     TextView mForgetTxt;
+    @Bind(R.id.login_lay)
+    LinearLayout login_lay;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,7 @@ public class LoginNewActivity extends AppCompatActivity {
      * 初始化控件,添加事件
      */
     private void initView() {
+        login_lay.getBackground().setAlpha(80);
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -39,7 +39,6 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
 
-
         <Button
             android:id="@+id/login"
             android:layout_width="match_parent"

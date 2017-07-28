@@ -3,11 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@mipmap/login">
+    android:background="@mipmap/login"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/login_lay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#000">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingTop="56dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
@@ -77,5 +84,6 @@
             android:gravity="center"
             android:textSize="16dip"
             android:textColor="@color/primary_darker"/>
+    </LinearLayout>
     </LinearLayout>
 </ScrollView>

@@ -37,11 +37,16 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.junjingit.propery.common.FusionAction;
+import com.ns.developer.tagview.entity.Tag;
+import com.ns.developer.tagview.widget.TagCloudLinkView;
 import com.tiancaicc.springfloatingactionmenu.Utils;
 
-public class QuoteEditorActivity extends AppCompatActivity
+public class QuoteEditorActivity extends AppCompatActivity implements
+        TagCloudLinkView.OnTagDeleteListener,
+        TagCloudLinkView.OnTagSelectListener
 {
     
     private static final String TAG = "QuoteEditorActivity";
@@ -52,8 +57,9 @@ public class QuoteEditorActivity extends AppCompatActivity
     
     private TextView mSendBtn;
     
-    //    private TagListView mTagList;
-    //    private TagListView mTagList2;
+    private TagCloudLinkView mTagList;
+    
+    private TagCloudLinkView mTagList2;
     
     private ImagePerviewAdapter mImageAdapter;
     
@@ -120,59 +126,37 @@ public class QuoteEditorActivity extends AppCompatActivity
     
     private void initData()
     {
-        //        mTagList = (TagListView) findViewById(R.id.tag_list);
-        //        mTagList2 = (TagListView) findViewById(R.id.tag_list2);
-        //        
-        //        mTagList.setOnTagCheckedChangedListener(new TagListView.OnTagCheckedChangedListener()
-        //        {
-        //            @Override
-        //            public void onTagCheckedChanged(TagView tagView, Tag tag)
-        //            {
-        //                mTagList.removeTag(tag);
-        //                mTagList2.addTag(tag);
-        //
-        //            }
-        //        });
-        //        
-        //        mTagList2.setOnTagCheckedChangedListener(new TagListView.OnTagCheckedChangedListener()
-        //        {
-        //            @Override
-        //            public void onTagCheckedChanged(TagView tagView, Tag tag)
-        //            {
-        //                mTagList2.removeTag(tag);
-        //                mTagList.addTag(tag);
-        //                
-        //            }
-        //        });
-        //        
-        //        AVUser.getCurrentUser()
-        //                .getRelation("cycle")
-        //                .getQuery()
-        //                .findInBackground(new FindCallback<AVObject>()
-        //                {
-        //                    @Override
-        //                    public void done(List<AVObject> list, AVException e)
-        //                    {
-        //                        if (null == e && null != list && list.size() > 0)
-        //                        {
-        //                            List<Tag> tags = new ArrayList<Tag>();
-        //                            
-        //                            for (int i = 0; i < list.size(); i++)
-        //                            {
-        //                                Tag tag = new Tag();
-        //                                tag.setId(i);
-        //                                tag.setTitle(list.get(i)
-        //                                        .getString("cycle_name"));
-        //                                tag.setChecked(true);
-        //                                
-        //                                tags.add(tag);
-        //                            }
-        //                            
-        //                            mTagList.setTags(tags);
-        //                            mTagList2.setTags(tags);
-        //                        }
-        //                    }
-        //                });
+        mTagList = (TagCloudLinkView) findViewById(R.id.tag_list);
+        mTagList2 = (TagCloudLinkView) findViewById(R.id.tag_list2);
+        
+        mTagList.setOnTagSelectListener(this);
+        mTagList.setOnTagDeleteListener(this);
+        
+        mTagList2.setOnTagSelectListener(this);
+        mTagList2.setOnTagDeleteListener(this);
+        
+        AVUser.getCurrentUser()
+                .getRelation("cycle")
+                .getQuery()
+                .findInBackground(new FindCallback<AVObject>()
+                {
+                    @Override
+                    public void done(List<AVObject> list, AVException e)
+                    {
+                        if (null == e && null != list && list.size() > 0)
+                        {
+                            for (int i = 0; i < list.size(); i++)
+                            {
+                                mTagList2.add(new Tag(
+                                        Integer.valueOf(list.get(i)
+                                                .getObjectId()), list.get(i)
+                                                .getString("cycle_name")));
+                                
+                                mTagList2.drawTags();
+                            }
+                        }
+                    }
+                });
         
     }
     
@@ -395,6 +379,43 @@ public class QuoteEditorActivity extends AppCompatActivity
         
         dialog.show();
         
+    }
+    
+    @Override
+    public void onTagSelected(TagCloudLinkView view, Tag tag, int position)
+    {
+        switch (view.getId())
+        {
+        
+            case R.id.tag_list2:
+                
+                List<Tag> list = mTagList.getTags();
+                
+                if (list.size() > 0)
+                {
+                    for (int i = 0; i < list.size(); i++)
+                    {
+                        if (!list.get(i).getText().equals(tag.getText()))
+                        {
+                            mTagList.add(tag);
+                            mTagList.drawTags();
+                        }
+                        
+                    }
+                }
+                else
+                {
+                    mTagList.add(tag);
+                    mTagList.drawTags();
+                }
+                
+                break;
+        }
+    }
+    
+    @Override
+    public void onTagDeleted(TagCloudLinkView view, Tag tag, int position)
+    {
     }
     
     class ImagePerviewAdapter extends RecyclerView.Adapter<ImageHolder>

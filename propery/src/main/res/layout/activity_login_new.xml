@@ -1,89 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="@mipmap/login"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
+
     <LinearLayout
         android:id="@+id/login_lay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#000">
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="56dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp">
-        <!-- 账号 -->
-        <android.support.design.widget.TextInputLayout
+        android:background="#000"
+        android:orientation="vertical">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="8dp"
-            >
-            <EditText
-                android:id="@+id/input_account"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="56dp">
+            <!-- 账号 -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="手机号"
-                android:textSize="20sp"
-                />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="40dp">
 
-        <!-- 密码 -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            >
-            <EditText
-                android:id="@+id/input_password"
+                <EditText
+                    android:id="@+id/input_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="手机号"
+                    android:inputType="text"
+                    android:textSize="20sp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- 密码 -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="密码"
-                android:textSize="20sp"
-                />
-        </android.support.design.widget.TextInputLayout>
-        <TextView
-            android:id="@+id/forget_psd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="忘记密码"
-            android:textSize="14dp"
-            android:textColor="@color/primary_darker"
-            android:layout_gravity="right"
-            android:layout_marginTop="8dp"
-            />
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp">
 
-        <!--登录 -->
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="24dp"
-            android:padding="12dp"
-            android:text="登录"
-            android:textSize="20sp"
-            >
-        </android.support.v7.widget.AppCompatButton>
+                <EditText
+                    android:id="@+id/input_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="密码"
+                    android:inputType="textPassword"
+                    android:textSize="20sp" />
+            </android.support.design.widget.TextInputLayout>
 
-        <!-- 快速注册 -->
-        <TextView android:id="@+id/quit_register"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="还没有账号?快来注册一个"
-            android:gravity="center"
-            android:textSize="16dip"
-            android:textColor="@color/primary_darker"/>
+            <TextView
+                android:id="@+id/forget_psd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="8dp"
+                android:text="忘记密码"
+                android:textColor="@color/primary_darker"
+                android:textSize="14dp" />
+
+            <!--登录 -->
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginTop="15dp"
+                android:padding="12dp"
+                android:text="登录"
+                android:textSize="20sp"></android.support.v7.widget.AppCompatButton>
+
+            <!-- 快速注册 -->
+            <TextView
+                android:id="@+id/quit_register"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:gravity="center"
+                android:text="还没有账号?快来注册一个"
+                android:textColor="@color/primary_darker"
+                android:textSize="16dip" />
+        </LinearLayout>
     </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>

@@ -100,31 +100,38 @@
                 android:layout_height="wrap_content"
                 android:text="发布到：" />
 
-            <com.junjingit.propery.widget.tag.TagListView xmlns:f="http://schemas.android.com/apk/res-auto"
+            <com.ns.developer.tagview.widget.TagCloudLinkView
                 android:id="@+id/tag_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:minHeight="@dimen/dp_24"
-                android:paddingBottom="@dimen/common_margin"
-                android:paddingLeft="@dimen/common_margin"
-                android:paddingRight="@dimen/common_margin"
-                android:paddingTop="@dimen/dp_16"
-                f:horizontalSpacing="@dimen/tag_horizontal_spacing"
-                f:orientation="horizontal"
-                f:verticalSpacing="@dimen/tag_vertical_spacing" />
+                android:padding="@dimen/dp_4"
+                app:deletableTextColor="@color/white"
+                app:deletableTextSize="4sp"
+                app:isDeletable="true"
+                app:tagLayoutColor="@color/material_blue_500"
+                app:tagTextColor="@color/white"
+                app:tagTextSize="4sp" />
 
-            <com.junjingit.propery.widget.tag.TagListView xmlns:f="http://schemas.android.com/apk/res-auto"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="我关注的圈子：" />
+
+            <com.ns.developer.tagview.widget.TagCloudLinkView
                 android:id="@+id/tag_list2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/dp_24"
-                android:paddingBottom="@dimen/common_margin"
-                android:paddingLeft="@dimen/common_margin"
-                android:paddingRight="@dimen/common_margin"
-                android:paddingTop="@dimen/dp_16"
-                f:horizontalSpacing="@dimen/tag_horizontal_spacing"
-                f:orientation="horizontal"
-                f:verticalSpacing="@dimen/tag_vertical_spacing" />
+                android:background="@color/white"
+                android:padding="@dimen/dp_4"
+                app:deletableTextColor="@color/white"
+                app:deletableTextSize="4sp"
+                app:isDeletable="false"
+                app:tagLayoutColor="@color/material_blue_500"
+                app:tagTextColor="@color/white"
+                app:tagTextSize="4sp" />
 
 
         </LinearLayout>

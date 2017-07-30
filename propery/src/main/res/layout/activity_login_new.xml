@@ -5,7 +5,6 @@
     android:background="@mipmap/login"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
-
     <LinearLayout
         android:id="@+id/login_lay"
         android:layout_width="match_parent"

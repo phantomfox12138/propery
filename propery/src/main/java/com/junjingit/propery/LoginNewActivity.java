@@ -1,11 +1,14 @@
 package com.junjingit.propery;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,7 +64,7 @@ public class LoginNewActivity extends AppCompatActivity
      */
     private void initView()
     {
-        login_lay.getBackground().setAlpha(80);
+        login_lay.getBackground().setAlpha(150);
         mLoginBtn.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -84,6 +87,8 @@ public class LoginNewActivity extends AppCompatActivity
                                     public void done(AVUser avUser,
                                             AVException e)
                                     {
+                                        String deviceId=getDeviceId();
+
                                         if (filterException(e))
                                         {
                                             Intent intent = new Intent(
@@ -135,5 +140,13 @@ public class LoginNewActivity extends AppCompatActivity
         {
             return true;
         }
+    }
+    /**
+     * 获取设置唯一Id
+     * @return
+     */
+    public String  getDeviceId(){
+        TelephonyManager tm = (TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        return  tm.getDeviceId();
     }
 }

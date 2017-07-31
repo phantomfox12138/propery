@@ -35,4 +35,6 @@
     <color name="primary_darker">#0380ff</color>
     <color name="accent">#FFFFF0</color>
     <color name="iron">#CCCCCC</color>
+    <color name="cebebeb">#ebebeb</color>
+    <color name="c999999">#999999</color>
 </resources>

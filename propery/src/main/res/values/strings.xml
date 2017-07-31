@@ -13,4 +13,12 @@
     <string name="imageloader_extrnal_storage_not_exist">暂无外部存储</string>
     <string name="imageloader_alert_user_allow_access_extrnal_storage">获取本地图片需授予权限</string>
     <string name="imageloader_image_not_found">图片文件不存在</string>
+    <string name="login_mobil_empty">手机号不能为空!</string>
+    <string name="login_mobile_error">手机号输入有误!</string>
+    <string name="login_message_error">验证码不能为空!</string>
+    <string name="get_msg_code_again_time"> 重新发送(%1ss) </string>
+    <string name="get_msg_code_again">重新获取</string>
+    <string name="login_password_empty">请输入密码!</string>
+    <string name="login_sdpassword_empty">请再次输入密码!</string>
+    <string name="login_fspassword">两次密码不一致!</string>
 </resources>

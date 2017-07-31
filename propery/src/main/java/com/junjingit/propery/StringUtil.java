@@ -184,4 +184,14 @@ public class StringUtil
     {
         return str1 != null && str1.equalsIgnoreCase(str2);
     }
+    /**
+     * 判断是否是手机号
+     * @param mobiles
+     * @return
+     */
+    public static boolean checkMobile(String mobiles) {
+        Pattern p = Pattern.compile("^(13|15|18|14|17)\\d{9}$");
+        Matcher m = p.matcher(mobiles);
+        return m.matches();
+    }
 }

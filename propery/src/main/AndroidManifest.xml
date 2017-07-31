@@ -110,7 +110,8 @@
         </activity>
         <activity
             android:name=".RegisterActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/loginTheme">
             <intent-filter>
                 <action android:name="com.junjingit.propery.REGISTER_ACTION" />
 
@@ -119,10 +120,10 @@
         </activity>
         <activity
             android:name=".ForgetActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/loginTheme">
             <intent-filter>
                 <action android:name="com.junjingit.propery.FORGET_ACTION" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

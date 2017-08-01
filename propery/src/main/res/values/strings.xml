@@ -21,4 +21,15 @@
     <string name="login_password_empty">请输入密码!</string>
     <string name="login_sdpassword_empty">请再次输入密码!</string>
     <string name="login_fspassword">两次密码不一致!</string>
+    <string name="forget_setting_psd">设置密码</string>
+    <string name="forget_sure_psd">确认密码</string>
+    <string name="message_tip">请输入手机短信中的验证码</string>
+    <string name="message_mobile">请输入手机号</string>
+    <string name="message_code">发送验证码</string>
+    <string name="psd_length">密码长度在6-25之间!</string>
+    <string name="psd__sure_length">确认密码长度在6-25之间!</string>
+    <string name="next">下一步</string>
+    <string name="sure">确定</string>
+    <string name="nick_hint">请输入昵称</string>
+    <string name="nick_tip">昵称不能为空!</string>
 </resources>

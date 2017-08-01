@@ -58,12 +58,12 @@ public class LoginNewActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         initView();
     }
-
     /**
      * 初始化控件,添加事件
      */
     private void initView() {
-        login_lay.getBackground().setAlpha(150);
+        login_lay.getBackground().setAlpha(70);
+        mLoginBtn.getBackground().setAlpha(140);
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

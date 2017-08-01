@@ -124,7 +124,6 @@ public class FocusFragment extends Fragment
             
             return holder;
         }
-        
         @Override
         public int getItemViewType(int position)
         {
@@ -160,7 +159,7 @@ public class FocusFragment extends Fragment
                             public void done(final AVObject avObject,
                                     AVException e)
                             {
-                                if (null == e)
+                                if (null == e&&avObject!=null)
                                 {
                                     String lastUpdateCycleId = avObject.getObjectId();
                                     

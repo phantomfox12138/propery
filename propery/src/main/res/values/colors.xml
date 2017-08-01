@@ -31,8 +31,8 @@
 
 
     <color name="primary">#0380ff</color>
-    <color name="primary_dark">#0380ff</color>
-    <color name="primary_darker">#0380ff</color>
+    <color name="primary_dark">#00B2EE</color>
+    <color name="primary_darker">#00B2EE</color>
     <color name="accent">#FFFFF0</color>
     <color name="iron">#CCCCCC</color>
     <color name="cebebeb">#ebebeb</color>

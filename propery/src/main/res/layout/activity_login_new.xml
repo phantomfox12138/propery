@@ -11,45 +11,63 @@
         android:layout_height="match_parent"
         android:background="#000"
         android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingLeft="24dp"
             android:paddingRight="24dp"
-            android:paddingTop="56dp">
+            android:paddingTop="80dp">
             <!-- 账号 -->
-            <android.support.design.widget.TextInputLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="40dp">
-
+                android:layout_marginTop="45dp"
+                android:orientation="vertical">
                 <EditText
                     android:id="@+id/input_account"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="手机号"
-                    android:inputType="text"
-                    android:textSize="20sp" />
-            </android.support.design.widget.TextInputLayout>
+                    android:inputType="number"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:background="@null"
+                    android:maxLength="11"
+                    android:textCursorDrawable="@drawable/color_cursor_blue"/>
+                <TextView
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height=".5dp"
+                    android:background="@color/ca3a3a3"/>
+            </LinearLayout>
+           <!-- </android.support.design.widget.TextInputLayout>-->
 
             <!-- 密码 -->
-            <android.support.design.widget.TextInputLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp">
-
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
                 <EditText
                     android:id="@+id/input_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="密码"
                     android:inputType="textPassword"
-                    android:textSize="20sp" />
-            </android.support.design.widget.TextInputLayout>
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:background="@null"
+                    android:maxLength="25"
+                    android:textCursorDrawable="@drawable/color_cursor_blue"/>
+                <TextView
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height=".5dp"
+                    android:background="@color/ca3a3a3"/>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/forget_psd"
@@ -60,7 +78,6 @@
                 android:text="忘记密码"
                 android:textColor="@color/primary_darker"
                 android:textSize="14dp" />
-
             <!--登录 -->
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_login"

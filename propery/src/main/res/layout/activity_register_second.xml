@@ -15,14 +15,33 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp">
+            <EditText
+                android:id="@+id/register_nice_name"
+                android:inputType="text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/nick_hint"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:textColor="@color/c4343434"
+                android:maxLength="8"/>
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp">
         <EditText
             android:id="@+id/register_second_psd"
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="请输入密码"
+            android:hint="@string/forget_setting_psd"
             android:focusable="true"
-            android:focusableInTouchMode="true"/>
+            android:focusableInTouchMode="true"
+            android:textColor="@color/c4343434"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -35,9 +54,10 @@
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="再次输入密码"
+            android:hint="@string/forget_sure_psd"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:textColor="@color/c4343434"
             />
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
@@ -53,6 +73,7 @@
             android:id="@+id/register_second_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="确定" />
+            android:text="确定"
+            android:background="@drawable/grey_bg_with_corner"/>
     </LinearLayout>
 </RelativeLayout>

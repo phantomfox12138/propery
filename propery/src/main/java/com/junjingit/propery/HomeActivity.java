@@ -1,5 +1,6 @@
 package com.junjingit.propery;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimationDrawable;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +26,10 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
+import com.junjingit.propery.common.FusionAction;
 import com.junjingit.propery.fragment.AroundFragment;
 import com.junjingit.propery.fragment.CommunityFragment;
 import com.junjingit.propery.fragment.HomeFragment;
@@ -90,6 +95,7 @@ public class HomeActivity extends AppCompatActivity implements
         initView();
         
         initData();
+        getOwnerDevice();//检查设备
         
     }
     
@@ -358,5 +364,41 @@ public class HomeActivity extends AppCompatActivity implements
             return list.size();
         }
         
+    }
+    public void getOwnerDevice(){
+        if(AVUser.getCurrentUser()==null){
+            //判断当前用户是否为空
+            Intent intent = new Intent(FusionAction.LOGIN_ACTION);
+            startActivity(intent);
+        }else{
+            AVQuery<AVObject> avQuery = new AVQuery<>("Device");
+            String deviceNum=AVUser.getCurrentUser().getString("deviceId");
+            avQuery.getInBackground(deviceNum, new GetCallback<AVObject>(){
+                @Override
+                public void done(AVObject avObject, AVException e) {
+                    if(e==null){
+                        String formDeviceId=avObject.getString("deviceId");
+                        if(formDeviceId.equals(getDeviceId())){
+                            //说明是同一个设备
+                            Toast.makeText(HomeActivity.this, "表示当前设备",Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(HomeActivity.this, "已经在另外一个设备登录",Toast.LENGTH_SHORT).show();
+                            AVUser.getCurrentUser().logOut();//当前用户登出
+                        }
+                    }else{
+                        // 失败的话，请检查网络环境以及 SDK 配置是否正确
+                    }
+                }
+            });
+        }
+    }
+    /**
+     * 获取设置唯一Id
+     *
+     * @return
+     */
+    public String getDeviceId() {
+        TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        return tm.getDeviceId();
     }
 }

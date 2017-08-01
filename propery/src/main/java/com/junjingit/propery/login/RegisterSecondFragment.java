@@ -1,9 +1,11 @@
 package com.junjingit.propery.login;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +32,8 @@ import butterknife.ButterKnife;
 public class RegisterSecondFragment extends Fragment implements View.OnClickListener {
     private final String TAG = "RegisterSecondFragment";
     private View contentView;
+    @Bind(R.id.register_nice_name)
+    EditText nick_name;
     @Bind(R.id.register_second_psd)
     EditText register_second_psd;
     @Bind(R.id.register_second_rePsd)
@@ -64,12 +68,16 @@ public class RegisterSecondFragment extends Fragment implements View.OnClickList
     }
 
     public boolean toCheckMessage() {
+        String nickName = nick_name.getText().toString().trim();
         String psw1 = register_second_psd.getText().toString().trim();
         String psw2 = register_second_psd.getText().toString().trim();
-        if(TextUtils.isEmpty(psw1)){
-            ToastUtils.showToast(getActivity(),getString(R.string.login_password_empty));
+        if (TextUtils.isEmpty(nickName)) {
+            ToastUtils.showToast(getActivity(), getString(R.string.nick_tip));
             return false;
-        }else if (psw1.length()<6 || psw1.length() > 25) {
+        } else if (TextUtils.isEmpty(psw1)) {
+            ToastUtils.showToast(getActivity(), getString(R.string.login_password_empty));
+            return false;
+        } else if (psw1.length() < 6 || psw1.length() > 25) {
             ToastUtils.showToast(getActivity(), "密码长度在6-25之间!");
             return false;
         } else if (TextUtils.isEmpty(psw2)) {
@@ -90,22 +98,39 @@ public class RegisterSecondFragment extends Fragment implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.register_second_btn:
-                if(toCheckMessage()){
-                   //去更新用户信息
-                   String objectId= AVUser.getCurrentUser().getObjectId();
-                    Log.v(TAG,"##############objectId"+objectId);
-                    AVObject avObject = AVObject.createWithoutData("_User",objectId);
-                    avObject.put("username",mobile);
-                    avObject.put("password",register_second_psd.getText().toString());
+                if (toCheckMessage()) {
+                    //去更新用户信息
+                    String objectId = AVUser.getCurrentUser().getObjectId();
+                    Log.v(TAG, "##############objectId" + objectId);
+                    AVObject avObject = AVObject.createWithoutData("_User", objectId);
+                    avObject.put("username", mobile);
+                    avObject.put("nickname", nick_name.getText().toString().trim());
+                    avObject.put("password", register_second_psd.getText().toString());
                     avObject.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(AVException e) {
-                            if(e==null){
-                              ToastUtils.showToast(getActivity(),"密码设置成功，跳转登录页面");
+                            if (e == null) {
+                                String deviceId = getDeviceId();
+                                final AVObject avObject = new AVObject("Device");//建立一个设备表
+                                avObject.put("userName", mobile);
+                                avObject.put("deviceId", deviceId);
+                                avObject.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(AVException e) {
+                                        if (e == null) {
+                                            //把设备表中的ObjectId，保存在用户表中
+                                            AVUser.getCurrentUser().put("deviceId", avObject.getObjectId());
+                                            AVUser.getCurrentUser().saveInBackground();
+                                        } else {
+                                            // 失败的话，请检查网络环境以及 SDK 配置是否正确
+                                        }
+                                    }
+                                });//保存到服务器
+                                ToastUtils.showToast(getActivity(), "密码设置成功，跳转登录页面");
+                                Intent intent = new Intent(FusionAction.LOGIN_ACTION);
+                                startActivity(intent);
+                                getActivity().finish();
                             }
-                            Intent intent = new Intent(FusionAction.LOGIN_ACTION);
-                            startActivity(intent);
-                            getActivity().finish();
                         }
                     });//保存到服务器
                 }
@@ -123,5 +148,15 @@ public class RegisterSecondFragment extends Fragment implements View.OnClickList
     //设置回调接口
     public void setiRegisterSecondClickListener(IRegisterSecondClickListener iRegisterSecondClickListener) {
         this.iRegisterSecondClickListener = iRegisterSecondClickListener;
+    }
+
+    /**
+     * 获取设置唯一Id
+     *
+     * @return
+     */
+    public String getDeviceId() {
+        TelephonyManager tm = (TelephonyManager) getActivity().getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+        return tm.getDeviceId();
     }
 }

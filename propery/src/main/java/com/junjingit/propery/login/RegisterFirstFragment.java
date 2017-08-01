@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVMobilePhoneVerifyCallback;
 import com.avos.avoscloud.AVUser;
@@ -60,6 +61,8 @@ public class RegisterFirstFragment extends Fragment implements View.OnClickListe
         timer = new TimeCount(60000, 1000);//实例化倒计时的变量，60秒后重新获取，时间间隔为1秒
         mRegisterBtn.setOnClickListener(this);
         mMessage_txt.setOnClickListener(this);
+        mMobile_edit.addTextChangedListener(watcher1);
+        mMobile_message.addTextChangedListener(watcher2);
     }
 
     @Override
@@ -123,6 +126,7 @@ public class RegisterFirstFragment extends Fragment implements View.OnClickListe
        AVUser user = new AVUser();
        user.setUsername("defaultuser");
        user.setPassword("123456");
+       user.put("nikename","defaultuser");
        user.put("mobilePhoneNumber",mobile);
        user.signUpInBackground(new SignUpCallback(){
            public void done(AVException e) {
@@ -190,5 +194,36 @@ public class RegisterFirstFragment extends Fragment implements View.OnClickListe
     public void setiRegisterFirstClickListener(IRegisterFirstClickListener iRegisterFirstClickListener) {
         this.iRegisterFirstClickListener = iRegisterFirstClickListener;
     }
+    private TextWatcher watcher1 = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            mRegisterBtn.setEnabled(false);
+            mRegisterBtn.setBackgroundResource(R.drawable.grey_bg_with_corner);
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+    };
+    private TextWatcher watcher2= new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            mRegisterBtn.setEnabled(true);
+            mRegisterBtn.setBackgroundResource(R.drawable.blue_btn_border);
+        }
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+    };
 
 }

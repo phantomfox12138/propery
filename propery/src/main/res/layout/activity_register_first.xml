@@ -13,15 +13,16 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="40dp">
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_48">
         <EditText
             android:id="@+id/register_mobile_edit"
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLength="11"
-            android:hint="请输入手机号"/>
+            android:hint="@string/message_mobile"
+            android:textColor="@color/c4343434"/>
         </android.support.design.widget.TextInputLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,17 +33,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp">
+                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8">
             <EditText
                 android:id="@+id/register_message_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/usernameEditText"
                 android:layout_marginTop="@dimen/dp_16"
-                android:hint="短信验证码"
+                android:hint="@string/message_tip"
                 android:inputType="number"
-                android:maxLength="6"/>
+                android:maxLength="6"
+                android:textColor="@color/c4343434"/>
             </android.support.design.widget.TextInputLayout>
             <TextView
                 android:id="@+id/register_message_txt"
@@ -52,9 +54,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="发送验证码"
-                android:background="@color/red"/>
-
+                android:text="@string/message_code"
+                android:background="@color/primary"/>
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
@@ -69,6 +70,8 @@
             android:id="@+id/register_first_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="下一步" />
+            android:text="下一步"
+            android:enabled="false"
+            android:background="@drawable/grey_bg_with_corner"/>
     </LinearLayout>
 </RelativeLayout>

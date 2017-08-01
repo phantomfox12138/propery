@@ -24,6 +24,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +46,6 @@ import com.ns.developer.tagview.widget.TagCloudLinkView;
 import com.tiancaicc.springfloatingactionmenu.Utils;
 
 public class QuoteEditorActivity extends AppCompatActivity implements
-        TagCloudLinkView.OnTagDeleteListener,
         TagCloudLinkView.OnTagSelectListener
 {
     
@@ -76,6 +76,8 @@ public class QuoteEditorActivity extends AppCompatActivity implements
     private AVObject mRequest;
     
     private List<String> mImagePathList = new ArrayList<>();
+    
+    private List<AVObject> mCycleList = new ArrayList<>();
     
     private Handler mHandler = new Handler()
     {
@@ -130,10 +132,8 @@ public class QuoteEditorActivity extends AppCompatActivity implements
         mTagList2 = (TagCloudLinkView) findViewById(R.id.tag_list2);
         
         mTagList.setOnTagSelectListener(this);
-        mTagList.setOnTagDeleteListener(this);
         
         mTagList2.setOnTagSelectListener(this);
-        mTagList2.setOnTagDeleteListener(this);
         
         AVUser.getCurrentUser()
                 .getRelation("cycle")
@@ -145,12 +145,13 @@ public class QuoteEditorActivity extends AppCompatActivity implements
                     {
                         if (null == e && null != list && list.size() > 0)
                         {
+                            mCycleList.clear();
+                            mCycleList.addAll(list);
+                            
                             for (int i = 0; i < list.size(); i++)
                             {
-                                mTagList2.add(new Tag(
-                                        Integer.valueOf(list.get(i)
-                                                .getObjectId()), list.get(i)
-                                                .getString("cycle_name")));
+                                mTagList2.add(new Tag(i, list.get(i)
+                                        .getString("cycle_name")));
                                 
                                 mTagList2.drawTags();
                             }
@@ -258,7 +259,22 @@ public class QuoteEditorActivity extends AppCompatActivity implements
                 
                 mRequest = new AVObject("Public_Status");
                 mRequest.put("message", content);
-                mRequest.put("cycle_id", "0");
+                
+                Tag tag = mTagList.getTags().get(0);
+                
+                for (int i = 0; i < mCycleList.size(); i++)
+                {
+                    String cycleName = mCycleList.get(i)
+                            .getString("cycle_name");
+                    
+                    if (tag.getText().equals(cycleName))
+                    {
+                        mRequest.put("cycle_id", mCycleList.get(i)
+                                .getObjectId());
+                    }
+                    
+                }
+                
                 mRequest.put("userId", AVUser.getCurrentUser().getUsername());
                 
                 mRequest.saveInBackground(new SaveCallback()
@@ -407,15 +423,11 @@ public class QuoteEditorActivity extends AppCompatActivity implements
                 {
                     mTagList.add(tag);
                     mTagList.drawTags();
+                    
                 }
                 
                 break;
         }
-    }
-    
-    @Override
-    public void onTagDeleted(TagCloudLinkView view, Tag tag, int position)
-    {
     }
     
     class ImagePerviewAdapter extends RecyclerView.Adapter<ImageHolder>

@@ -1,43 +1,41 @@
 package com.junjingit.propery;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.ActivityOptions;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Build;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVCloudQueryResult;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.CloudQueryCallback;
 import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.junjingit.propery.widget.ItemHelpter;
+import com.junjingit.propery.widget.SwipeLayout;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by niufan on 17/5/27.
@@ -57,6 +55,8 @@ public class HomeListAdapter extends
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
     
     private DisplayImageOptions options;
+    
+    private RecyclerView mRecycler;
     
     public HomeListAdapter(Context context)
     {
@@ -83,26 +83,70 @@ public class HomeListAdapter extends
     }
     
     @Override
+    public int getItemViewType(int position)
+    {
+        String imageName = mListData.get(position).getString("image_name");
+        if (StringUtil.isNullOrEmpty(imageName))
+        {
+            return 2;
+        }
+        
+        return super.getItemViewType(position);
+    }
+    
+    @Override
     public HomeHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        HomeHolder holder = new HomeHolder(LayoutInflater.from(mContext)
-                .inflate(R.layout.home_item_layout, null));
+        HomeHolder holder = null;
         
+        if (viewType == 2)
+        {
+            holder = new HomeHolder(LayoutInflater.from(mContext)
+                    .inflate(R.layout.item_simple_list_1, null));
+            
+        }
+        else
+        {
+            holder = new HomeHolder(LayoutInflater.from(mContext)
+                    .inflate(R.layout.home_item_layout, null));
+        }
         return holder;
     }
     
     @Override
     public void onBindViewHolder(final HomeHolder holder, final int position)
     {
-        //        holder.imgContent.setImageResource(mContext.getResources()
-        //                .getIdentifier("ic_palette_0" + position % 4,
-        //                        "mipmap",
-        //                        mContext.getPackageName()));
         
         final AVObject obj = mListData.get(position);
         
         String images = obj.getString("image");
         String imgName = obj.getString("image_name");
+        
+        String cycleId = obj.getString("cycle_id");
+        
+        AVQuery<AVObject> cycQuery = new AVQuery<>("cycle");
+        cycQuery.getInBackground(cycleId, new GetCallback<AVObject>()
+        {
+            @Override
+            public void done(AVObject avObject, AVException e)
+            {
+                if (null == e)
+                {
+                    if (getItemViewType(position) == 2)
+                    {
+                        
+                    }
+                    else
+                    {
+                        holder.cycleName.setText(avObject.getString("cycle_name"));
+                    }
+                }
+                else
+                {
+                    holder.cycleName.setText("");
+                }
+            }
+        });
         
         if (!StringUtil.isNullOrEmpty(images)
                 && !StringUtil.isNullOrEmpty(imgName))
@@ -119,51 +163,45 @@ public class HomeListAdapter extends
                     options,
                     animateFirstListener);
             
-            //            ImageLoader.getInstance().loadImage(thumbUrl,
-            //                    new ImageLoadingListener()
-            //                    {
-            //                        @Override
-            //                        public void onLoadingStarted(String imageUri, View view)
-            //                        {
-            //                            
-            //                        }
-            //                        
-            //                        @Override
-            //                        public void onLoadingFailed(String imageUri, View view,
-            //                                FailReason failReason)
-            //                        {
-            //                            
-            //                        }
-            //                        
-            //                        @Override
-            //                        public void onLoadingComplete(String imageUri,
-            //                                View view, Bitmap loadedImage)
-            //                        {
-            //                            holder.imgContent.setImageBitmap(loadedImage);
-            //                        }
-            //                        
-            //                        @Override
-            //                        public void onLoadingCancelled(String imageUri,
-            //                                View view)
-            //                        {
-            //                            
-            //                        }
-            //                    });
         }
         else
         {
-            holder.imgContent.setImageResource(mContext.getResources()
-                    .getIdentifier("ic_palette_0" + position % 4,
-                            "mipmap",
-                            mContext.getPackageName()));
+            if (getItemViewType(position) == 2)
+            {
+                
+            }
+            else
+            {
+                holder.imgContent.setImageResource(mContext.getResources()
+                        .getIdentifier("ic_palette_0" + position % 4,
+                                "mipmap",
+                                mContext.getPackageName()));
+            }
         }
         
-        holder.userName.setText(mListData.get(position).getString("userId"));
+        if (getItemViewType(position) == 2)
+        {
+            holder.title.setText(mListData.get(position).getString("userId"));
+        }
+        else
+        {
+            holder.userName.setText(mListData.get(position).getString("userId"));
+        }
+        
         holder.msgContent.setText(mListData.get(position).getString("message"));
         holder.descCount.setText(mListData.get(position)
                 .getString("ReplyCount"));
-        holder.updateTime.setText(mListData.get(position)
-                .getString("createdAt"));
+        Date date = mListData.get(position).getCreatedAt();
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        if (getItemViewType(position) == 2)
+        {
+            holder.time.setText(sdf.format(date.getTime()));
+        }
+        else
+        {
+            holder.updateTime.setText(sdf.format(date.getTime()));
+        }
         
         AVQuery<AVObject> query = new AVQuery<AVObject>("Reply");
         query.whereEqualTo("status_id", obj.getObjectId());
@@ -251,48 +289,91 @@ public class HomeListAdapter extends
         
         if (mFrom.equals("community"))
         {
-            holder.title.setVisibility(View.GONE);
+            
+            holder.title.setVisibility(getItemViewType(position) == 2 ? View.VISIBLE
+                    : View.GONE);
         }
         else if (mFrom.equals("home"))
         {
             holder.title.setText(mListData.get(position)
                     .getString("notify_title"));
+            holder.zanAndDesc.setVisibility(View.GONE);
         }
         
-        holder.imgContent.setOnClickListener(new View.OnClickListener()
+        if (getItemViewType(position) == 2)
         {
-            @Override
-            public void onClick(View view)
+            holder.container.setOnClickListener(new View.OnClickListener()
             {
-                if (mFrom.equals("home"))
+                @Override
+                public void onClick(View view)
                 {
-                    mContext.startActivity(new Intent(
-                            "com.junjignit.propery.NOTIFY_DETAIL"));
+                    if (mFrom.equals("home"))
+                    {
+                        mContext.startActivity(new Intent(
+                                "com.junjignit.propery.NOTIFY_DETAIL"));
+                    }
+                    else if (mFrom.equals("community"))
+                    {
+                        //                    if (Integer.valueOf(Build.VERSION.SDK_INT) < 21)
+                        //                    {
+                        
+                        Intent intent = new Intent(
+                                "com.junjing.propery.QUOTE_DETAIL");
+                        intent.putExtra("objectId", obj.getObjectId());
+                        
+                        mContext.startActivity(intent);
+                        
+                        //                    }
+                        //                    else
+                        //                    {
+                        //                        mContext.startActivity(new Intent(
+                        //                                "com.junjing.propery.QUOTE_DETAIL"),
+                        //                                ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
+                        //                                        view,
+                        //                                        "transName")
+                        //                                        .toBundle());
+                        //                    }
+                    }
                 }
-                else if (mFrom.equals("community"))
+            });
+        }
+        else
+        {
+            holder.imgContent.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
                 {
-                    //                    if (Integer.valueOf(Build.VERSION.SDK_INT) < 21)
-                    //                    {
-                    
-                    Intent intent = new Intent(
-                            "com.junjing.propery.QUOTE_DETAIL");
-                    intent.putExtra("objectId", obj.getObjectId());
-                    
-                    mContext.startActivity(intent);
-                    
-                    //                    }
-                    //                    else
-                    //                    {
-                    //                        mContext.startActivity(new Intent(
-                    //                                "com.junjing.propery.QUOTE_DETAIL"),
-                    //                                ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
-                    //                                        view,
-                    //                                        "transName")
-                    //                                        .toBundle());
-                    //                    }
+                    if (mFrom.equals("home"))
+                    {
+                        mContext.startActivity(new Intent(
+                                "com.junjignit.propery.NOTIFY_DETAIL"));
+                    }
+                    else if (mFrom.equals("community"))
+                    {
+                        //                    if (Integer.valueOf(Build.VERSION.SDK_INT) < 21)
+                        //                    {
+                        
+                        Intent intent = new Intent(
+                                "com.junjing.propery.QUOTE_DETAIL");
+                        intent.putExtra("objectId", obj.getObjectId());
+                        
+                        mContext.startActivity(intent);
+                        
+                        //                    }
+                        //                    else
+                        //                    {
+                        //                        mContext.startActivity(new Intent(
+                        //                                "com.junjing.propery.QUOTE_DETAIL"),
+                        //                                ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
+                        //                                        view,
+                        //                                        "transName")
+                        //                                        .toBundle());
+                        //                    }
+                    }
                 }
-            }
-        });
+            });
+        }
         
     }
     
@@ -302,6 +383,22 @@ public class HomeListAdapter extends
         return null == mListData ? 0 : mListData.size();
         //        return 10;
     }
+    
+    //    @Override
+    //    public SwipeLayout getSwipLayout(float x, float y)
+    //    {
+    //        return (SwipeLayout) mRecycler.findChildViewUnder(x, y);
+    //    }
+    
+    //    @Override
+    //    public void onAttachedToRecyclerView(RecyclerView recyclerView)
+    //    {
+    //        super.onAttachedToRecyclerView(recyclerView);
+    //        
+    //        mRecycler = recyclerView;
+    //        recyclerView.addOnItemTouchListener(new ItemHelpter(mContext, this));
+    //    }
+    //
     
     class HomeHolder extends RecyclerView.ViewHolder
     {
@@ -325,6 +422,12 @@ public class HomeListAdapter extends
         
         TextView updateTime;
         
+        TextView time;
+        
+        CardView container;
+        
+        View zanAndDesc;
+        
         public HomeHolder(View itemView)
         {
             super(itemView);
@@ -339,6 +442,9 @@ public class HomeListAdapter extends
             zanCount = itemView.findViewById(R.id.item_zan_count);
             zanLayout = itemView.findViewById(R.id.zan_layout);
             updateTime = itemView.findViewById(R.id.update_time);
+            time = itemView.findViewById(R.id.tv_time);
+            container = itemView.findViewById(R.id.text_container);
+            zanAndDesc = itemView.findViewById(R.id.zan_desc_layout);
         }
     }
     

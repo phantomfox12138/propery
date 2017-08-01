@@ -20,7 +20,9 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
@@ -136,6 +138,14 @@ public class HomeActivity extends AppCompatActivity implements
     {
         mBottomNavi = (BottomNavigationView) findViewById(R.id.bnv_menu);
         mHomePager = (ViewPager) findViewById(R.id.home_pager);
+        mBottomNavi.inflateMenu(R.menu.menu_bottom_navigation);
+        
+        LinearLayout view = (LinearLayout) mBottomNavi.getMenu()
+                .findItem(R.id.action_community)
+                .getActionView();
+        
+        TextView msg = view.findViewById(R.id.msg);
+        msg.setText("10");
         
         mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         mHomePagerAdapter.setList(mFragmentList);
@@ -278,6 +288,7 @@ public class HomeActivity extends AppCompatActivity implements
                 return true;
             }
         });
+        
     }
     
     private void createFabFrameAnim()

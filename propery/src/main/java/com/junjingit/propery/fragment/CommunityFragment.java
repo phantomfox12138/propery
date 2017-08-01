@@ -23,6 +23,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.junjingit.propery.CommunityViewPager;
 import com.junjingit.propery.R;
 import com.tiancaicc.springfloatingactionmenu.MenuItemView;
 import com.tiancaicc.springfloatingactionmenu.SpringFloatingActionMenu;
@@ -111,6 +112,8 @@ public class CommunityFragment extends Fragment implements View.OnClickListener
         
         mTabLayout = mRootView.findViewById(R.id.tab_layout);
         mCommunityVp = mRootView.findViewById(R.id.community_vp);
+        mCommunityVp.setOffscreenPageLimit(2);
+        //        mCommunityVp.setNoScroll(true);
         
         mTabLayout.addTab(mTabLayout.newTab().setCustomView(initTabName("动态")));
         mTabLayout.addTab(mTabLayout.newTab().setCustomView(initTabName("关注")));

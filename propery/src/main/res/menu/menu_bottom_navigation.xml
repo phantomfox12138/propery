@@ -12,6 +12,7 @@
         android:id="@+id/action_community"
         android:icon="@mipmap/desc"
         android:title="园区社群"
+        app:actionLayout="@layout/badge"
         app:showAsAction="ifRoom" />
 
     <item

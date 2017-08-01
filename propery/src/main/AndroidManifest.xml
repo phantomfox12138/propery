@@ -104,9 +104,9 @@
         <activity android:name=".CreateCycleActivity">
             <intent-filter>
                 <action android:name="com.junjing.propery.CREATE_CYCLE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".RegisterActivity"
@@ -126,6 +126,25 @@
                 <action android:name="com.junjingit.propery.FORGET_ACTION" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".CycleDetailListActivity"
+            android:theme="@style/ActionBarTheme">
+            <intent-filter>
+                <action android:name="com.junjingit.propery.CYCLE_DETAIL_LIST" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".HomeListActivity" />
+        <activity
+            android:name=".FocusListActivity"
+            android:theme="@style/ActionBarTheme">
+            <intent-filter>
+                <action android:name="com.junjingit.propery.FOCUS_LIST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
         </activity>
     </application>
 

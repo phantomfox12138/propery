@@ -53,6 +53,8 @@ public class QuoteDetailActivity extends AppCompatActivity
     
     private TextView mBackBtn;
     
+    private TextView mUserName;
+    
     private String mFullText; //= "I swirl, dip, leap and step, To the rhythmic, rolling, reverberating melody, Of gleaming copper, and polished bronze; A shivering note, long held in the air. The deep, monotonous, shivering song, of shining, gleaming, chiming bells. I must leave before the twelfth gong. Prepare my pumpkin. I lost my shoe.";
     
     private Image mImage;
@@ -99,6 +101,8 @@ public class QuoteDetailActivity extends AppCompatActivity
     
     private void initData()
     {
+        mUserName = (TextView) findViewById(R.id.user_name);
+        
         AVQuery<AVObject> avquery = new AVQuery<>("Public_Status");
         avquery.getInBackground(mObjId, new GetCallback<AVObject>()
         {
@@ -116,6 +120,7 @@ public class QuoteDetailActivity extends AppCompatActivity
                     
                     String image = avObject.getString("image");
                     String imageName = avObject.getString("image_name");
+                    mUserName.setText(avObject.getString("userId"));
                     
                     if (!StringUtil.isNullOrEmpty(image)
                             && !StringUtil.isNullOrEmpty(imageName))

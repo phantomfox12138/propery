@@ -34,6 +34,7 @@ dependencies {
     // 请手动下载新浪微博 SDK 的 jar 包，将其放在 libs 目录下进行集成
     // LeanCloud 应用内搜索包
     compile project(':library')
+    compile project(':lib')
     compile 'com.android.support.constraint:constraint-layout:1.0.1'
     compile 'cn.leancloud.android:avoscloud-sdk:v4.1.0'
     compile 'cn.leancloud.android:avoscloud-statistics:v4.1.0'
@@ -49,6 +50,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:26.+'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
     testCompile 'junit:junit:4.12'
-    compile project(':lib')
+    compile 'com.yanzhenjie:recyclerview-swipe:1.1.0'
 }

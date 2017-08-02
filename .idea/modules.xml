@@ -2,11 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Propery.iml" filepath="$PROJECT_DIR$/Propery.iml" />
       <module fileurl="file://$PROJECT_DIR$/collapsibletext/collapsibletext.iml" filepath="$PROJECT_DIR$/collapsibletext/collapsibletext.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/propery.iml" filepath="$PROJECT_DIR$/propery.iml" />
       <module fileurl="file://$PROJECT_DIR$/propery/propery.iml" filepath="$PROJECT_DIR$/propery/propery.iml" />
+      <module fileurl="file://$PROJECT_DIR$/propery/propery-propery.iml" filepath="$PROJECT_DIR$/propery/propery-propery.iml" />
       <module fileurl="file://$PROJECT_DIR$/recyclerview-swipe/recyclerview-swipe.iml" filepath="$PROJECT_DIR$/recyclerview-swipe/recyclerview-swipe.iml" />
     </modules>
   </component>

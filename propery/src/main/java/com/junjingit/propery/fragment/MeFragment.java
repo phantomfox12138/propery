@@ -1,5 +1,7 @@
 package com.junjingit.propery.fragment;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.design.internal.NavigationMenuPresenter;
@@ -11,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.junjingit.propery.R;
 
@@ -23,8 +27,9 @@ public class MeFragment extends Fragment
 {
     
     private View mRootView;
-    
     private NavigationView mNaviView;
+    private Dialog dialog;
+    private ImageView imageView;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,7 +37,7 @@ public class MeFragment extends Fragment
     {
         if (mRootView == null)
         {
-            mRootView = inflater.inflate(R.layout.fragment_me, null);
+            mRootView = inflater.inflate(R.layout.fragment_me_new, null);
             initView();
         }
         
@@ -44,60 +49,19 @@ public class MeFragment extends Fragment
         
         return mRootView;
     }
-    
-    public void setNavigationMenuLineStyle(NavigationView navigationView,
-            @ColorInt final int color, final int height)
-    {
-        try
-        {
-            Field fieldByPressenter = navigationView.getClass()
-                    .getDeclaredField("mPresenter");
-            fieldByPressenter.setAccessible(true);
-            NavigationMenuPresenter menuPresenter = (NavigationMenuPresenter) fieldByPressenter.get(navigationView);
-            Field fieldByMenuView = menuPresenter.getClass()
-                    .getDeclaredField("mMenuView");
-            fieldByMenuView.setAccessible(true);
-            final NavigationMenuView mMenuView = (NavigationMenuView) fieldByMenuView.get(menuPresenter);
-            mMenuView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener()
-            {
-                @Override
-                public void onChildViewAttachedToWindow(View view)
-                {
-                    RecyclerView.ViewHolder viewHolder = mMenuView.getChildViewHolder(view);
-                    if (viewHolder != null
-                            && "SeparatorViewHolder".equals(viewHolder.getClass()
-                                    .getSimpleName())
-                            && viewHolder.itemView != null)
-                    {
-                        if (viewHolder.itemView instanceof FrameLayout)
-                        {
-                            FrameLayout frameLayout = (FrameLayout) viewHolder.itemView;
-                            View line = frameLayout.getChildAt(0);
-                            line.setBackgroundColor(color);
-                            line.getLayoutParams().height = height;
-                            line.setLayoutParams(line.getLayoutParams());
-                        }
-                    }
-                }
-                
-                @Override
-                public void onChildViewDetachedFromWindow(View view)
-                {
-                    
-                }
-            });
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
+    public void initView(){
+
     }
-    
-    private void initView()
-    {
-        mNaviView = mRootView.findViewById(R.id.navigation);
-        
-        setNavigationMenuLineStyle(mNaviView, 0xaaaaaa, 1);
+
+    public void onAddPic(View v){
+        imageView = (ImageView) v;
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        RelativeLayout layout = (RelativeLayout) inflater.inflate(
+                R.layout.add_pic_dialog, null);
+        dialog = new AlertDialog.Builder(getActivity()).create();
+        dialog.setCancelable(true);
+        dialog.show();
+        dialog.getWindow().setContentView(layout);
     }
     
 }

@@ -32,4 +32,9 @@
     <string name="sure">确定</string>
     <string name="nick_hint">请输入昵称</string>
     <string name="nick_tip">昵称不能为空!</string>
+    <!--上传图片-->
+    <string name="check_sd_card">请插入SD卡</string>
+    <string name="add_photo_dialog_title">图片</string>
+    <string name="add_photo_dialog_take">拍照</string>
+    <string name="add_photo_dialog_select">从手机相册中选择</string>
 </resources>

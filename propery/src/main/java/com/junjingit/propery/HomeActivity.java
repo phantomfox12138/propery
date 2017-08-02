@@ -1,9 +1,16 @@
 package com.junjingit.propery;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -11,18 +18,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
@@ -31,26 +30,27 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.junjingit.propery.common.FusionAction;
 import com.junjingit.propery.fragment.AroundFragment;
 import com.junjingit.propery.fragment.CommunityFragment;
 import com.junjingit.propery.fragment.HomeFragment;
 import com.junjingit.propery.fragment.MeFragment;
 import com.melnykov.fab.FloatingActionButton;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tiancaicc.springfloatingactionmenu.MenuItemView;
 import com.tiancaicc.springfloatingactionmenu.OnMenuActionListener;
 import com.tiancaicc.springfloatingactionmenu.SpringFloatingActionMenu;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements
         View.OnClickListener
 {
     
-    private BottomNavigationView mBottomNavi;
+    private BottomNavigationViewEx mBottomNavi;
     
     private ViewPager mHomePager;
+    
+    private SlidingUpPanelLayout mLayout;
     
     private List<Fragment> mFragmentList;
     
@@ -76,6 +76,15 @@ public class HomeActivity extends AppCompatActivity implements
     
     private AnimationDrawable frameReverseAnim;
     
+    public HomeActivity(SlidingUpPanelLayout mLayout)
+    {
+        this.mLayout = mLayout;
+    }
+    
+    public HomeActivity()
+    {
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -83,7 +92,7 @@ public class HomeActivity extends AppCompatActivity implements
         
         Utility.setTranslucent(this);
         setContentView(R.layout.activity_home);
-        
+        //        
         mFragmentList = new ArrayList<>();
         
         mFragmentList.add(new HomeFragment());
@@ -136,24 +145,30 @@ public class HomeActivity extends AppCompatActivity implements
     
     private void initView()
     {
-        mBottomNavi = (BottomNavigationView) findViewById(R.id.bnv_menu);
+        mBottomNavi = (BottomNavigationViewEx) findViewById(R.id.bnv_menu);
         mHomePager = (ViewPager) findViewById(R.id.home_pager);
+        mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         mBottomNavi.inflateMenu(R.menu.menu_bottom_navigation);
         
-        LinearLayout view = (LinearLayout) mBottomNavi.getMenu()
-                .findItem(R.id.action_community)
-                .getActionView();
+        final FloatingActionButton fab = new FloatingActionButton(this);
         
-        TextView msg = view.findViewById(R.id.msg);
-        msg.setText("10");
+        mLayout.setAnchorPoint(0.7f);
+        mLayout.setPanelHeight(0);
+        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
         
         mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         mHomePagerAdapter.setList(mFragmentList);
         
         mHomePager.setAdapter(mHomePagerAdapter);
-        Utility.disableShiftMode(mBottomNavi);
+        //        Utility.disableShiftMode(mBottomNavi);
         
-        final FloatingActionButton fab = new FloatingActionButton(this);
+        //        mBottomNavi.enableAnimation(false);
+        mBottomNavi.enableShiftingMode(false);
+        mBottomNavi.enableItemShiftingMode(false);
+        
+        addBadgeAt(1, 10);
+        
+        //        mBottomNavi.setupWithViewPager(mHomePager, true);
         
         fab.setType(FloatingActionButton.TYPE_NORMAL);
         fab.setImageDrawable(frameAnim);
@@ -231,21 +246,43 @@ public class HomeActivity extends AppCompatActivity implements
             @Override
             public void onPageSelected(int position)
             {
-                if (position >= 2)
-                {
-                    position = position + 1;
-                }
+                //                if (position >= 2)
+                //                {
+                //                    position = position + 1;
+                //                }
+                //                
+                //                if (prevMenuItem != null)
+                //                {
+                //                    prevMenuItem.setChecked(false);
+                //                }
+                //                else
+                //                {
+                //                    mBottomNavi.getMenu().getItem(0).setChecked(false);
+                //                }
+                //                mBottomNavi.getMenu().getItem(position).setChecked(true);
+                //                prevMenuItem = mBottomNavi.getMenu().getItem(position);
                 
-                if (prevMenuItem != null)
+                switch (position)
                 {
-                    prevMenuItem.setChecked(false);
+                    case 0:
+                        mBottomNavi.setCurrentItem(0);
+                        break;
+                    case 1:
+                        
+                        mBottomNavi.setCurrentItem(1);
+                        
+                        break;
+                    
+                    case 2:
+                        
+                        mBottomNavi.setCurrentItem(3);
+                        break;
+                    
+                    case 3:
+                        
+                        mBottomNavi.setCurrentItem(4);
+                        break;
                 }
-                else
-                {
-                    mBottomNavi.getMenu().getItem(0).setChecked(false);
-                }
-                mBottomNavi.getMenu().getItem(position).setChecked(true);
-                prevMenuItem = mBottomNavi.getMenu().getItem(position);
                 
             }
             
@@ -286,6 +323,34 @@ public class HomeActivity extends AppCompatActivity implements
                 }
                 
                 return true;
+            }
+        });
+        
+        mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener()
+        {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset)
+            {
+                
+            }
+            
+            @Override
+            public void onPanelStateChanged(View panel,
+                    SlidingUpPanelLayout.PanelState previousState,
+                    SlidingUpPanelLayout.PanelState newState)
+            {
+                if (newState == SlidingUpPanelLayout.PanelState.ANCHORED)
+                {
+                    springFloatingActionMenu.setVisibility(View.GONE);
+                    fab.setVisibility(View.GONE);
+                }
+                
+                if (newState == SlidingUpPanelLayout.PanelState.HIDDEN)
+                {
+                    springFloatingActionMenu.setVisibility(View.VISIBLE);
+                    fab.setVisibility(View.VISIBLE);
+                }
+                
             }
         });
         
@@ -376,40 +441,83 @@ public class HomeActivity extends AppCompatActivity implements
         }
         
     }
-    public void getOwnerDevice(){
-        if(AVUser.getCurrentUser()==null){
+    
+    public void getOwnerDevice()
+    {
+        if (AVUser.getCurrentUser() == null)
+        {
             //判断当前用户是否为空
             Intent intent = new Intent(FusionAction.LOGIN_ACTION);
             startActivity(intent);
-        }else{
+        }
+        else
+        {
             AVQuery<AVObject> avQuery = new AVQuery<>("Device");
-            String deviceNum=AVUser.getCurrentUser().getString("deviceId");
-            avQuery.getInBackground(deviceNum, new GetCallback<AVObject>(){
+            String deviceNum = AVUser.getCurrentUser().getString("deviceId");
+            avQuery.getInBackground(deviceNum, new GetCallback<AVObject>()
+            {
                 @Override
-                public void done(AVObject avObject, AVException e) {
-                    if(e==null){
-                        String formDeviceId=avObject.getString("deviceId");
-                        if(formDeviceId.equals(getDeviceId())){
+                public void done(AVObject avObject, AVException e)
+                {
+                    if (e == null)
+                    {
+                        String formDeviceId = avObject.getString("deviceId");
+                        if (formDeviceId.equals(getDeviceId()))
+                        {
                             //说明是同一个设备
-                            Toast.makeText(HomeActivity.this, "表示当前设备",Toast.LENGTH_SHORT).show();
-                        }else{
-                            Toast.makeText(HomeActivity.this, "已经在另外一个设备登录",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HomeActivity.this,
+                                    "表示当前设备",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            Toast.makeText(HomeActivity.this,
+                                    "已经在另外一个设备登录",
+                                    Toast.LENGTH_SHORT).show();
                             AVUser.getCurrentUser().logOut();//当前用户登出
                         }
-                    }else{
+                    }
+                    else
+                    {
                         // 失败的话，请检查网络环境以及 SDK 配置是否正确
                     }
                 }
             });
         }
     }
+    
     /**
      * 获取设置唯一Id
      *
      * @return
      */
-    public String getDeviceId() {
+    public String getDeviceId()
+    {
         TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
         return tm.getDeviceId();
+    }
+    
+    private Badge addBadgeAt(int position, int number)
+    {
+        // add badge
+        return new QBadgeView(this).setBadgeNumber(number)
+                .setGravityOffset(12, 2, true)
+                .bindTarget(mBottomNavi.getBottomNavigationItemView(position))
+                .setOnDragStateChangedListener(new Badge.OnDragStateChangedListener()
+                {
+                    @Override
+                    public void onDragStateChanged(int dragState, Badge badge,
+                            View targetView)
+                    {
+                        if (Badge.OnDragStateChangedListener.STATE_SUCCEED == dragState)
+                        {
+                            Toast.makeText(HomeActivity.this,
+                                    "已读",
+                                    Toast.LENGTH_SHORT).show();
+                            
+                            badge.hide(true);
+                        }
+                    }
+                });
     }
 }

@@ -3,6 +3,7 @@ package com.junjingit.propery.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -120,11 +121,16 @@ public class CommunityFragment extends Fragment implements View.OnClickListener
         
         mFragments = new ArrayList<>();
         
-        mFragments.add(new ActiveFragment());
-        mFragments.add(new FocusFragment());
-        
         mCommunityAdapter = new CommunityAdapter(getFragmentManager());
         mCommunityAdapter.setList(mFragments);
+        
+        mFragments.add(new ActiveFragment());
+        
+        FocusFragment focus = new FocusFragment();
+        focus.setCommunityAdapter(mCommunityAdapter);
+        mFragments.add(focus);
+        
+        mCommunityAdapter.notifyDataSetChanged();
         
         mCommunityVp.setAdapter(mCommunityAdapter);
         
@@ -134,40 +140,7 @@ public class CommunityFragment extends Fragment implements View.OnClickListener
         //        mTabLayout.setTabGravity(Gravity.CENTER);
         //        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
         
-        mTabLayout.removeAllTabs();
-        
-        mTabLayout.addTab(mTabLayout.newTab().setCustomView(initTabName("动态")));
-        mTabLayout.addTab(mTabLayout.newTab().setCustomView(initTabName("关注")));
-        //        mTabLayout.getTabAt(0).setText("动态");
-        //        mTabLayout.getTabAt(1).setText("关注");
-        
-        Log.d(TAG,
-                "tab textview = "
-                        + mTabLayout.getTabAt(0)
-                                .getCustomView()
-                                .findViewById(R.id.tab_name));
-        
-        mTabLayout.setTabTextColors(Color.WHITE, Color.WHITE);
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
-        {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab)
-            {
-                mCommunityVp.setCurrentItem(tab.getPosition());
-            }
-            
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab)
-            {
-                
-            }
-            
-            @Override
-            public void onTabReselected(TabLayout.Tab tab)
-            {
-                
-            }
-        });
+        mCommunityAdapter.notifyDataSetChanged();
         
     }
     
@@ -185,6 +158,13 @@ public class CommunityFragment extends Fragment implements View.OnClickListener
     {
         
         private List<Fragment> list;
+        
+        private int position = 0;
+        
+        public void setPosition(int position)
+        {
+            this.position = position;
+        }
         
         public void setList(List<Fragment> list)
         {
@@ -206,6 +186,50 @@ public class CommunityFragment extends Fragment implements View.OnClickListener
         public int getCount()
         {
             return list.size();
+        }
+        
+        @Override
+        public void notifyDataSetChanged()
+        {
+            super.notifyDataSetChanged();
+            mTabLayout.removeAllTabs();
+            
+            mTabLayout.addTab(mTabLayout.newTab()
+                    .setCustomView(initTabName("动态")));
+            mTabLayout.addTab(mTabLayout.newTab()
+                    .setCustomView(initTabName("关注")));
+            //        mTabLayout.getTabAt(0).setText("动态");
+            //        mTabLayout.getTabAt(1).setText("关注");
+            
+            Log.d(TAG,
+                    "tab textview = "
+                            + mTabLayout.getTabAt(0)
+                                    .getCustomView()
+                                    .findViewById(R.id.tab_name));
+            
+            mTabLayout.setTabTextColors(Color.WHITE, Color.WHITE);
+            mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
+            {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab)
+                {
+                    mCommunityVp.setCurrentItem(tab.getPosition());
+                }
+                
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab)
+                {
+                    
+                }
+                
+                @Override
+                public void onTabReselected(TabLayout.Tab tab)
+                {
+                    
+                }
+            });
+            
+            mCommunityVp.setCurrentItem(position);
         }
     }
     

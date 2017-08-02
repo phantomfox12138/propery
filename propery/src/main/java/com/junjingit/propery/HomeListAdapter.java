@@ -178,15 +178,28 @@ public class HomeListAdapter extends
                                 mContext.getPackageName()));
             }
         }
+        AVQuery<AVUser> userQuery = AVUser.getQuery();
         
-        if (getItemViewType(position) == 2)
-        {
-            holder.title.setText(mListData.get(position).getString("userId"));
-        }
-        else
-        {
-            holder.userName.setText(mListData.get(position).getString("userId"));
-        }
+        userQuery.getInBackground(mListData.get(position).getString("userId"),
+                new GetCallback<AVUser>()
+                {
+                    @Override
+                    public void done(AVUser avUser, AVException e)
+                    {
+                        if (null == e)
+                        {
+                            String userName = avUser.getString("nikename");
+                            if (getItemViewType(position) == 2)
+                            {
+                                holder.title.setText(userName);
+                            }
+                            else
+                            {
+                                holder.userName.setText(userName);
+                            }
+                        }
+                    }
+                });
         
         holder.msgContent.setText(mListData.get(position).getString("message"));
         holder.descCount.setText(mListData.get(position)

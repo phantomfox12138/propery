@@ -11,12 +11,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
@@ -25,11 +27,25 @@ import com.avos.avoscloud.AVRelation;
 import com.avos.avoscloud.AVStatus;
 import com.avos.avoscloud.AVStatusQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.FollowCallback;
 import com.avos.avoscloud.GetCallback;
-import com.avos.avoscloud.InboxStatusFindCallback;
+import com.junjingit.propery.FocusListActivity;
+import com.junjingit.propery.HomeActivity;
 import com.junjingit.propery.R;
 import com.junjingit.propery.common.FusionAction;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItemClickListener;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
+import com.yanzhenjie.recyclerview.swipe.touch.OnItemMoveListener;
+import com.yanzhenjie.recyclerview.swipe.touch.OnItemStateChangedListener;
+
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,11 +56,47 @@ public class FocusFragment extends Fragment
     
     private View mRootView;
     
-    private RecyclerView mFocusList;
+    private SwipeMenuRecyclerView mFocusList;
+    
+    private CommunityFragment.CommunityAdapter mCommunityAdapter;
     
     private List<AVUser> mFocusCycleList = new ArrayList<>();
     
     private FocusListAdapter mAdapter;
+    
+    /**
+     * 菜单创建器，在Item要创建菜单的时候调用。
+     */
+    private SwipeMenuCreator mSwipeMenuCreator = new SwipeMenuCreator()
+    {
+        @Override
+        public void onCreateMenu(SwipeMenu swipeLeftMenu,
+                SwipeMenu swipeRightMenu, int viewType)
+        {
+            int width = getResources().getDimensionPixelSize(R.dimen.dp_72);
+            
+            // 1. MATCH_PARENT 自适应高度，保持和Item一样高;
+            // 2. 指定具体的高，比如80;
+            // 3. WRAP_CONTENT，自身高度，不推荐;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            
+            SwipeMenuItem closeItem = new SwipeMenuItem(getActivity()).setBackground(android.R.color.holo_red_light)
+                    //                    .setImage(R.mipmap.ic_action_close)
+                    .setWidth(width)
+                    .setText("取消关注")
+                    .setTextColor(getActivity().getColor(R.color.white))
+                    .setHeight(height);
+            
+            // 添加菜单到右侧。
+            swipeRightMenu.addMenuItem(closeItem);
+        }
+    };
+    
+    public void setCommunityAdapter(
+            CommunityFragment.CommunityAdapter communityAdapter)
+    {
+        this.mCommunityAdapter = communityAdapter;
+    }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,18 +138,91 @@ public class FocusFragment extends Fragment
     private void initView()
     {
         mFocusList = mRootView.findViewById(R.id.focus_list);
-        //        
         mAdapter = new FocusListAdapter(getActivity());
         mAdapter.setFocusList(mFocusCycleList);
-        //        
         mFocusList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //        
         mFocusList.setAdapter(mAdapter);
+        
+        mFocusList.setSwipeMenuItemClickListener(new SwipeMenuItemClickListener()
+        {
+            @Override
+            public void onItemClick(SwipeMenuBridge menuBridge)
+            {
+                menuBridge.closeMenu();
+                
+                // 左侧还是右侧菜单。
+                int direction = menuBridge.getDirection();
+                
+                // RecyclerView的Item的position。
+                final int adapterPosition = menuBridge.getAdapterPosition();
+                
+                // 菜单在RecyclerView的Item中的Position。
+                // int menuPosition = menuBridge.getPosition();
+                
+                if (direction == SwipeMenuRecyclerView.RIGHT_DIRECTION)
+                {
+                    AVUser.getCurrentUser()
+                            .unfollowInBackground(mFocusCycleList.get(adapterPosition)
+                                    .getObjectId(),
+                                    new FollowCallback()
+                                    {
+                                        @Override
+                                        public void done(AVObject avObject,
+                                                AVException e)
+                                        {
+                                            if (null == e)
+                                            {
+                                                mFocusCycleList.remove(adapterPosition);
+                                                mAdapter.notifyDataSetChanged();
+                                                
+                                                //                                                mCommunityAdapter.setPosition(1);
+                                                //                                                mCommunityAdapter.notifyDataSetChanged();
+                                                
+                                                Log.d(TAG, "取消关注成功");
+                                            }
+                                        }
+                                        
+                                    });
+                }
+            }
+        });
         
         // 设置菜单创建器。
         // 设置菜单Item点击监听。
         //        mFocusList.setLongPressDragEnabled(true); // 开启拖拽。
         //        mFocusList.setItemViewSwipeEnabled(true);
+        mFocusList.setSwipeMenuCreator(mSwipeMenuCreator);
+        
+        mFocusList.setOnItemStateChangedListener(new OnItemStateChangedListener()
+        {
+            @Override
+            public void onSelectedChanged(RecyclerView.ViewHolder viewHolder,
+                    int actionState)
+            {
+                if (actionState == OnItemStateChangedListener.ACTION_STATE_SWIPE)
+                {
+                    if (viewHolder.getPosition() == 0)
+                    {
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+        
+        mFocusList.setOnItemMoveListener(new OnItemMoveListener()
+        {
+            @Override
+            public boolean onItemMove(RecyclerView.ViewHolder srcHolder,
+                    RecyclerView.ViewHolder targetHolder)
+            {
+                return false;
+            }
+            
+            @Override
+            public void onItemDismiss(int position)
+            {
+            }
+        });
     }
     
     class FocusListAdapter extends RecyclerView.Adapter<FocusHolder>
@@ -124,6 +249,7 @@ public class FocusFragment extends Fragment
             
             return holder;
         }
+        
         @Override
         public int getItemViewType(int position)
         {
@@ -143,11 +269,12 @@ public class FocusFragment extends Fragment
         public void onBindViewHolder(final FocusHolder holder,
                 final int position)
         {
-            AVUser user = focusList.get(position);
+            final AVUser user = focusList.get(position);
             
             if (getItemViewType(position) == 2)
             {
-                holder.name.setText("我的圈子");
+                holder.itemName.setVisibility(View.VISIBLE);
+                holder.itemName.setText("我的圈子");
                 
                 AVRelation<AVObject> relation = AVUser.getCurrentUser()
                         .getRelation("cycle");
@@ -159,7 +286,7 @@ public class FocusFragment extends Fragment
                             public void done(final AVObject avObject,
                                     AVException e)
                             {
-                                if (null == e&&avObject!=null)
+                                if (null == e && null != avObject)
                                 {
                                     String lastUpdateCycleId = avObject.getObjectId();
                                     
@@ -196,6 +323,7 @@ public class FocusFragment extends Fragment
             }
             else
             {
+                holder.itemName.setVisibility(View.GONE);
                 AVStatusQuery inboxQuery = AVStatus.inboxQuery(AVUser.getCurrentUser(),
                         AVStatus.INBOX_TYPE.TIMELINE.toString());
                 inboxQuery.orderByAscending("createdAt");
@@ -216,6 +344,19 @@ public class FocusFragment extends Fragment
                             
                             holder.name.setText(avStatus.getSource()
                                     .getString("nikename"));
+                            
+                            avStatus.getUnreadStatusesCountInBackground(AVStatus.INBOX_TYPE.TIMELINE.toString(),
+                                    new CountCallback()
+                                    {
+                                        @Override
+                                        public void done(int i, AVException e)
+                                        {
+                                            if (null == e)
+                                            {
+                                                addBadgeAt(holder.icon, i);
+                                            }
+                                        }
+                                    });
                         }
                     }
                 });
@@ -242,7 +383,12 @@ public class FocusFragment extends Fragment
                     }
                     else
                     {
+                        Intent toUserStatus = new Intent(
+                                FusionAction.USER_STATUS_LIST_ACTION);
+                        toUserStatus.putExtra(FusionAction.FocusListExtra.USER_ID,
+                                user.getObjectId());
                         
+                        startActivity(toUserStatus);
                     }
                 }
             });
@@ -258,85 +404,6 @@ public class FocusFragment extends Fragment
         }
     }
     
-    //    class FocusListAdapter extends RecyclerView.Adapter<FocusHolder>
-    //    {
-    //        private Context context;
-    //        
-    //        private List<AVObject> list;
-    //        
-    //        public void setList(List<AVObject> list)
-    //        {
-    //            this.list = list;
-    //        }
-    //        
-    //        public FocusListAdapter(Context context)
-    //        {
-    //            this.context = context;
-    //        }
-    //        
-    //        @Override
-    //        public FocusHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    //        {
-    //            FocusHolder holder = new FocusHolder(LayoutInflater.from(context)
-    //                    .inflate(R.layout.focus_item_layout, null));
-    //            
-    //            return holder;
-    //        }
-    //        
-    //        @Override
-    //        public void onBindViewHolder(final FocusHolder holder, int position)
-    //        {
-    //            final AVObject object = list.get(position);
-    //            
-    //            holder.name.setText(object.getString("cycle_name"));
-    //            
-    //            AVQuery<AVObject> query = new AVQuery<>("Public_Status");
-    //            query.whereEqualTo("cycle_id", object.getObjectId());
-    //            query.orderByDescending("createdAt");
-    //            
-    //            query.findInBackground(new FindCallback<AVObject>()
-    //            {
-    //                @Override
-    //                public void done(List<AVObject> list, AVException e)
-    //                {
-    //                    if (null == e && null != list && list.size() > 0)
-    //                    {
-    //                        holder.msgPerview.setText(list.get(0)
-    //                                .getString("message"));
-    //                        Date date = list.get(0).getCreatedAt();
-    //                        
-    //                        SimpleDateFormat sdf = new SimpleDateFormat(
-    //                                "yyyy-MM-dd hh:mm");
-    //                        holder.updateTime.setText(sdf.format(date.getTime()));
-    //                    }
-    //                }
-    //            });
-    //            
-    //            holder.item.setOnClickListener(new View.OnClickListener()
-    //            {
-    //                @Override
-    //                public void onClick(View view)
-    //                {
-    //                    String objId = object.getObjectId();
-    //                    
-    //                    Intent toFocusList = new Intent(
-    //                            FusionAction.CYCLE_DETAIL_LIST_ACTION);
-    //                    toFocusList.putExtra(FusionAction.FocusListExtra.OBJECT_ID,
-    //                            objId);
-    //                    
-    //                    startActivity(toFocusList);
-    //                }
-    //            });
-    //            
-    //        }
-    //        
-    //        @Override
-    //        public int getItemCount()
-    //        {
-    //            return null != list ? list.size() : 0;
-    //        }
-    //    }
-    
     class FocusHolder extends RecyclerView.ViewHolder
     {
         ImageView icon;
@@ -346,6 +413,8 @@ public class FocusFragment extends Fragment
         TextView msgPerview;
         
         TextView updateTime;
+        
+        TextView itemName;
         
         LinearLayout item;
         
@@ -358,8 +427,33 @@ public class FocusFragment extends Fragment
             msgPerview = itemView.findViewById(R.id.item_msg_perview);
             updateTime = itemView.findViewById(R.id.item_time);
             item = itemView.findViewById(R.id.focus_item);
+            itemName = itemView.findViewById(R.id.item_name);
         }
         
+    }
+    
+    private Badge addBadgeAt(View view, int number)
+    {
+        // add badge
+        return new QBadgeView(getActivity()).setBadgeNumber(number)
+                .setGravityOffset(12, 2, true)
+                .bindTarget(view)
+                .setOnDragStateChangedListener(new Badge.OnDragStateChangedListener()
+                {
+                    @Override
+                    public void onDragStateChanged(int dragState, Badge badge,
+                            View targetView)
+                    {
+                        if (Badge.OnDragStateChangedListener.STATE_SUCCEED == dragState)
+                        {
+                            Toast.makeText(getActivity(),
+                                    "已读",
+                                    Toast.LENGTH_SHORT).show();
+                            
+                            badge.hide(true);
+                        }
+                    }
+                });
     }
     
 }

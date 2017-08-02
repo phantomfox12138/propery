@@ -23,6 +23,7 @@
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+            <include layout="@layout/community_title_layout" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -35,7 +36,6 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-            <include layout="@layout/community_title_layout" />
 
             <!--<android.support.v7.widget.Toolbar-->
             <!--android:id="@+id/toolbar"-->
@@ -78,11 +78,11 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <!--<com.melnykov.fab.FloatingActionButton-->
-        <!--android:id="@+id/fab_btn"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="@dimen/dp_24"-->
-        <!--app:layout_anchorGravity="bottom|right" />-->
+    <!--android:id="@+id/fab_btn"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="@dimen/dp_24"-->
+    <!--app:layout_anchorGravity="bottom|right" />-->
 
 
 </android.support.design.widget.CoordinatorLayout>

@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVStatusQuery;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.junjingit.propery.common.FusionAction;
@@ -45,6 +47,18 @@ public class CycleDetailListActivity extends AppCompatActivity
     private FloatingActionButton mActionBtn;
     
     private String mObjectId;
+    
+    private String mUserId;
+    
+    private float mSelfHeight = 0;//用以判断是否得到正确的宽高值
+    
+    private float mTitleScale;
+    
+    private float mSubScribeScale;
+    
+    private float mSubScribeScaleX;
+    
+    private float mHeadImgScale;
     
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -89,61 +103,104 @@ public class CycleDetailListActivity extends AppCompatActivity
             }
         });
         
+        //        final float screenW = getResources().getDisplayMetrics().widthPixels;
+        //        final float toolbarHeight = getResources().getDimension(R.dimen.toolbar_height);
+        //        final float initHeight = getResources().getDimension(R.dimen.subscription_head);
+        //        mAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener()
+        //        {
+        //            @Override
+        //            public void onOffsetChanged(AppBarLayout appBarLayout,
+        //                    int verticalOffset)
+        //            {
+        //                if (mSelfHeight == 0)
+        //                {
+        //                    mSelfHeight = mSubscriptionTitle.getHeight();
+        //                    float distanceTitle = mSubscriptionTitle.getTop()
+        //                            + (mSelfHeight - toolbarHeight) / 2.0f;
+        //                    float distanceSubscribe = mSubscribe.getY()
+        //                            + (mSubscribe.getHeight() - toolbarHeight) / 2.0f;
+        //                    float distanceHeadImg = mHeadImage.getY()
+        //                            + (mHeadImage.getHeight() - toolbarHeight) / 2.0f;
+        //                    float distanceSubscribeX = screenW
+        //                            / 2.0f
+        //                            - (mSubscribe.getWidth() / 2.0f + getResources().getDimension(R.dimen.normal_space));
+        //                    mTitleScale = distanceTitle / (initHeight - toolbarHeight);
+        //                    mSubScribeScale = distanceSubscribe
+        //                            / (initHeight - toolbarHeight);
+        //                    mHeadImgScale = distanceHeadImg
+        //                            / (initHeight - toolbarHeight);
+        //                    mSubScribeScaleX = distanceSubscribeX
+        //                            / (initHeight - toolbarHeight);
+        //                }
+        //                float scale = 1.0f - (-verticalOffset)
+        //                        / (initHeight - toolbarHeight);
+        //                mHeadImage.setScaleX(scale);
+        //                mHeadImage.setScaleY(scale);
+        //                mHeadImage.setTranslationY(mHeadImgScale * verticalOffset);
+        //                mSubscriptionTitle.setTranslationY(mTitleScale * verticalOffset);
+        //                mSubscribe.setTranslationY(mSubScribeScale * verticalOffset);
+        //                mSubscribe.setTranslationX(-mSubScribeScaleX * verticalOffset);
+        //            }
+        //        });
+        
     }
     
     private void initData()
     {
         mObjectId = getIntent().getStringExtra(FusionAction.FocusListExtra.OBJECT_ID);
         
-        AVQuery<AVObject> query = new AVQuery<>("cycle");
-        
-        query.getInBackground(mObjectId, new GetCallback<AVObject>()
+        if (!StringUtil.isNullOrEmpty(mObjectId))
         {
-            @Override
-            public void done(AVObject avObject, AVException e)
+            AVQuery<AVObject> query = new AVQuery<>("cycle");
+            
+            query.getInBackground(mObjectId, new GetCallback<AVObject>()
             {
-                if (null == e)
+                @Override
+                public void done(AVObject avObject, AVException e)
                 {
-                    
-                    mCollToolbar.setTitle(avObject.getString("cycle_name"));
-                    //                    mCycleName.setText(avObject.getString("cycle_name"));
+                    if (null == e)
+                    {
+                        
+                        //                    mCollToolbar.setTitle(avObject.getString("cycle_name"));
+                        //                    mCycleName.setText(avObject.getString("cycle_name"));
+                    }
                 }
-            }
-        });
+            });
+            
+            AVQuery<AVObject> statusQuery = new AVQuery<>("Public_Status");
+            statusQuery.whereEqualTo("cycle_id", mObjectId);
+            
+            statusQuery.findInBackground(new FindCallback<AVObject>()
+            {
+                @Override
+                public void done(List<AVObject> list, AVException e)
+                {
+                    if (null == e)
+                    {
+                        mCycleActiveList.clear();
+                        mCycleActiveList.addAll(list);
+                        
+                        mCycleAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
         
-        AVQuery<AVObject> statusQuery = new AVQuery<>("Public_Status");
-        statusQuery.whereEqualTo("cycle_id", mObjectId);
+        String from = getIntent().getStringExtra(FusionAction.FocusListExtra.FROM);
+        mUserId = getIntent().getStringExtra(FusionAction.FocusListExtra.USER_ID);
         
-        statusQuery.findInBackground(new FindCallback<AVObject>()
+        if (!StringUtil.isNullOrEmpty(from))
         {
-            @Override
-            public void done(List<AVObject> list, AVException e)
+            if (from.equals("cycle"))
             {
-                if (null == e)
-                {
-                    mCycleActiveList.clear();
-                    mCycleActiveList.addAll(list);
-                    
-                    mCycleAdapter.notifyDataSetChanged();
-                }
+                
             }
-        });
+        }
         
-        //        AVRelation<AVObject> relation = AVUser.getCurrentUser()
-        //                .getRelation("cycle");
-        //        AVQuery<AVObject> avQuery = relation.getQuery();
-        //        avQuery.whereEqualTo("objectId", mObjectId);
-        //        avQuery.findInBackground(new FindCallback<AVObject>()
-        //        {
-        //            @Override
-        //            public void done(List<AVObject> list, AVException e)
-        //            {
-        //                if (null == e && null != null)
-        //                {
-        //                    
-        //                }
-        //            }
-        //        });
+        if (!StringUtil.isNullOrEmpty(mUserId))
+        {
+            
+        }
         
     }
     

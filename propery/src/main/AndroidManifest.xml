@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name=".ProperyApplication"
@@ -124,6 +124,7 @@
             android:theme="@style/regAndFor">
             <intent-filter>
                 <action android:name="com.junjingit.propery.FORGET_ACTION" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -142,6 +143,14 @@
             android:theme="@style/ActionBarTheme">
             <intent-filter>
                 <action android:name="com.junjingit.propery.FOCUS_LIST" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".UserStatusActivity">
+            <intent-filter>
+                <action android:name="com.junjingit.propery.USER_STATUS" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 

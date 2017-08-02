@@ -8,12 +8,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
@@ -25,6 +27,10 @@ import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.junjingit.propery.common.FusionAction;
 import com.junjingit.propery.fragment.FocusFragment;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,9 +45,35 @@ public class FocusListActivity extends AppCompatActivity
     
     private FocusListAdapter mAdapter;
     
-    private RecyclerView mFocusList;
+    private SwipeMenuRecyclerView mFocusList;
     
     private Toolbar mToolbar;
+    
+    /**
+     * 菜单创建器，在Item要创建菜单的时候调用。
+     */
+    private SwipeMenuCreator mSwipeMenuCreator = new SwipeMenuCreator()
+    {
+        @Override
+        public void onCreateMenu(SwipeMenu swipeLeftMenu,
+                SwipeMenu swipeRightMenu, int viewType)
+        {
+            int width = getResources().getDimensionPixelSize(R.dimen.dp_72);
+            
+            // 1. MATCH_PARENT 自适应高度，保持和Item一样高;
+            // 2. 指定具体的高，比如80;
+            // 3. WRAP_CONTENT，自身高度，不推荐;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            
+            SwipeMenuItem closeItem = new SwipeMenuItem(FocusListActivity.this).setBackground(android.R.color.holo_red_light)
+//                    .setImage(R.mipmap.ic_action_close)
+                    .setWidth(width)
+                    .setText("取消关注")
+                    .setTextColor(getColor(R.color.white))
+                    .setHeight(height);
+            swipeRightMenu.addMenuItem(closeItem); // 添加菜单到右侧。
+        }
+    };
     
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -70,6 +102,7 @@ public class FocusListActivity extends AppCompatActivity
                     Log.d(TAG, "count = " + list.size());
                     
                     mFocusCycleList.clear();
+                    mFocusCycleList.add(0, new AVObject());
                     mFocusCycleList.addAll(list);
                     
                     mAdapter.notifyDataSetChanged();
@@ -82,7 +115,7 @@ public class FocusListActivity extends AppCompatActivity
     
     private void initView()
     {
-        mFocusList = (RecyclerView) findViewById(R.id.focus_list);
+        mFocusList = (SwipeMenuRecyclerView) findViewById(R.id.focus_list);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         
         setSupportActionBar(mToolbar);
@@ -97,6 +130,8 @@ public class FocusListActivity extends AppCompatActivity
         mAdapter.setList(mFocusCycleList);
         
         mFocusList.setAdapter(mAdapter);
+        
+        mFocusList.setSwipeMenuCreator(mSwipeMenuCreator);
     }
     
     class FocusListAdapter extends RecyclerView.Adapter<FocusHolder>
@@ -125,47 +160,67 @@ public class FocusListActivity extends AppCompatActivity
         }
         
         @Override
+        public int getItemViewType(int position)
+        {
+            if (position == 0)
+            {
+                return 2;
+            }
+            
+            return super.getItemViewType(position);
+        }
+        
+        @Override
         public void onBindViewHolder(final FocusHolder holder, int position)
         {
             final AVObject object = list.get(position);
-            
-            holder.name.setText(object.getString("cycle_name"));
-            
-            AVQuery<AVObject> query = new AVQuery<>("Public_Status");
-            query.whereEqualTo("cycle_id", object.getObjectId());
-            query.orderByDescending("createdAt");
-            query.getFirstInBackground(new GetCallback<AVObject>()
+            if (getItemViewType(position) == 2)
             {
-                @Override
-                public void done(AVObject avObject, AVException e)
+                holder.itemName.setVisibility(View.VISIBLE);
+                holder.itemName.setText("好友圈");
+                
+            }
+            else
+            {
+                holder.itemName.setVisibility(View.GONE);
+                holder.name.setText(object.getString("cycle_name"));
+                
+                AVQuery<AVObject> query = new AVQuery<>("Public_Status");
+                query.whereEqualTo("cycle_id", object.getObjectId());
+                query.orderByDescending("createdAt");
+                query.getFirstInBackground(new GetCallback<AVObject>()
                 {
-                    if (null == e)
+                    @Override
+                    public void done(AVObject avObject, AVException e)
                     {
-                        holder.msgPerview.setText(avObject.getString("message"));
-                        Date date = avObject.getCreatedAt();
-                        
-                        SimpleDateFormat sdf = new SimpleDateFormat(
-                                "yyyy-MM-dd hh:mm");
-                        holder.updateTime.setText(sdf.format(date.getTime()));
+                        if (null == e)
+                        {
+                            holder.msgPerview.setText(avObject.getString("message"));
+                            Date date = avObject.getCreatedAt();
+                            
+                            SimpleDateFormat sdf = new SimpleDateFormat(
+                                    "yyyy-MM-dd hh:mm");
+                            holder.updateTime.setText(sdf.format(date.getTime()));
+                        }
                     }
-                }
-            });
-            
-            holder.item.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
+                });
+                
+                holder.item.setOnClickListener(new View.OnClickListener()
                 {
-                    String objId = object.getObjectId();
-                    
-                    Intent toFocusList = new Intent(
-                            FusionAction.CYCLE_DETAIL_LIST_ACTION);
-                    toFocusList.putExtra(FusionAction.FocusListExtra.OBJECT_ID,
-                            objId);
-                    
-                    startActivity(toFocusList);
-                }
-            });
+                    @Override
+                    public void onClick(View view)
+                    {
+                        String objId = object.getObjectId();
+                        
+                        Intent toFocusList = new Intent(
+                                FusionAction.CYCLE_DETAIL_LIST_ACTION);
+                        toFocusList.putExtra(FusionAction.FocusListExtra.OBJECT_ID,
+                                objId);
+                        
+                        startActivity(toFocusList);
+                    }
+                });
+            }
             
         }
         
@@ -188,6 +243,10 @@ public class FocusListActivity extends AppCompatActivity
         
         LinearLayout item;
         
+        TextView itemName;
+        
+        RelativeLayout usernameLayout;
+        
         public FocusHolder(View itemView)
         {
             super(itemView);
@@ -197,6 +256,8 @@ public class FocusListActivity extends AppCompatActivity
             msgPerview = itemView.findViewById(R.id.item_msg_perview);
             updateTime = itemView.findViewById(R.id.item_time);
             item = itemView.findViewById(R.id.focus_item);
+            itemName = itemView.findViewById(R.id.item_name);
+            usernameLayout = itemView.findViewById(R.id.username_layout);
         }
         
     }

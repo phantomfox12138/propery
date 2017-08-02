@@ -21,6 +21,8 @@ public class FusionAction
     
     public static final String FOCUS_LIST_ACTION = "com.junjingit.propery.FOCUS_LIST";
     
+    public static final String USER_STATUS_LIST_ACTION = "com.junjingit.propery.USER_STATUS";
+    
     public interface QuoteExtra
     {
         public int REQUEST_ADD_IMAGE_CODE = 0x33ff;
@@ -38,6 +40,8 @@ public class FusionAction
     public interface FocusListExtra
     {
         public String OBJECT_ID = "object_id";
+        
+        public String USER_ID = "user_id";
         
         public String FROM = "from_where";
     }

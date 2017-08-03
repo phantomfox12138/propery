@@ -1,24 +1,19 @@
 package com.junjingit.propery.fragment;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
-import android.support.design.internal.NavigationMenuPresenter;
-import android.support.design.internal.NavigationMenuView;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
 import com.junjingit.propery.R;
 
-import java.lang.reflect.Field;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,16 +32,21 @@ public class MeFragment extends Fragment
     {
         if (mRootView == null)
         {
-            mRootView = inflater.inflate(R.layout.fragment_me_new, null);
+            mRootView = inflater.inflate(R.layout.fragment_me, null);
             initView();
         }
-        
+
         ViewGroup parent = (ViewGroup) mRootView.getParent();
         if (parent != null)
         {
             parent.removeView(mRootView);
         }
-        
+
+        final Toolbar toolbar = (Toolbar)mRootView.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        CollapsingToolbarLayout collapsingToolbar =(CollapsingToolbarLayout)mRootView.findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle("");
         return mRootView;
     }
     public void initView(){

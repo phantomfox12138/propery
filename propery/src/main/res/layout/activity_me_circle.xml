@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="@drawable/layout_border_bottom"
     android:weightSum="4">
     <TextView style="@style/ME.Left.Circle"/>
 </LinearLayout>

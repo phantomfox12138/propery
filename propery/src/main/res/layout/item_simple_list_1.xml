@@ -30,6 +30,7 @@
                     android:id="@+id/civ_avatar"
                     android:layout_width="@dimen/dp_32"
                     android:layout_height="@dimen/dp_32"
+                    android:clickable="true"
                     android:src="@mipmap/ic_avatar" />
 
                 <TextView

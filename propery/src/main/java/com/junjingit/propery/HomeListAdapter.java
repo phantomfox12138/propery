@@ -24,6 +24,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVStatus;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
@@ -36,6 +37,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by niufan on 17/5/27.
@@ -56,7 +59,7 @@ public class HomeListAdapter extends
     
     private DisplayImageOptions options;
     
-    private RecyclerView mRecycler;
+    private OnIconClickListener mListener;
     
     public HomeListAdapter(Context context)
     {
@@ -70,6 +73,11 @@ public class HomeListAdapter extends
                 .considerExifParams(true)
                 //.displayer(new RoundedBitmapDisplayer(20))
                 .build();
+    }
+    
+    public void setListener(OnIconClickListener listener)
+    {
+        this.mListener = listener;
     }
     
     public void setFrom(String from)
@@ -118,6 +126,38 @@ public class HomeListAdapter extends
     {
         
         final AVObject obj = mListData.get(position);
+        
+        View.OnClickListener listener = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if (mFrom.equals("community"))
+                {
+                    if ("Public_Status".equals(obj.getClassName()))
+                    {
+                        mListener.onIconClick(obj.getString("userId"));
+                    }
+                    else
+                    {
+                        mListener.onIconClick(((AVStatus) obj).getSource()
+                                .getObjectId());
+                    }
+                }
+            }
+        };
+        
+        if (mFrom.equals("community"))
+        {
+            if (getItemViewType(position) == 2)
+            {
+                holder.textItemIcon.setOnClickListener(listener);
+            }
+            else
+            {
+                holder.icon.setOnClickListener(listener);
+            }
+        }
         
         String images = obj.getString("image");
         String imgName = obj.getString("image_name");
@@ -397,22 +437,6 @@ public class HomeListAdapter extends
         //        return 10;
     }
     
-    //    @Override
-    //    public SwipeLayout getSwipLayout(float x, float y)
-    //    {
-    //        return (SwipeLayout) mRecycler.findChildViewUnder(x, y);
-    //    }
-    
-    //    @Override
-    //    public void onAttachedToRecyclerView(RecyclerView recyclerView)
-    //    {
-    //        super.onAttachedToRecyclerView(recyclerView);
-    //        
-    //        mRecycler = recyclerView;
-    //        recyclerView.addOnItemTouchListener(new ItemHelpter(mContext, this));
-    //    }
-    //
-    
     class HomeHolder extends RecyclerView.ViewHolder
     {
         ImageView icon;
@@ -441,6 +465,8 @@ public class HomeListAdapter extends
         
         View zanAndDesc;
         
+        CircleImageView textItemIcon;
+        
         public HomeHolder(View itemView)
         {
             super(itemView);
@@ -458,6 +484,7 @@ public class HomeListAdapter extends
             time = itemView.findViewById(R.id.tv_time);
             container = itemView.findViewById(R.id.text_container);
             zanAndDesc = itemView.findViewById(R.id.zan_desc_layout);
+            textItemIcon = itemView.findViewById(R.id.civ_avatar);
         }
     }
     

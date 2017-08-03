@@ -84,7 +84,8 @@ public class FocusFragment extends Fragment
                     //                    .setImage(R.mipmap.ic_action_close)
                     .setWidth(width)
                     .setText("取消关注")
-                    .setTextColor(getActivity().getColor(R.color.white))
+                    .setTextColor(getActivity().getResources()
+                            .getColor(R.color.white))
                     .setHeight(height);
             
             // 添加菜单到右侧。
@@ -223,6 +224,7 @@ public class FocusFragment extends Fragment
             {
             }
         });
+        
     }
     
     class FocusListAdapter extends RecyclerView.Adapter<FocusHolder>
@@ -230,6 +232,8 @@ public class FocusFragment extends Fragment
         private Context context;
         
         private List<AVUser> focusList;
+        
+        private Badge badge;
         
         public void setFocusList(List<AVUser> focusList)
         {
@@ -324,6 +328,25 @@ public class FocusFragment extends Fragment
             else
             {
                 holder.itemName.setVisibility(View.GONE);
+                
+                //                AVUser.getCurrentUser().followeeQuery()
+                
+                Log.d(TAG, "nikename = "
+                        + AVUser.getCurrentUser().getObjectId());
+                
+                AVUser.getQuery().getInBackground(user.getObjectId(),
+                        new GetCallback<AVUser>()
+                        {
+                            @Override
+                            public void done(AVUser avUser, AVException e)
+                            {
+                                if (null == e)
+                                {
+                                    holder.name.setText(avUser.getString("nikename"));
+                                }
+                            }
+                        });
+                
                 AVStatusQuery inboxQuery = AVStatus.inboxQuery(AVUser.getCurrentUser(),
                         AVStatus.INBOX_TYPE.TIMELINE.toString());
                 inboxQuery.orderByAscending("createdAt");
@@ -332,7 +355,7 @@ public class FocusFragment extends Fragment
                     @Override
                     public void done(AVStatus avStatus, AVException e)
                     {
-                        if (null == e)
+                        if (null == e && null != avStatus)
                         {
                             String msg = avStatus.getMessage();
                             holder.msgPerview.setText(msg);
@@ -342,24 +365,22 @@ public class FocusFragment extends Fragment
                                     "yyyy-MM-dd hh:mm");
                             holder.updateTime.setText(sdf.format(date.getTime()));
                             
-                            holder.name.setText(avStatus.getSource()
-                                    .getString("nikename"));
-                            
-                            avStatus.getUnreadStatusesCountInBackground(AVStatus.INBOX_TYPE.TIMELINE.toString(),
-                                    new CountCallback()
-                                    {
-                                        @Override
-                                        public void done(int i, AVException e)
-                                        {
-                                            if (null == e)
-                                            {
-                                                addBadgeAt(holder.icon, i);
-                                            }
-                                        }
-                                    });
                         }
                     }
                 });
+                
+                AVStatus.getUnreadStatusesCountInBackground(AVStatus.INBOX_PRIVATE.toString(),
+                        new CountCallback()
+                        {
+                            @Override
+                            public void done(int i, AVException e)
+                            {
+                                if (null == e)
+                                {
+                                    badge = addBadgeAt(holder.icon, i);
+                                }
+                            }
+                        });
                 
             }
             
@@ -387,7 +408,7 @@ public class FocusFragment extends Fragment
                                 FusionAction.USER_STATUS_LIST_ACTION);
                         toUserStatus.putExtra(FusionAction.FocusListExtra.USER_ID,
                                 user.getObjectId());
-                        
+                        badge.hide(true);
                         startActivity(toUserStatus);
                     }
                 }
@@ -446,9 +467,9 @@ public class FocusFragment extends Fragment
                     {
                         if (Badge.OnDragStateChangedListener.STATE_SUCCEED == dragState)
                         {
-                            Toast.makeText(getActivity(),
-                                    "已读",
-                                    Toast.LENGTH_SHORT).show();
+                            //                            Toast.makeText(getActivity(),
+                            //                                    "已读",
+                            //                                    Toast.LENGTH_SHORT).show();
                             
                             badge.hide(true);
                         }

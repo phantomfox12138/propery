@@ -1,6 +1,10 @@
 package com.junjingit.propery;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import q.rorbin.badgeview.Badge;
@@ -12,22 +16,30 @@ import android.content.res.Resources;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVStatus;
+import com.avos.avoscloud.AVStatusQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -37,14 +49,18 @@ import com.junjingit.propery.fragment.CommunityFragment;
 import com.junjingit.propery.fragment.HomeFragment;
 import com.junjingit.propery.fragment.MeFragment;
 import com.melnykov.fab.FloatingActionButton;
+import com.sothree.slidinguppanel.ScrollableViewHelper;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tiancaicc.springfloatingactionmenu.MenuItemView;
 import com.tiancaicc.springfloatingactionmenu.OnMenuActionListener;
 import com.tiancaicc.springfloatingactionmenu.SpringFloatingActionMenu;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
 public class HomeActivity extends AppCompatActivity implements
-        View.OnClickListener
+        View.OnClickListener, OnIconClickListener
 {
+    
+    private static final String TAG = "HomeActivity";
     
     private BottomNavigationViewEx mBottomNavi;
     
@@ -52,11 +68,21 @@ public class HomeActivity extends AppCompatActivity implements
     
     private SlidingUpPanelLayout mLayout;
     
+    private SwipeMenuRecyclerView mUserStatusList;
+    
+    private AppBarLayout mAppbarLayout;
+    
+    private HomeListAdapter mUserStatusAdapter;
+    
+    private List<AVObject> mUserStatusDataList = new ArrayList<>();
+    
     private List<Fragment> mFragmentList;
     
     private AnimationDrawable frameAnim;
     
     private HomePagerAdapter mHomePagerAdapter;
+    
+    private Badge mBadge;
     
     private static int[] frameAnimRes = new int[] { R.mipmap.compose_anim_1,
             R.mipmap.compose_anim_2, R.mipmap.compose_anim_3,
@@ -76,13 +102,9 @@ public class HomeActivity extends AppCompatActivity implements
     
     private AnimationDrawable frameReverseAnim;
     
-    public HomeActivity(SlidingUpPanelLayout mLayout)
+    public void setUnreadCount(int count)
     {
-        this.mLayout = mLayout;
-    }
-    
-    public HomeActivity()
-    {
+        mBadge.setBadgeNumber(count);
     }
     
     @Override
@@ -130,6 +152,19 @@ public class HomeActivity extends AppCompatActivity implements
                 }
             }
         });
+        
+        AVStatus.getUnreadStatusesCountInBackground(AVStatus.INBOX_TYPE.PRIVATE.toString(),
+                new CountCallback()
+                {
+                    @Override
+                    public void done(int i, AVException e)
+                    {
+                        if (null == e)
+                        {
+                            mBadge = addBadgeAt(1, 0);
+                        }
+                    }
+                });
     }
     
     @Override
@@ -148,13 +183,33 @@ public class HomeActivity extends AppCompatActivity implements
         mBottomNavi = (BottomNavigationViewEx) findViewById(R.id.bnv_menu);
         mHomePager = (ViewPager) findViewById(R.id.home_pager);
         mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        mUserStatusList = (SwipeMenuRecyclerView) findViewById(R.id.user_status_list);
+        mAppbarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        
+        mLayout.setPanelHeight(0);
+        mLayout.setFadeOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                mLayout.setPanelHeight(0);
+                mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
+        
+        mUserStatusList.setLayoutManager(new LinearLayoutManager(this));
+        mUserStatusAdapter = new HomeListAdapter(this);
+        mUserStatusAdapter.setFrom("community");
+        
+        mUserStatusAdapter.setListData(mUserStatusDataList);
+        
+        mUserStatusList.setAdapter(mUserStatusAdapter);
+        
         mBottomNavi.inflateMenu(R.menu.menu_bottom_navigation);
         
         final FloatingActionButton fab = new FloatingActionButton(this);
         
-        mLayout.setAnchorPoint(0.7f);
-        mLayout.setPanelHeight(0);
-        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         
         mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         mHomePagerAdapter.setList(mFragmentList);
@@ -166,7 +221,7 @@ public class HomeActivity extends AppCompatActivity implements
         mBottomNavi.enableShiftingMode(false);
         mBottomNavi.enableItemShiftingMode(false);
         
-        addBadgeAt(1, 10);
+        //        addBadgeAt(1, 10);
         
         //        mBottomNavi.setupWithViewPager(mHomePager, true);
         
@@ -343,12 +398,33 @@ public class HomeActivity extends AppCompatActivity implements
                 {
                     springFloatingActionMenu.setVisibility(View.GONE);
                     fab.setVisibility(View.GONE);
+                    
+                }
+                
+                if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED)
+                {
+                    mLayout.setPanelHeight(0);
+                    springFloatingActionMenu.setVisibility(View.VISIBLE);
+                    fab.setVisibility(View.VISIBLE);
+                    
+                    //                    mLayout.setAnchorPoint(1.0f);
                 }
                 
                 if (newState == SlidingUpPanelLayout.PanelState.HIDDEN)
                 {
                     springFloatingActionMenu.setVisibility(View.VISIBLE);
                     fab.setVisibility(View.VISIBLE);
+                }
+                
+                if (newState == SlidingUpPanelLayout.PanelState.EXPANDED)
+                {
+                    Log.d(TAG, "PanelState.EXPANDED");
+                }
+                
+                if (newState == SlidingUpPanelLayout.PanelState.DRAGGING)
+                {
+                    mAppbarLayout.setExpanded(true);
+                    Log.d(TAG, "PanelState.DRAGGING");
                 }
                 
             }
@@ -407,10 +483,129 @@ public class HomeActivity extends AppCompatActivity implements
         {
             springFloatingActionMenu.hideMenu();
         }
+        else if (mLayout != null
+                && (mLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED))
+        {
+            mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        }
         else
         {
             super.onBackPressed();
         }
+    }
+    
+    @Override
+    public void onIconClick(final String userId)
+    {
+        
+        mLayout.setAnchorPoint(0.7f);
+        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+        
+        AVQuery<AVUser> query = AVUser.followeeQuery(userId, AVUser.class);
+        query.include("followee");
+        
+        query.findInBackground(new FindCallback<AVUser>()
+        {
+            @Override
+            public void done(List<AVUser> list, AVException e)
+            {
+                if (null == e && null != list)
+                {
+                    final List<AVObject> result = new ArrayList<>();
+                    
+                    final AVQuery<AVObject> pubStatusQuery = new AVQuery<AVObject>(
+                            "Public_Status");
+                    
+                    pubStatusQuery.whereEqualTo("userId", userId);
+                    
+                    pubStatusQuery.orderByAscending("createdAt");
+                    pubStatusQuery.findInBackground(new FindCallback<AVObject>()
+                    {
+                        @Override
+                        public void done(List<AVObject> list, AVException e)
+                        {
+                            
+                            if (null == e)
+                            {
+                                result.clear();
+                                result.addAll(list);
+                            }
+                            
+                        }
+                    });
+                    
+                    if (list.isEmpty())
+                    {
+                        mUserStatusDataList.clear();
+                        mUserStatusDataList.addAll(result);
+                        
+                        mUserStatusAdapter.notifyDataSetChanged();
+                        
+                        return;
+                    }
+                    
+                    AVQuery<AVUser> userQuery = new AVQuery<AVUser>("_User");
+                    userQuery.getInBackground(userId, new GetCallback<AVUser>()
+                    {
+                        @Override
+                        public void done(AVUser avUser, AVException e)
+                        {
+                            if (null == e)
+                            {
+                                try
+                                {
+                                    AVQuery userStatusQuery = AVStatus.statusQuery(avUser);
+                                    userStatusQuery.orderByDescending("createdAt");
+                                    
+                                    userStatusQuery.findInBackground(new FindCallback<AVObject>()
+                                    {
+                                        @Override
+                                        public void done(List<AVObject> list,
+                                                AVException e)
+                                        {
+                                            
+                                            if (null == e)
+                                            {
+                                                result.addAll(list);
+                                                
+                                                Log.d(TAG, "list.size = "
+                                                        + list);
+                                                
+                                                Collections.sort(result,
+                                                        new Comparator<AVObject>()
+                                                        {
+                                                            
+                                                            @Override
+                                                            public int compare(
+                                                                    AVObject avObject,
+                                                                    AVObject t1)
+                                                            {
+                                                                
+                                                                return avObject.getCreatedAt()
+                                                                        .compareTo(t1.getCreatedAt());
+                                                            }
+                                                        });
+                                                
+                                                mUserStatusDataList.clear();
+                                                mUserStatusDataList.addAll(result);
+                                                
+                                                mUserStatusAdapter.notifyDataSetChanged();
+                                                
+                                            }
+                                        }
+                                    });
+                                }
+                                catch (AVException e1)
+                                {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                    
+                }
+            }
+        });
     }
     
     class HomePagerAdapter extends FragmentPagerAdapter
@@ -511,13 +706,14 @@ public class HomeActivity extends AppCompatActivity implements
                     {
                         if (Badge.OnDragStateChangedListener.STATE_SUCCEED == dragState)
                         {
-                            Toast.makeText(HomeActivity.this,
-                                    "已读",
-                                    Toast.LENGTH_SHORT).show();
+                            //                            Toast.makeText(HomeActivity.this,
+                            //                                    "已读",
+                            //                                    Toast.LENGTH_SHORT).show();
                             
                             badge.hide(true);
                         }
                     }
                 });
     }
+    
 }

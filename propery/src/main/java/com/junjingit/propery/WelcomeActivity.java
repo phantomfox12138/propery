@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
@@ -28,67 +30,127 @@ public class WelcomeActivity extends AppCompatActivity
         
         initView();
         
-        //        AVUser.getCurrentUser().followInBackground("5925137fc1005c0053fd5a77",
+        //        AVUser.getCurrentUser().followInBackground("59798d6f8d6d810058a97981",
         //                new FollowCallback()
         //                {
         //                    @Override
-        //                    public void done(AVObject object, AVException e)
+        //                    public void done(AVObject avObject, AVException e)
         //                    {
-        //                        if (e == null)
+        //                        if (null == e)
         //                        {
-        //                            //                            Log.i(TAG, "follow succeeded.");
+        //                            Toast.makeText(WelcomeActivity.this,
+        //                                    "关注成功",
+        //                                    Toast.LENGTH_LONG).show();
         //                        }
         //                        else if (e.getCode() == AVException.DUPLICATE_VALUE)
         //                        {
-        //                            //                            Log.w(TAG, "Already followed.");
+        //                            Toast.makeText(WelcomeActivity.this,
+        //                                    "不可重复关注",
+        //                                    Toast.LENGTH_LONG).show();
         //                        }
         //                    }
+        //                    
         //                });
         
     }
     
     private void initView()
     {
-        new Thread()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && ContextCompat.checkSelfPermission(WelcomeActivity.this,
+                        Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
         {
-            
-            @Override
-            public void run()
+            ActivityCompat.requestPermissions(WelcomeActivity.this,
+                    new String[] { Manifest.permission.READ_PHONE_STATE },
+                    0x123);
+        }
+        else
+        {
+            new Thread()
             {
-                super.run();
                 
-                try
+                @Override
+                public void run()
                 {
-                    sleep(3000);
+                    super.run();
                     
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                            && ContextCompat.checkSelfPermission(WelcomeActivity.this,
-                                    Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
+                    try
                     {
-                        ActivityCompat.requestPermissions(WelcomeActivity.this,
-                                new String[] { Manifest.permission.READ_PHONE_STATE },
-                                0);
-                    }
-                    
-                    if (null == AVUser.getCurrentUser())
-                    {
+                        sleep(3000);
                         
-                        startActivity(new Intent(FusionAction.LOGIN_ACTION));
+                        if (null == AVUser.getCurrentUser())
+                        {
+                            
+                            startActivity(new Intent(FusionAction.LOGIN_ACTION));
+                        }
+                        else
+                        {
+                            startActivity(new Intent(
+                                    FusionAction.HOME_PAGE_ACTION));
+                        }
+                        
+                        finish();
+                        
                     }
-                    else
+                    catch (InterruptedException e)
                     {
-                        startActivity(new Intent(FusionAction.HOME_PAGE_ACTION));
+                        e.printStackTrace();
                     }
-                    
-                    finish();
-                    
                 }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+            }.start();
+        }
+        
     }
     
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+            @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        
+        if (requestCode == 0x123)
+        {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                if (!shouldShowRequestPermissionRationale(Manifest.permission.READ_PHONE_STATE))
+                {
+                    //                    AskForPermission();
+                    
+                    new Thread()
+                    {
+                        
+                        @Override
+                        public void run()
+                        {
+                            super.run();
+                            
+                            try
+                            {
+                                sleep(3000);
+                                
+                                if (null == AVUser.getCurrentUser())
+                                {
+                                    
+                                    startActivity(new Intent(
+                                            FusionAction.LOGIN_ACTION));
+                                }
+                                else
+                                {
+                                    startActivity(new Intent(
+                                            FusionAction.HOME_PAGE_ACTION));
+                                }
+                                
+                                finish();
+                                
+                            }
+                            catch (InterruptedException e)
+                            {
+                                e.printStackTrace();
+                            }
+                        }
+                    }.start();
+                }
+            }
+        }
+    }
 }

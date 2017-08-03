@@ -14,6 +14,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.FindCallback;
+import com.junjingit.propery.HomeActivity;
 import com.junjingit.propery.HomeListAdapter;
 import com.junjingit.propery.R;
 
@@ -78,6 +79,8 @@ public class ActiveFragment extends Fragment
         
         mActiveAdapter = new HomeListAdapter(getActivity());
         mActiveAdapter.setFrom("community");
+        mActiveAdapter.setListener((HomeActivity) getActivity());
+        
         //        mActiveAdapter.setListData(initData());
         
         final LinearLayoutManager llm = new LinearLayoutManager(getActivity());

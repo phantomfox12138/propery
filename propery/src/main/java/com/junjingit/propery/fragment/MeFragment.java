@@ -44,7 +44,8 @@ public class MeFragment extends Fragment
 
         final Toolbar toolbar = (Toolbar)mRootView.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         CollapsingToolbarLayout collapsingToolbar =(CollapsingToolbarLayout)mRootView.findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle("");
         return mRootView;

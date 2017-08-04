@@ -1,6 +1,7 @@
 package com.junjingit.propery.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.junjingit.propery.AppBarStateChangeListener;
+import com.junjingit.propery.HomeActivity;
 import com.junjingit.propery.HomeListAdapter;
 import com.junjingit.propery.R;
 
@@ -26,6 +29,10 @@ public class HomeFragment extends Fragment
     private SwipeRefreshLayout mRefresh;
     
     private HomeListAdapter mHomeAdapter;
+    
+    private AppBarLayout mAppBarLayout;
+    
+    private Toolbar mToolbar;
     
     public HomeListAdapter getHomeAdapter()
     {
@@ -62,6 +69,22 @@ public class HomeFragment extends Fragment
     {
         mHomeList = mRootView.findViewById(R.id.rv_content);
         mRefresh = mRootView.findViewById(R.id.srl_refresh);
+        mAppBarLayout = mRootView.findViewById(R.id.appbar);
+        mToolbar = mRootView.findViewById(R.id.tb_toolbar);
+        
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener()
+        {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout,
+                    int verticalOffset)
+            {
+                if (verticalOffset < 0
+                        && Math.abs(verticalOffset) < appBarLayout.getTotalScrollRange())
+                {
+                    
+                }
+            }
+        });
         
         mHomeAdapter = new HomeListAdapter(getActivity());
         mHomeAdapter.setFrom("home");
@@ -72,6 +95,26 @@ public class HomeFragment extends Fragment
         mHomeList.setAdapter(mHomeAdapter);
         
         mRefresh.setRefreshing(true);
+        
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener()
+        {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state)
+            {
+                if (state == State.EXPANDED)
+                {
+                    //展开状态
+                }
+                else if (state == State.COLLAPSED)
+                {
+                    //折叠状态
+                }
+                else
+                {
+                    //中间状态
+                }
+            }
+        });
         
     }
     

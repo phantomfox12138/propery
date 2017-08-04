@@ -13,7 +13,9 @@ import q.rorbin.badgeview.QBadgeView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -108,13 +110,28 @@ public class HomeActivity extends AppCompatActivity implements
     }
     
     @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        super.onWindowFocusChanged(hasFocus);
+        
+        if (hasFocus && Build.VERSION.SDK_INT >= 19)
+        {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+    
+    @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         
-        Utility.setTranslucent(this);
+        //        Utility.setTranslucent(this);
         setContentView(R.layout.activity_home);
-        //        
+        //
         mFragmentList = new ArrayList<>();
         
         mFragmentList.add(new HomeFragment());
@@ -498,8 +515,8 @@ public class HomeActivity extends AppCompatActivity implements
     public void onIconClick(final String userId)
     {
         
-        mLayout.setAnchorPoint(0.7f);
-        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+        //        mLayout.setAnchorPoint(0.7f);
+        mLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         
         AVQuery<AVUser> query = AVUser.followeeQuery(userId, AVUser.class);
         query.include("followee");

@@ -140,7 +140,42 @@ public class CommunityFragment extends Fragment implements View.OnClickListener
         //        mTabLayout.setTabGravity(Gravity.CENTER);
         //        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
         
-        mCommunityAdapter.notifyDataSetChanged();
+        mTabLayout.removeAllTabs();
+        
+        mTabLayout.addTab(mTabLayout.newTab().setCustomView(initTabName("动态")));
+        mTabLayout.addTab(mTabLayout.newTab().setCustomView(initTabName("关注")));
+        //        mTabLayout.getTabAt(0).setText("动态");
+        //        mTabLayout.getTabAt(1).setText("关注");
+        
+        Log.d(TAG,
+                "tab textview = "
+                        + mTabLayout.getTabAt(0)
+                                .getCustomView()
+                                .findViewById(R.id.tab_name));
+        
+        mTabLayout.setTabTextColors(Color.WHITE, Color.WHITE);
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
+        {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab)
+            {
+                mCommunityVp.setCurrentItem(tab.getPosition());
+            }
+            
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab)
+            {
+                
+            }
+            
+            @Override
+            public void onTabReselected(TabLayout.Tab tab)
+            {
+                
+            }
+        });
+        
+//        mCommunityVp.setCurrentItem(position);
         
     }
     
@@ -192,44 +227,6 @@ public class CommunityFragment extends Fragment implements View.OnClickListener
         public void notifyDataSetChanged()
         {
             super.notifyDataSetChanged();
-            mTabLayout.removeAllTabs();
-            
-            mTabLayout.addTab(mTabLayout.newTab()
-                    .setCustomView(initTabName("动态")));
-            mTabLayout.addTab(mTabLayout.newTab()
-                    .setCustomView(initTabName("关注")));
-            //        mTabLayout.getTabAt(0).setText("动态");
-            //        mTabLayout.getTabAt(1).setText("关注");
-            
-            Log.d(TAG,
-                    "tab textview = "
-                            + mTabLayout.getTabAt(0)
-                                    .getCustomView()
-                                    .findViewById(R.id.tab_name));
-            
-            mTabLayout.setTabTextColors(Color.WHITE, Color.WHITE);
-            mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
-            {
-                @Override
-                public void onTabSelected(TabLayout.Tab tab)
-                {
-                    mCommunityVp.setCurrentItem(tab.getPosition());
-                }
-                
-                @Override
-                public void onTabUnselected(TabLayout.Tab tab)
-                {
-                    
-                }
-                
-                @Override
-                public void onTabReselected(TabLayout.Tab tab)
-                {
-                    
-                }
-            });
-            
-            mCommunityVp.setCurrentItem(position);
         }
     }
     

@@ -132,6 +132,18 @@ public class QuoteEditorActivity extends AppCompatActivity implements
         mTagList2 = (TagCloudLinkView) findViewById(R.id.tag_list2);
         
         mTagList.setOnTagSelectListener(this);
+        mTagList.setOnTagDeleteListener(new TagCloudLinkView.OnTagDeleteListener()
+        {
+            @Override
+            public void onTagDeleted(TagCloudLinkView view, Tag tag,
+                    int position)
+            {
+                if (mTagList.getTags().size() > 0)
+                {
+                    mTagList.getTags().remove(position);
+                }
+            }
+        });
         
         mTagList2.setOnTagSelectListener(this);
         

@@ -19,6 +19,7 @@
     </style>
 
     <style name="ActionBarTheme" parent="Base.AppTheme">
+        <item name="colorPrimary">@color/blue</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="textAllCaps">true</item>

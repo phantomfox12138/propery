@@ -120,7 +120,20 @@ public class QuoteDetailActivity extends AppCompatActivity
                     
                     String image = avObject.getString("image");
                     String imageName = avObject.getString("image_name");
-                    mUserName.setText(avObject.getString("userId"));
+                    
+                    AVQuery<AVUser> query = new AVQuery<AVUser>("_User");
+                    query.getInBackground(avObject.getString("userId"),
+                            new GetCallback<AVUser>()
+                            {
+                                @Override
+                                public void done(AVUser avUser, AVException e)
+                                {
+                                    if (null == e)
+                                    {
+                                        mUserName.setText(avUser.getString("nickname"));
+                                    }
+                                }
+                            });
                     
                     if (!StringUtil.isNullOrEmpty(image)
                             && !StringUtil.isNullOrEmpty(imageName))

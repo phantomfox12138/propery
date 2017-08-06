@@ -6,17 +6,23 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +46,8 @@ public class CommunityFragment extends Fragment implements View.OnClickListener
     private ViewPager mCommunityVp;
     
     private List<Fragment> mFragments;
+    
+    private AppBarLayout mTitleBarLayout;
     
     private CommunityAdapter mCommunityAdapter;
     
@@ -108,11 +116,108 @@ public class CommunityFragment extends Fragment implements View.OnClickListener
         
     }
     
+    private void setAppBarDragCallback(
+            AppBarLayout.Behavior.DragCallback dragCallback)
+    {
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mTitleBarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+        behavior.setDragCallback(dragCallback);
+    }
+    
+    private void forbidAppBarScroll(boolean forbid)
+    {
+        //        if (forbid == forbidAppBarScroll)
+        //        {
+        //            return;
+        //        }
+        if (forbid)
+        {
+            //            forbidAppBarScroll = true;
+            if (ViewCompat.isLaidOut(mTitleBarLayout))
+            {
+                setAppBarDragCallback(new AppBarLayout.Behavior.DragCallback()
+                {
+                    
+                    @Override
+                    public boolean canDrag(@NonNull AppBarLayout appBarLayout)
+                    {
+                        return false;
+                    }
+                });
+            }
+            else
+            {
+                mTitleBarLayout.getViewTreeObserver()
+                        .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
+                        {
+                            @Override
+                            public void onGlobalLayout()
+                            {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                                {
+                                    mTitleBarLayout.getViewTreeObserver()
+                                            .removeOnGlobalLayoutListener(this);
+                                }
+                                else
+                                {
+                                    mTitleBarLayout.getViewTreeObserver()
+                                            .removeGlobalOnLayoutListener(this);
+                                }
+                                setAppBarDragCallback(new AppBarLayout.Behavior.DragCallback()
+                                {
+                                    
+                                    @Override
+                                    public boolean canDrag(
+                                            @NonNull AppBarLayout appBarLayout)
+                                    {
+                                        return false;
+                                    }
+                                });
+                            }
+                        });
+            }
+        }
+        else
+        {
+            //            forbidAppBarScroll = false;
+            if (ViewCompat.isLaidOut(mTitleBarLayout))
+            {
+                setAppBarDragCallback(null);
+            }
+            else
+            {
+                mTitleBarLayout.getViewTreeObserver()
+                        .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
+                        {
+                            @Override
+                            public void onGlobalLayout()
+                            {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                                {
+                                    mTitleBarLayout.getViewTreeObserver()
+                                            .removeOnGlobalLayoutListener(this);
+                                }
+                                else
+                                {
+                                    mTitleBarLayout.getViewTreeObserver()
+                                            .removeGlobalOnLayoutListener(this);
+                                }
+                                setAppBarDragCallback(null);
+                            }
+                        });
+            }
+        }
+    }
+    
     private void initView()
     {
         
         mTabLayout = mRootView.findViewById(R.id.tab_layout);
         mCommunityVp = mRootView.findViewById(R.id.community_vp);
+        mTitleBarLayout = mRootView.findViewById(R.id.appbar_layout);
+        
+        forbidAppBarScroll(true);
+        
         mCommunityVp.setOffscreenPageLimit(2);
         //        mCommunityVp.setNoScroll(true);
         
@@ -175,7 +280,7 @@ public class CommunityFragment extends Fragment implements View.OnClickListener
             }
         });
         
-//        mCommunityVp.setCurrentItem(position);
+        //        mCommunityVp.setCurrentItem(position);
         
     }
     

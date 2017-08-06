@@ -71,6 +71,7 @@ public class UserStatusActivity extends AppCompatActivity
         
         AVQuery<AVObject> statusQuery = new AVQuery<>("Public_Status");
         statusQuery.whereEqualTo("userId", mObjectId);
+        statusQuery.orderByDescending("createdAt");
         
         statusQuery.findInBackground(new FindCallback<AVObject>()
         {

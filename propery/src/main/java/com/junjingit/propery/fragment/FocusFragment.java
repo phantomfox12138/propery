@@ -202,6 +202,7 @@ public class FocusFragment extends Fragment
             {
                 if (actionState == OnItemStateChangedListener.ACTION_STATE_SWIPE)
                 {
+                    
                     if (viewHolder.getPosition() == 0)
                     {
                         mAdapter.notifyDataSetChanged();
@@ -369,7 +370,7 @@ public class FocusFragment extends Fragment
                     }
                 });
                 
-                AVStatus.getUnreadStatusesCountInBackground(AVStatus.INBOX_PRIVATE.toString(),
+                AVStatus.getUnreadStatusesCountInBackground(AVStatus.INBOX_TYPE.TIMELINE.toString(),
                         new CountCallback()
                         {
                             @Override

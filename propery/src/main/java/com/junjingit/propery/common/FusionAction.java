@@ -23,6 +23,8 @@ public class FusionAction
     
     public static final String USER_STATUS_LIST_ACTION = "com.junjingit.propery.USER_STATUS";
     
+    public static final String FRIEND_CYCLE_ACTION = "com.junjingit.propery.friend_cycle";
+    
     public interface QuoteExtra
     {
         public int REQUEST_ADD_IMAGE_CODE = 0x33ff;

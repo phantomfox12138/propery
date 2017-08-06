@@ -6,7 +6,12 @@ import static com.junjingit.propery.common.FusionAction.QuoteExtra.REQUEST_ADD_I
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import ru.p3tr0vich.widget.ExpansionPanel;
+import ru.p3tr0vich.widget.ExpansionPanelListener;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -24,9 +29,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.ListViewCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -37,19 +46,36 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVSaveOption;
+import com.avos.avoscloud.AVStatus;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.junjingit.propery.common.FusionAction;
 import com.ns.developer.tagview.entity.Tag;
 import com.ns.developer.tagview.widget.TagCloudLinkView;
 import com.tiancaicc.springfloatingactionmenu.Utils;
+import com.xander.panel.XanderPanel;
 
 public class QuoteEditorActivity extends AppCompatActivity implements
         TagCloudLinkView.OnTagSelectListener
 {
     
     private static final String TAG = "QuoteEditorActivity";
+    
+    private static final int FILTER_TYPE_PUBLIC = 0;
+    
+    private static final int FILTER_TYPE_FRIEND = 1;
+    
+    private static final int FILTER_TYPE_WHO_CAN_SEE = 2;
+    
+    private static final int FILTER_TYPE_WHO_CANNOT_SEE = 3;
+    
+    private static final int FILTER_TYPE_CYCLE = 4;
+    
+    private int mFilterState = 0;
     
     private RecyclerView mCorpImage;
     
@@ -63,6 +89,8 @@ public class QuoteEditorActivity extends AppCompatActivity implements
     
     private ImagePerviewAdapter mImageAdapter;
     
+    private ExpansionPanel mCycleSelectPanel;
+    
     private List<Bitmap> mImageList;
     
     private String provider;//位置提供器
@@ -73,11 +101,37 @@ public class QuoteEditorActivity extends AppCompatActivity implements
     
     private EditText mContentEdit;
     
+    private View mWhoBtn;
+    
+    private RecyclerView mBottomFansList;
+    
+    private TextView mBottomBack;
+    
+    private TextView mBottomConfirm;
+    
+    private TextView mBottomCount;
+    
+    private FansListAdapter mFansListAdapter;
+    
+    private TextView mFilterType;
+    
+    private View mCycleLayout;
+    
     private AVObject mRequest;
+    
+    private AVStatus mStatusRequest;
     
     private List<String> mImagePathList = new ArrayList<>();
     
     private List<AVObject> mCycleList = new ArrayList<>();
+    
+    private List<AVUser> mFansList = new ArrayList<>();
+    
+    private XanderPanel mXanderPanel;
+    
+    private boolean mHasFans;
+    
+    private List<AVUser> mSelectedFansList = new ArrayList<>();
     
     private Handler mHandler = new Handler()
     {
@@ -109,6 +163,44 @@ public class QuoteEditorActivity extends AppCompatActivity implements
                     mRequest.put("image", imageUrl);
                     
                     mRequest.saveInBackground();
+                    
+                    break;
+                
+                case 0x1124:
+                    
+                    List<Image> imgList2 = (List<Image>) msg.obj;
+                    String imageName2 = "";
+                    String imageUrl2 = "";
+                    
+                    Map<String, Object> imgMap = new HashMap<>();
+                    
+                    for (int i = 0; i < imgList2.size(); i++)
+                    {
+                        Image img = imgList2.get(i);
+                        
+                        imageName2 += img.getImageName() + ",";
+                        imageUrl2 += img.getImagePath() + ",";
+                        
+                        if (i == 0)
+                        {
+                            mStatusRequest.setImageUrl(imageUrl2);
+                        }
+                        
+                        imgMap.put(imageName2, imageUrl2);
+                    }
+                    
+                    mStatusRequest.setData(imgMap);
+                    AVSaveOption option = new AVSaveOption();
+                    option.setFetchWhenSave(true);
+                    
+                    mStatusRequest.saveInBackground(option, new SaveCallback()
+                    {
+                        @Override
+                        public void done(AVException e)
+                        {
+                            
+                        }
+                    });
                     
                     break;
             }
@@ -146,30 +238,6 @@ public class QuoteEditorActivity extends AppCompatActivity implements
         });
         
         mTagList2.setOnTagSelectListener(this);
-        
-        AVUser.getCurrentUser()
-                .getRelation("cycle")
-                .getQuery()
-                .findInBackground(new FindCallback<AVObject>()
-                {
-                    @Override
-                    public void done(List<AVObject> list, AVException e)
-                    {
-                        if (null == e && null != list && list.size() > 0)
-                        {
-                            mCycleList.clear();
-                            mCycleList.addAll(list);
-                            
-                            for (int i = 0; i < list.size(); i++)
-                            {
-                                mTagList2.add(new Tag(i, list.get(i)
-                                        .getString("cycle_name")));
-                                
-                                mTagList2.drawTags();
-                            }
-                        }
-                    }
-                });
         
     }
     
@@ -220,7 +288,7 @@ public class QuoteEditorActivity extends AppCompatActivity implements
     
     /**
      * 判断是否有可用的内容提供器
-     * 
+     *
      * @return 不存在返回null
      */
     private String judgeProvider(LocationManager locationManager)
@@ -247,6 +315,158 @@ public class QuoteEditorActivity extends AppCompatActivity implements
         mLocationText = (TextView) findViewById(R.id.location_text);
         mSendBtn = (TextView) findViewById(R.id.send_btn);
         mContentEdit = (EditText) findViewById(R.id.content_edit);
+        mCycleLayout = findViewById(R.id.cycle_layout);
+        mCycleSelectPanel = (ExpansionPanel) findViewById(R.id.expansion_panel_dialog);
+        mWhoBtn = findViewById(R.id.who_btn);
+        
+        mCycleLayout.setVisibility(View.GONE);
+        
+        final XanderPanel.Builder xanderPanelBuilder = new XanderPanel.Builder(
+                this);
+        xanderPanelBuilder.setCanceledOnTouchOutside(true);
+        xanderPanelBuilder.setGravity(Gravity.BOTTOM);
+        final View mCustomViewBottom = LayoutInflater.from(this)
+                .inflate(R.layout.bottom_fans_list_layout, null);
+        
+        mFansListAdapter = new FansListAdapter();
+        mFansListAdapter.setList(mFansList);
+        
+        mBottomFansList = mCustomViewBottom.findViewById(R.id.fans_list);
+        mBottomBack = mCustomViewBottom.findViewById(R.id.bottom_fans_back);
+        mBottomCount = mCustomViewBottom.findViewById(R.id.bottom_fans_count);
+        mBottomConfirm = mCustomViewBottom.findViewById(R.id.bottom_fans_confirm);
+        mBottomCount.setText(mSelectedFansList.size() + "人");
+        
+        mBottomFansList.setLayoutManager(new LinearLayoutManager(this));
+        mBottomFansList.setAdapter(mFansListAdapter);
+        
+        mBottomBack.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                mXanderPanel.dismiss();
+            }
+        });
+        
+        mBottomConfirm.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+            }
+        });
+        
+        mCycleSelectPanel.hideStateIcon(true);
+        mFilterType = (TextView) findViewById(R.id.who_state);
+        
+        registerForContextMenu(mWhoBtn);
+        
+        try
+        {
+            AVUser.getCurrentUser()
+                    .followerQuery(AVUser.class)
+                    .findInBackground(new FindCallback<AVUser>()
+                    {
+                        @Override
+                        public void done(List<AVUser> list, AVException e)
+                        {
+                            if (null == e)
+                            {
+                                mFansList.clear();
+                                mFansList.addAll(list);
+                                
+                                mFansListAdapter.notifyDataSetChanged();
+                                
+                                xanderPanelBuilder.setView(mCustomViewBottom);
+                                mXanderPanel = xanderPanelBuilder.create();
+                                mHasFans = list.size() > 0;
+                                
+                            }
+                        }
+                    });
+        }
+        catch (AVException e)
+        {
+            e.printStackTrace();
+        }
+        
+        //        mXanderPanel.setCanceledOnTouchOutside(false);
+        //        mXanderPanel.setOnShowListener(new DialogInterface.OnShowListener()
+        //        {
+        //            @Override
+        //            public void onShow(DialogInterface dialogInterface)
+        //            {
+        //                
+        //            }
+        //        });
+        
+        mWhoBtn.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                openContextMenu(view);
+            }
+        });
+        
+        mCycleSelectPanel.setListener(new ExpansionPanelListener()
+        {
+            @Override
+            public void onExpanding(ExpansionPanel panel)
+            {
+                
+            }
+            
+            @Override
+            public void onCollapsing(ExpansionPanel panel)
+            {
+                
+            }
+            
+            @Override
+            public void onExpanded(final ExpansionPanel panel)
+            {
+                if (mTagList2.getTags().size() == 0)
+                {
+                    AVUser.getCurrentUser()
+                            .getRelation("cycle")
+                            .getQuery()
+                            .findInBackground(new FindCallback<AVObject>()
+                            {
+                                @Override
+                                public void done(List<AVObject> list,
+                                        AVException e)
+                                {
+                                    if (null == e && null != list
+                                            && list.size() > 0)
+                                    {
+                                        mCycleList.clear();
+                                        mCycleList.addAll(list);
+                                        
+                                        for (int i = 0; i < list.size(); i++)
+                                        {
+                                            mTagList2.add(new Tag(
+                                                    i,
+                                                    list.get(i)
+                                                            .getString("cycle_name")));
+                                            
+                                            mTagList2.drawTags();
+                                            
+                                            panel.notifyContentHeightChanged();
+                                        }
+                                    }
+                                }
+                            });
+                }
+            }
+            
+            @Override
+            public void onCollapsed(ExpansionPanel panel)
+            {
+                
+            }
+        });
         
         mImageList = new ArrayList<Bitmap>();
         mImageList.add(BitmapFactory.decodeResource(getResources(),
@@ -269,85 +489,156 @@ public class QuoteEditorActivity extends AppCompatActivity implements
             {
                 String content = mContentEdit.getText().toString();
                 
-                mRequest = new AVObject("Public_Status");
-                mRequest.put("message", content);
-                
-                Tag tag = mTagList.getTags().get(0);
-                
-                for (int i = 0; i < mCycleList.size(); i++)
+                if (mFilterState == FILTER_TYPE_PUBLIC)
                 {
-                    String cycleName = mCycleList.get(i)
-                            .getString("cycle_name");
                     
-                    if (tag.getText().equals(cycleName))
-                    {
-                        mRequest.put("cycle_id", mCycleList.get(i)
-                                .getObjectId());
-                    }
+                    mRequest = new AVObject("Public_Status");
+                    mRequest.put("message", content);
                     
-                }
-                
-                mRequest.put("userId", AVUser.getCurrentUser().getUsername());
-                
-                mRequest.saveInBackground(new SaveCallback()
-                {
-                    @Override
-                    public void done(AVException e)
+                    Tag tag = mTagList.getTags().get(0);
+                    
+                    for (int i = 0; i < mCycleList.size(); i++)
                     {
-                        if (null == e)
-                        {
-                            Toast.makeText(QuoteEditorActivity.this,
-                                    "提交成功",
-                                    Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    }
-                });
-                final List<Image> uploadImagePath = new ArrayList<Image>();
-                for (int i = 0; i < mImagePathList.size(); i++)
-                {
-                    try
-                    {
-                        String[] ss = mImagePathList.get(i).split("/");
-                        final String imageName = ss[ss.length - 1];
+                        String cycleName = mCycleList.get(i)
+                                .getString("cycle_name");
                         
-                        final AVFile image = AVFile.withAbsoluteLocalPath(imageName,
-                                mImagePathList.get(i));
-                        image.saveInBackground(new SaveCallback()
+                        if (tag.getText().equals(cycleName))
                         {
-                            @Override
-                            public void done(AVException e)
+                            mRequest.put("cycle_id", mCycleList.get(i)
+                                    .getObjectId());
+                        }
+                        
+                    }
+                    
+                    mRequest.put("userId", AVUser.getCurrentUser()
+                            .getUsername());
+                    
+                    mRequest.saveInBackground(new SaveCallback()
+                    {
+                        @Override
+                        public void done(AVException e)
+                        {
+                            if (null == e)
                             {
-                                
-                                if (null == e)
+                                Toast.makeText(QuoteEditorActivity.this,
+                                        "提交成功",
+                                        Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        }
+                    });
+                    final List<Image> uploadImagePath = new ArrayList<Image>();
+                    for (int i = 0; i < mImagePathList.size(); i++)
+                    {
+                        try
+                        {
+                            String[] ss = mImagePathList.get(i).split("/");
+                            final String imageName = ss[ss.length - 1];
+                            
+                            final AVFile image = AVFile.withAbsoluteLocalPath(imageName,
+                                    mImagePathList.get(i));
+                            image.saveInBackground(new SaveCallback()
+                            {
+                                @Override
+                                public void done(AVException e)
                                 {
-                                    Image img = new Image();
-                                    img.setImagePath(image.getUrl());
-                                    img.setImageName(imageName);
                                     
-                                    uploadImagePath.add(img);
-                                    
-                                    if (uploadImagePath.size() == mImagePathList.size())
+                                    if (null == e)
                                     {
+                                        Image img = new Image();
+                                        img.setImagePath(image.getUrl());
+                                        img.setImageName(imageName);
                                         
-                                        Message msg = new Message();
-                                        msg.obj = uploadImagePath;
-                                        msg.what = 0x1123;
+                                        uploadImagePath.add(img);
                                         
-                                        mHandler.sendMessage(msg);
-                                        
+                                        if (uploadImagePath.size() == mImagePathList.size())
+                                        {
+                                            
+                                            Message msg = new Message();
+                                            msg.obj = uploadImagePath;
+                                            msg.what = 0x1123;
+                                            
+                                            mHandler.sendMessage(msg);
+                                            
+                                        }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            e.printStackTrace();
+                        }
                     }
-                    catch (FileNotFoundException e)
+                }
+                else if (mFilterState == FILTER_TYPE_FRIEND)
+                {
+                    mStatusRequest = new AVStatus();
+                    mStatusRequest.setMessage(content);
+                    
+                    AVStatus.sendStatusToFollowersInBackgroud(mStatusRequest,
+                            new SaveCallback()
+                            {
+                                @Override
+                                public void done(AVException e)
+                                {
+                                    if (null == e)
+                                    {
+                                        Toast.makeText(QuoteEditorActivity.this,
+                                                "发布成功",
+                                                Toast.LENGTH_LONG)
+                                                .show();
+                                    }
+                                }
+                            });
+                    
+                    final List<Image> uploadImagePath = new ArrayList<Image>();
+                    for (int i = 0; i < mImagePathList.size(); i++)
                     {
-                        e.printStackTrace();
+                        try
+                        {
+                            String[] ss = mImagePathList.get(i).split("/");
+                            final String imageName = ss[ss.length - 1];
+                            
+                            final AVFile image = AVFile.withAbsoluteLocalPath(imageName,
+                                    mImagePathList.get(i));
+                            image.saveInBackground(new SaveCallback()
+                            {
+                                @Override
+                                public void done(AVException e)
+                                {
+                                    
+                                    if (null == e)
+                                    {
+                                        Image img = new Image();
+                                        img.setImagePath(image.getUrl());
+                                        img.setImageName(imageName);
+                                        
+                                        uploadImagePath.add(img);
+                                        
+                                        if (uploadImagePath.size() == mImagePathList.size())
+                                        {
+                                            
+                                            Message msg = new Message();
+                                            msg.obj = uploadImagePath;
+                                            msg.what = 0x1124;
+                                            
+                                            mHandler.sendMessage(msg);
+                                            
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
         });
+        
     }
     
     @Override
@@ -527,4 +818,167 @@ public class QuoteEditorActivity extends AppCompatActivity implements
         }
     }
     
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenu.ContextMenuInfo menuInfo)
+    {
+        
+        getMenuInflater().inflate(R.menu.who_menu, menu);
+        
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_public:
+                mFilterState = FILTER_TYPE_PUBLIC;
+                mFilterType.setText("公开");
+                mCycleLayout.setVisibility(View.GONE);
+                break;
+            
+            case R.id.menu_friend:
+                mFilterState = FILTER_TYPE_FRIEND;
+                mFilterType.setText("好友圈");
+                mCycleLayout.setVisibility(View.GONE);
+                break;
+            
+            case R.id.menu_cycle:
+                mFilterState = FILTER_TYPE_CYCLE;
+                mCycleLayout.setVisibility(View.VISIBLE);
+                mFilterType.setText("我关注的圈子");
+                break;
+        
+        //            case R.id.menu_who_can_see:
+        //                
+        //                mFilterState = FILTER_TYPE_WHO_CAN_SEE;
+        //                //                mFilterType.setText("仅粉丝可见");
+        //                if (!mHasFans)
+        //                {
+        //                    Toast.makeText(QuoteEditorActivity.this,
+        //                            "你还没有粉丝哦！",
+        //                            Toast.LENGTH_LONG).show();
+        //                }
+        //                else
+        //                {
+        //                    mXanderPanel.show();
+        //                }
+        //                break;
+        //            
+        //            case R.id.menu_who_canont_see:
+        //                
+        //                mFilterState = FILTER_TYPE_WHO_CANNOT_SEE;
+        //                //                mFilterType.setText("仅部分粉丝不可见");
+        //                if (!mHasFans)
+        //                {
+        //                    Toast.makeText(QuoteEditorActivity.this,
+        //                            "你还没有粉丝哦！",
+        //                            Toast.LENGTH_LONG).show();
+        //                }
+        //                else
+        //                {
+        //                    mXanderPanel.show();
+        //                }
+        //                break;
+        }
+        
+        return super.onContextItemSelected(item);
+    }
+    
+    @Override
+    public void onContextMenuClosed(Menu menu)
+    {
+        super.onContextMenuClosed(menu);
+        switch (mFilterState)
+        {
+        
+            case FILTER_TYPE_WHO_CAN_SEE:
+                
+                break;
+            
+            case FILTER_TYPE_WHO_CANNOT_SEE:
+                
+                break;
+        }
+    }
+    
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        unregisterForContextMenu(mWhoBtn);
+    }
+    
+    class FansListAdapter extends RecyclerView.Adapter<FansHolder>
+    {
+        private List<AVUser> list;
+        
+        public void setList(List<AVUser> list)
+        {
+            this.list = list;
+        }
+        
+        @Override
+        public FansHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            return new FansHolder(LayoutInflater.from(QuoteEditorActivity.this)
+                    .inflate(R.layout.fans_list_item, null));
+        }
+        
+        @Override
+        public void onBindViewHolder(final FansHolder holder, int position)
+        {
+            final AVUser object = list.get(position);
+            
+            //            holder.userIcon.setImageBitmap();
+            
+            AVQuery<AVUser> query = new AVQuery<>("_User");
+            query.getInBackground(object.getObjectId(),
+                    new GetCallback<AVUser>()
+                    {
+                        @Override
+                        public void done(AVUser avUser, AVException e)
+                        {
+                            holder.userName.setText(avUser.getString("nickname"));
+                        }
+                    });
+            
+            holder.fansItem.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    mSelectedFansList.add(object);
+                    mBottomCount.setText(mSelectedFansList.size() + "人");
+                }
+            });
+            
+        }
+        
+        @Override
+        public int getItemCount()
+        {
+            return null != list ? list.size() : 0;
+        }
+    }
+    
+    class FansHolder extends RecyclerView.ViewHolder
+    {
+        ImageView userIcon;
+        
+        TextView userName;
+        
+        View fansItem;
+        
+        public FansHolder(View itemView)
+        {
+            super(itemView);
+            
+            userIcon = itemView.findViewById(R.id.fans_item_icon);
+            userName = itemView.findViewById(R.id.fans_item_name);
+            fansItem = itemView.findViewById(R.id.fans_item);
+        }
+    }
 }

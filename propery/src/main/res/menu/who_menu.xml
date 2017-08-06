@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_public"
+        android:title="公开（所有人可见）" />
+
+    <item
+        android:id="@+id/menu_friend"
+        android:title="好友圈（所有粉丝可见）" />
+
+    <item
+        android:id="@+id/menu_cycle"
+        android:title="我关注的圈子（仅圈子成员可见）" />
+
+    <!--<item-->
+    <!--android:id="@+id/menu_who_can_see"-->
+    <!--android:title="谁可以看（仅部分粉丝可见）" />-->
+
+    <!--<item-->
+    <!--android:id="@+id/menu_who_canont_see"-->
+    <!--android:title="不给谁看（仅部分粉丝不可见）" />-->
+
+</menu>

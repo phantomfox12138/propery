@@ -23,6 +23,7 @@
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="false">
+
             <ImageView
                 android:id="@+id/backdrop"
                 android:layout_width="match_parent"
@@ -120,6 +121,7 @@
                 android:layout_marginRight="@dimen/dp_8">
 
                 <LinearLayout
+                    android:id="@+id/profile_modify_profile"
                     style="@style/Widget.CardContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">

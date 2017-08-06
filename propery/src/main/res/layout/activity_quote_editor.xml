@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/darker_gray"
+    android:background="#eee"
     android:orientation="vertical"
     tools:context="com.junjingit.propery.QuoteEditorActivity">
 
@@ -41,31 +41,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16">
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/content_edit"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_marginTop="@dimen/dp_8"
-            android:background="@null"
-            android:gravity="top"
-            android:hint="请输入想说的话..."
-            android:lines="10"
-            android:textColorHint="@android:color/darker_gray"
-            android:textCursorDrawable="@drawable/color_cursor" />
-
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/corp_image"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:horizontalSpacing="@dimen/dp_4"
-            android:numColumns="auto_fit"
-            android:verticalSpacing="@dimen/dp_4" />
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16">
+
+            <EditText
+                android:id="@+id/content_edit"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginTop="@dimen/dp_8"
+                android:background="@null"
+                android:gravity="top"
+                android:hint="请输入想说的话..."
+                android:lines="10"
+                android:textColorHint="@android:color/darker_gray"
+                android:textCursorDrawable="@drawable/color_cursor" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/corp_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:horizontalSpacing="@dimen/dp_4"
+                android:numColumns="auto_fit"
+                android:verticalSpacing="@dimen/dp_4" />
+        </LinearLayout>
 
 
         <LinearLayout
@@ -93,45 +99,95 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@color/white"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/cycle_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="发布到：" />
+                android:orientation="vertical">
 
-            <com.ns.developer.tagview.widget.TagCloudLinkView
-                android:id="@+id/tag_list"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    android:paddingTop="@dimen/dp_8"
+                    android:text="发布到："
+                    android:textSize="@dimen/sp_16" />
+
+
+                <com.ns.developer.tagview.widget.TagCloudLinkView
+                    android:id="@+id/tag_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:minHeight="@dimen/dp_24"
+                    android:padding="@dimen/dp_4"
+                    app:deletableTextColor="@color/white"
+                    app:deletableTextSize="4sp"
+                    app:isDeletable="true"
+                    app:tagLayoutColor="@color/material_blue_500"
+                    app:tagTextColor="@color/white"
+                    app:tagTextSize="4sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:background="#eee" />
+
+                <ru.p3tr0vich.widget.ExpansionPanel
+                    android:id="@+id/expansion_panel_dialog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    app:collapsedLayout="@layout/quote_edit_colla_layout"
+                    app:durationContentHeightChanged="0"
+                    app:expandedLayout="@layout/quote_edit_panel_layout"
+                    app:toggleOnExpandedClickEnabled="true" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:background="#eee" />
+
+            <LinearLayout
+                android:id="@+id/who_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:minHeight="@dimen/dp_24"
-                android:padding="@dimen/dp_4"
-                app:deletableTextColor="@color/white"
-                app:deletableTextSize="4sp"
-                app:isDeletable="true"
-                app:tagLayoutColor="@color/material_blue_500"
-                app:tagTextColor="@color/white"
-                app:tagTextSize="4sp" />
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_16">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:text="我关注的圈子：" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="谁可以看"
+                    android:textSize="@dimen/sp_16" />
 
-            <com.ns.developer.tagview.widget.TagCloudLinkView
-                android:id="@+id/tag_list2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:padding="@dimen/dp_4"
-                app:deletableTextColor="@color/white"
-                app:deletableTextSize="4sp"
-                app:isDeletable="false"
-                app:tagLayoutColor="@color/material_blue_500"
-                app:tagTextColor="@color/white"
-                app:tagTextSize="4sp" />
+                <TextView
+                    android:id="@+id/who_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="公开"
+                    android:textSize="@dimen/sp_16" />
+
+            </LinearLayout>
 
 
         </LinearLayout>

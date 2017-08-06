@@ -66,7 +66,7 @@ public class FocusListActivity extends AppCompatActivity
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             
             SwipeMenuItem closeItem = new SwipeMenuItem(FocusListActivity.this).setBackground(android.R.color.holo_red_light)
-//                    .setImage(R.mipmap.ic_action_close)
+                    //                    .setImage(R.mipmap.ic_action_close)
                     .setWidth(width)
                     .setText("取消关注")
                     .setTextColor(getColor(R.color.white))
@@ -171,7 +171,8 @@ public class FocusListActivity extends AppCompatActivity
         }
         
         @Override
-        public void onBindViewHolder(final FocusHolder holder, int position)
+        public void onBindViewHolder(final FocusHolder holder,
+                final int position)
         {
             final AVObject object = list.get(position);
             if (getItemViewType(position) == 2)
@@ -205,10 +206,21 @@ public class FocusListActivity extends AppCompatActivity
                     }
                 });
                 
-                holder.item.setOnClickListener(new View.OnClickListener()
+            }
+            
+            holder.item.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
                 {
-                    @Override
-                    public void onClick(View view)
+                    if (getItemViewType(position) == 2)
+                    {
+                        Intent toFriendCycle = new Intent(
+                                FusionAction.FRIEND_CYCLE_ACTION);
+                        
+                        startActivity(toFriendCycle);
+                    }
+                    else
                     {
                         String objId = object.getObjectId();
                         
@@ -219,8 +231,9 @@ public class FocusListActivity extends AppCompatActivity
                         
                         startActivity(toFocusList);
                     }
-                });
-            }
+                    
+                }
+            });
             
         }
         

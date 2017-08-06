@@ -153,8 +153,15 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
+        <activity android:name=".FriendCycleActivity">
+            <intent-filter>
+                <action android:name="com.junjingit.propery.friend_cycle" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ModifyProfileActivity"></activity>
     </application>
 
 </manifest>

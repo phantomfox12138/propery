@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="我关注的圈子："
+        android:paddingLeft="@dimen/dp_8"
+        android:textSize="@dimen/sp_16" />
+
+    <com.ns.developer.tagview.widget.TagCloudLinkView
+        android:id="@+id/tag_list2"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/white"
+        android:padding="@dimen/dp_4"
+        app:deletableTextColor="@color/white"
+        app:deletableTextSize="4sp"
+        app:isDeletable="false"
+        app:tagLayoutColor="@color/material_blue_500"
+        app:tagTextColor="@color/white"
+        app:tagTextSize="4sp" />
+
+</LinearLayout>

@@ -6,7 +6,7 @@
     android:adjustViewBounds="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_32">
+    android:paddingTop="25dp">
 
 
     <!--<RelativeLayout-->

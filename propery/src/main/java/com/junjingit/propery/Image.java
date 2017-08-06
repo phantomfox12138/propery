@@ -1,12 +1,13 @@
 package com.junjingit.propery;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by niufan on 17/7/19.
  */
 
-public class Image
+public class Image implements Serializable
 {
     private String imagePath;
     

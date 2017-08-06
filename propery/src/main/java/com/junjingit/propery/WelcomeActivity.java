@@ -30,7 +30,7 @@ public class WelcomeActivity extends AppCompatActivity
         
         initView();
         
-        //        AVUser.getCurrentUser().followInBackground("59798d6f8d6d810058a97981",
+        //        AVUser.getCurrentUser().followInBackground("5983d9011b69e6006cabd200",
         //                new FollowCallback()
         //                {
         //                    @Override

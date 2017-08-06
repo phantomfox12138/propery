@@ -32,6 +32,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -86,6 +88,8 @@ public class HomeActivity extends AppCompatActivity implements
     
     private Badge mBadge;
     
+    private String mUserId;
+    
     private static int[] frameAnimRes = new int[] { R.mipmap.compose_anim_1,
             R.mipmap.compose_anim_2, R.mipmap.compose_anim_3,
             R.mipmap.compose_anim_4, R.mipmap.compose_anim_5,
@@ -109,20 +113,20 @@ public class HomeActivity extends AppCompatActivity implements
         mBadge.setBadgeNumber(count);
     }
     
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus)
-    {
-        super.onWindowFocusChanged(hasFocus);
-        
-        if (hasFocus && Build.VERSION.SDK_INT >= 19)
-        {
-            View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-    }
+    //    @Override
+    //    public void onWindowFocusChanged(boolean hasFocus)
+    //    {
+    //        super.onWindowFocusChanged(hasFocus);
+    //        
+    //        if (hasFocus && Build.VERSION.SDK_INT >= 19)
+    //        {
+    //            View decorView = getWindow().getDecorView();
+    //            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+    //                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+    //                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+    //                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    //        }
+    //    }
     
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -131,7 +135,7 @@ public class HomeActivity extends AppCompatActivity implements
         
         //        Utility.setTranslucent(this);
         setContentView(R.layout.activity_home);
-        //
+        
         mFragmentList = new ArrayList<>();
         
         mFragmentList.add(new HomeFragment());
@@ -146,6 +150,8 @@ public class HomeActivity extends AppCompatActivity implements
         
         initData();
         getOwnerDevice();//检查设备
+        
+        setSupportActionBar(((HomeFragment) mFragmentList.get(0)).getToolbar());
         
     }
     
@@ -170,7 +176,7 @@ public class HomeActivity extends AppCompatActivity implements
             }
         });
         
-        AVStatus.getUnreadStatusesCountInBackground(AVStatus.INBOX_TYPE.PRIVATE.toString(),
+        AVStatus.getUnreadStatusesCountInBackground(AVStatus.INBOX_TYPE.TIMELINE.toString(),
                 new CountCallback()
                 {
                     @Override
@@ -413,8 +419,6 @@ public class HomeActivity extends AppCompatActivity implements
             {
                 if (newState == SlidingUpPanelLayout.PanelState.ANCHORED)
                 {
-                    springFloatingActionMenu.setVisibility(View.GONE);
-                    fab.setVisibility(View.GONE);
                     
                 }
                 
@@ -423,12 +427,14 @@ public class HomeActivity extends AppCompatActivity implements
                     mLayout.setPanelHeight(0);
                     springFloatingActionMenu.setVisibility(View.VISIBLE);
                     fab.setVisibility(View.VISIBLE);
-                    
-                    //                    mLayout.setAnchorPoint(1.0f);
+                    springFloatingActionMenu.hideMenu();
+                    mLayout.setAnchorPoint(1.0f);
                 }
                 
                 if (newState == SlidingUpPanelLayout.PanelState.HIDDEN)
                 {
+                    mLayout.setPanelHeight(0);
+                    springFloatingActionMenu.hideMenu();
                     springFloatingActionMenu.setVisibility(View.VISIBLE);
                     fab.setVisibility(View.VISIBLE);
                 }
@@ -436,6 +442,123 @@ public class HomeActivity extends AppCompatActivity implements
                 if (newState == SlidingUpPanelLayout.PanelState.EXPANDED)
                 {
                     Log.d(TAG, "PanelState.EXPANDED");
+                    springFloatingActionMenu.setVisibility(View.GONE);
+                    fab.setVisibility(View.GONE);
+                    
+                    AVQuery<AVUser> query = AVUser.followeeQuery(mUserId,
+                            AVUser.class);
+                    query.include("followee");
+                    
+                    query.findInBackground(new FindCallback<AVUser>()
+                    {
+                        @Override
+                        public void done(List<AVUser> list, AVException e)
+                        {
+                            if (null == e && null != list)
+                            {
+                                final List<AVObject> result = new ArrayList<>();
+                                
+                                final AVQuery<AVObject> pubStatusQuery = new AVQuery<AVObject>(
+                                        "Public_Status");
+                                
+                                pubStatusQuery.whereEqualTo("userId", mUserId);
+                                
+                                pubStatusQuery.orderByAscending("createdAt");
+                                pubStatusQuery.findInBackground(new FindCallback<AVObject>()
+                                {
+                                    @Override
+                                    public void done(List<AVObject> list,
+                                            AVException e)
+                                    {
+                                        
+                                        if (null == e)
+                                        {
+                                            result.clear();
+                                            result.addAll(list);
+                                        }
+                                        
+                                    }
+                                });
+                                
+                                if (list.isEmpty())
+                                {
+                                    mUserStatusDataList.clear();
+                                    mUserStatusDataList.addAll(result);
+                                    
+                                    mUserStatusAdapter.notifyDataSetChanged();
+                                    //                                    mLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                                    return;
+                                }
+                                
+                                //                                mLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                                
+                                AVQuery<AVUser> userQuery = new AVQuery<AVUser>(
+                                        "_User");
+                                userQuery.getInBackground(mUserId,
+                                        new GetCallback<AVUser>()
+                                        {
+                                            @Override
+                                            public void done(AVUser avUser,
+                                                    AVException e)
+                                            {
+                                                if (null == e)
+                                                {
+                                                    try
+                                                    {
+                                                        AVQuery userStatusQuery = AVStatus.statusQuery(avUser);
+                                                        userStatusQuery.orderByDescending("createdAt");
+                                                        
+                                                        userStatusQuery.findInBackground(new FindCallback<AVObject>()
+                                                        {
+                                                            @Override
+                                                            public void done(
+                                                                    List<AVObject> list,
+                                                                    AVException e)
+                                                            {
+                                                                
+                                                                if (null == e)
+                                                                {
+                                                                    result.addAll(list);
+                                                                    
+                                                                    Log.d(TAG,
+                                                                            "list.size = "
+                                                                                    + list);
+                                                                    
+                                                                    Collections.sort(result,
+                                                                            new Comparator<AVObject>()
+                                                                            {
+                                                                                
+                                                                                @Override
+                                                                                public int compare(
+                                                                                        AVObject avObject,
+                                                                                        AVObject t1)
+                                                                                {
+                                                                                    
+                                                                                    return avObject.getCreatedAt()
+                                                                                            .compareTo(t1.getCreatedAt());
+                                                                                }
+                                                                            });
+                                                                    
+                                                                    mUserStatusDataList.clear();
+                                                                    mUserStatusDataList.addAll(result);
+                                                                    
+                                                                    mUserStatusAdapter.notifyDataSetChanged();
+                                                                    
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                    catch (AVException e1)
+                                                    {
+                                                        e1.printStackTrace();
+                                                    }
+                                                }
+                                            }
+                                        });
+                                
+                            }
+                        }
+                    });
                 }
                 
                 if (newState == SlidingUpPanelLayout.PanelState.DRAGGING)
@@ -514,115 +637,10 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public void onIconClick(final String userId)
     {
-        
         //        mLayout.setAnchorPoint(0.7f);
         mLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         
-        AVQuery<AVUser> query = AVUser.followeeQuery(userId, AVUser.class);
-        query.include("followee");
-        
-        query.findInBackground(new FindCallback<AVUser>()
-        {
-            @Override
-            public void done(List<AVUser> list, AVException e)
-            {
-                if (null == e && null != list)
-                {
-                    final List<AVObject> result = new ArrayList<>();
-                    
-                    final AVQuery<AVObject> pubStatusQuery = new AVQuery<AVObject>(
-                            "Public_Status");
-                    
-                    pubStatusQuery.whereEqualTo("userId", userId);
-                    
-                    pubStatusQuery.orderByAscending("createdAt");
-                    pubStatusQuery.findInBackground(new FindCallback<AVObject>()
-                    {
-                        @Override
-                        public void done(List<AVObject> list, AVException e)
-                        {
-                            
-                            if (null == e)
-                            {
-                                result.clear();
-                                result.addAll(list);
-                            }
-                            
-                        }
-                    });
-                    
-                    if (list.isEmpty())
-                    {
-                        mUserStatusDataList.clear();
-                        mUserStatusDataList.addAll(result);
-                        
-                        mUserStatusAdapter.notifyDataSetChanged();
-                        
-                        return;
-                    }
-                    
-                    AVQuery<AVUser> userQuery = new AVQuery<AVUser>("_User");
-                    userQuery.getInBackground(userId, new GetCallback<AVUser>()
-                    {
-                        @Override
-                        public void done(AVUser avUser, AVException e)
-                        {
-                            if (null == e)
-                            {
-                                try
-                                {
-                                    AVQuery userStatusQuery = AVStatus.statusQuery(avUser);
-                                    userStatusQuery.orderByDescending("createdAt");
-                                    
-                                    userStatusQuery.findInBackground(new FindCallback<AVObject>()
-                                    {
-                                        @Override
-                                        public void done(List<AVObject> list,
-                                                AVException e)
-                                        {
-                                            
-                                            if (null == e)
-                                            {
-                                                result.addAll(list);
-                                                
-                                                Log.d(TAG, "list.size = "
-                                                        + list);
-                                                
-                                                Collections.sort(result,
-                                                        new Comparator<AVObject>()
-                                                        {
-                                                            
-                                                            @Override
-                                                            public int compare(
-                                                                    AVObject avObject,
-                                                                    AVObject t1)
-                                                            {
-                                                                
-                                                                return avObject.getCreatedAt()
-                                                                        .compareTo(t1.getCreatedAt());
-                                                            }
-                                                        });
-                                                
-                                                mUserStatusDataList.clear();
-                                                mUserStatusDataList.addAll(result);
-                                                
-                                                mUserStatusAdapter.notifyDataSetChanged();
-                                                
-                                            }
-                                        }
-                                    });
-                                }
-                                catch (AVException e1)
-                                {
-                                    e1.printStackTrace();
-                                }
-                            }
-                        }
-                    });
-                    
-                }
-            }
-        });
+        mUserId = userId;
     }
     
     class HomePagerAdapter extends FragmentPagerAdapter

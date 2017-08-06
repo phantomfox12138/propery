@@ -1,21 +1,27 @@
 package com.junjingit.propery.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.daimajia.slider.library.Animations.DescriptionAnimation;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.junjingit.propery.AppBarStateChangeListener;
-import com.junjingit.propery.HomeActivity;
 import com.junjingit.propery.HomeListAdapter;
 import com.junjingit.propery.R;
+
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +40,8 @@ public class HomeFragment extends Fragment
     
     private Toolbar mToolbar;
     
+    private SliderLayout mHomeSlider;
+    
     public HomeListAdapter getHomeAdapter()
     {
         return mHomeAdapter;
@@ -44,6 +52,11 @@ public class HomeFragment extends Fragment
         mHomeAdapter.notifyDataSetChanged();
         
         mRefresh.setRefreshing(false);
+    }
+    
+    public Toolbar getToolbar()
+    {
+        return mToolbar;
     }
     
     @Override
@@ -65,23 +78,68 @@ public class HomeFragment extends Fragment
         return mRootView;
     }
     
+    int mDistanceY;
+    
     private void initView()
     {
         mHomeList = mRootView.findViewById(R.id.rv_content);
         mRefresh = mRootView.findViewById(R.id.srl_refresh);
         mAppBarLayout = mRootView.findViewById(R.id.appbar);
         mToolbar = mRootView.findViewById(R.id.tb_toolbar);
+        mHomeSlider = mRootView.findViewById(R.id.home_slider);
         
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener()
+        mHomeSlider.setPresetTransformer(SliderLayout.Transformer.Default);
+        mHomeSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        mHomeSlider.setCustomAnimation(new DescriptionAnimation());
+        mHomeSlider.setDuration(2000);
+        //        mHomeSlider.addOnPageChangeListener(this);
+        
+        HashMap<String, Integer> file_maps = new HashMap<String, Integer>();
+        file_maps.put("Hannibal", R.drawable.hannibal);
+        file_maps.put("Big Bang Theory", R.drawable.bigbang);
+        file_maps.put("House of Cards", R.drawable.house);
+        file_maps.put("Game of Thrones", R.drawable.game_of_thrones);
+        
+        for (String name : file_maps.keySet())
+        {
+            TextSliderView textSliderView = new TextSliderView(getActivity());
+            
+            textSliderView.description(name)
+                    .image(file_maps.get(name))
+                    .setScaleType(BaseSliderView.ScaleType.Fit);
+            //                                .setOnSliderClickListener(this)
+            //                                .setPosition(i);
+            
+            mHomeSlider.addSlider(textSliderView);
+        }
+        
+        mHomeList.setOnScrollListener(new RecyclerView.OnScrollListener()
         {
             @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout,
-                    int verticalOffset)
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
             {
-                if (verticalOffset < 0
-                        && Math.abs(verticalOffset) < appBarLayout.getTotalScrollRange())
+                //滑动的距离
+                mDistanceY += dy;
+                //toolbar的高度
+                int toolbarHeight = mToolbar.getBottom();
+                
+                //当滑动的距离 <= toolbar高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
+                if (mDistanceY <= toolbarHeight)
                 {
                     
+                    float scale = (float) mDistanceY / toolbarHeight;
+                    float alpha = scale * 255;
+                    mToolbar.setBackgroundColor(Color.argb((int) alpha,
+                            63,
+                            81,
+                            181));
+                }
+                else
+                {
+                    //上述虽然判断了滑动距离与toolbar高度相等的情况，但是实际测试时发现，标题栏的背景色
+                    //很少能达到完全不透明的情况，所以这里又判断了滑动距离大于toolbar高度的情况，
+                    //将标题栏的颜色设置为完全不透明状态
+                    mToolbar.setBackgroundResource(R.color.blue);
                 }
             }
         });
@@ -117,5 +175,4 @@ public class HomeFragment extends Fragment
         });
         
     }
-    
 }

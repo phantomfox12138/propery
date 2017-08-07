@@ -1,6 +1,9 @@
 package com.junjingit.propery.utils;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
+
 public class ScreenUtils {
 
     public static float dpToPx(Context context, float dp) {
@@ -23,5 +26,13 @@ public class ScreenUtils {
 
     public static float pxToDpCeilInt(Context context, float px) {
         return (int)(pxToDp(context, px) + 0.5f);
+    }
+    public static int dpToPx(Context context, int dp) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    public static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 }

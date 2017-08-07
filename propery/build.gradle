@@ -3,6 +3,10 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.0'
+    aaptOptions {
+        cruncherEnabled = false
+        useNewCruncher = false
+    }
     defaultConfig {
         applicationId "com.junjingit.propery"
         minSdkVersion 21
@@ -66,5 +70,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.3.2'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.slider:library:1.1.5@aar'
+    compile 'com.github.varunest:sparkbutton:+'
     testCompile 'junit:junit:4.12'
 }

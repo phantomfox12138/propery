@@ -39,4 +39,9 @@
     <color name="c999999">#999999</color>
     <color name="c4343434">#434343</color>
     <color name="ca3a3a3">#a3a3a3</color>
+
+    <color name="twitter_primary_color">#667580</color>
+    <color name="twitter_secondary_color">#CCD6DD</color>
+    <color name="fb_primary_color">#667580</color>
+    <color name="fb_secondary_color">#CCD6DD</color>
 </resources>

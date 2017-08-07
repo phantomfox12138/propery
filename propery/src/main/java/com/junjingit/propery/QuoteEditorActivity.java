@@ -31,6 +31,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -168,6 +169,8 @@ public class QuoteEditorActivity extends AppCompatActivity implements
                 
                 case 0x1124:
                     
+                    mStatusRequest = new AVStatus();
+                    
                     List<Image> imgList2 = (List<Image>) msg.obj;
                     String imageName2 = "";
                     String imageUrl2 = "";
@@ -186,21 +189,31 @@ public class QuoteEditorActivity extends AppCompatActivity implements
                             mStatusRequest.setImageUrl(imageUrl2);
                         }
                         
-                        imgMap.put(imageName2, imageUrl2);
+                        //                        imgMap.put(imageName2, imageUrl2);
+                        imgMap.put("imageName", imageName2);
+                        imgMap.put("imageUrl", imageUrl2);
                     }
                     
                     mStatusRequest.setData(imgMap);
-                    AVSaveOption option = new AVSaveOption();
-                    option.setFetchWhenSave(true);
                     
-                    mStatusRequest.saveInBackground(option, new SaveCallback()
-                    {
-                        @Override
-                        public void done(AVException e)
-                        {
-                            
-                        }
-                    });
+                    mStatusRequest.setMessage(mContentEdit.getText().toString());
+                    
+                    AVStatus.sendStatusToFollowersInBackgroud(mStatusRequest,
+                            new SaveCallback()
+                            {
+                                @Override
+                                public void done(AVException e)
+                                {
+                                    if (null == e)
+                                    {
+                                        Toast.makeText(QuoteEditorActivity.this,
+                                                "发布成功",
+                                                Toast.LENGTH_LONG)
+                                                .show();
+                                        finish();
+                                    }
+                                }
+                            });
                     
                     break;
             }
@@ -489,25 +502,37 @@ public class QuoteEditorActivity extends AppCompatActivity implements
             {
                 String content = mContentEdit.getText().toString();
                 
-                if (mFilterState == FILTER_TYPE_PUBLIC)
+                if (mFilterState == FILTER_TYPE_PUBLIC
+                        || mFilterState == FILTER_TYPE_CYCLE)
                 {
                     
                     mRequest = new AVObject("Public_Status");
                     mRequest.put("message", content);
                     
-                    Tag tag = mTagList.getTags().get(0);
-                    
-                    for (int i = 0; i < mCycleList.size(); i++)
+                    if (mFilterState == FILTER_TYPE_CYCLE)
                     {
-                        String cycleName = mCycleList.get(i)
-                                .getString("cycle_name");
-                        
-                        if (tag.getText().equals(cycleName))
+                        List<Tag> tagList = mTagList.getTags();
+                        if (null != tagList && tagList.size() > 0)
                         {
-                            mRequest.put("cycle_id", mCycleList.get(i)
-                                    .getObjectId());
+                            Tag tag = tagList.get(0);
+                            
+                            for (int i = 0; i < mCycleList.size(); i++)
+                            {
+                                String cycleName = mCycleList.get(i)
+                                        .getString("cycle_name");
+                                
+                                if (tag.getText().equals(cycleName))
+                                {
+                                    mRequest.put("cycle_id", mCycleList.get(i)
+                                            .getObjectId());
+                                }
+                                
+                            }
                         }
-                        
+                        else
+                        {
+                            mRequest.put("cycle_id", 0);
+                        }
                     }
                     
                     mRequest.put("userId", AVUser.getCurrentUser()
@@ -521,7 +546,7 @@ public class QuoteEditorActivity extends AppCompatActivity implements
                             if (null == e)
                             {
                                 Toast.makeText(QuoteEditorActivity.this,
-                                        "提交成功",
+                                        "发布成功",
                                         Toast.LENGTH_SHORT).show();
                                 finish();
                             }
@@ -573,24 +598,6 @@ public class QuoteEditorActivity extends AppCompatActivity implements
                 }
                 else if (mFilterState == FILTER_TYPE_FRIEND)
                 {
-                    mStatusRequest = new AVStatus();
-                    mStatusRequest.setMessage(content);
-                    
-                    AVStatus.sendStatusToFollowersInBackgroud(mStatusRequest,
-                            new SaveCallback()
-                            {
-                                @Override
-                                public void done(AVException e)
-                                {
-                                    if (null == e)
-                                    {
-                                        Toast.makeText(QuoteEditorActivity.this,
-                                                "发布成功",
-                                                Toast.LENGTH_LONG)
-                                                .show();
-                                    }
-                                }
-                            });
                     
                     final List<Image> uploadImagePath = new ArrayList<Image>();
                     for (int i = 0; i < mImagePathList.size(); i++)
@@ -614,7 +621,15 @@ public class QuoteEditorActivity extends AppCompatActivity implements
                                         img.setImagePath(image.getUrl());
                                         img.setImageName(imageName);
                                         
+                                        Log.d(TAG, "imgUrl = " + image.getUrl()
+                                                + "  imgName = " + imageName);
+                                        
                                         uploadImagePath.add(img);
+                                        
+                                        Log.d(TAG, "uploadImagePath.size()"
+                                                + uploadImagePath.size()
+                                                + "mImagePathList.size() = "
+                                                + mImagePathList.size());
                                         
                                         if (uploadImagePath.size() == mImagePathList.size())
                                         {

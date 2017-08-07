@@ -9,14 +9,15 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="225dp">
+        android:layout_height="225dp"
+        android:layout_marginTop="25dp">
 
         <com.daimajia.slider.library.SliderLayout
             android:id="@+id/home_slider"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             custom:auto_cycle="true"
-            custom:indicator_visibility="visible"
+            custom:indicator_visibility="gone"
             custom:pager_animation="Accordion"
             custom:pager_animation_span="1100" />
 

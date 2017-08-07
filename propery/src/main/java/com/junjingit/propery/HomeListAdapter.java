@@ -246,7 +246,7 @@ public class HomeListAdapter extends
                 .getString("ReplyCount"));
         Date date = mListData.get(position).getCreatedAt();
         
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         if (getItemViewType(position) == 2)
         {
             holder.time.setText(sdf.format(date.getTime()));
@@ -267,6 +267,21 @@ public class HomeListAdapter extends
                 if (null == e)
                 {
                     holder.descCount.setText(String.valueOf(list.size()));
+                }
+            }
+        });
+        
+        AVQuery<AVObject> commentCountQuery = new AVQuery<>("Reply");
+        commentCountQuery.whereEqualTo("status_id", obj.getObjectId());
+        
+        commentCountQuery.countInBackground(new CountCallback()
+        {
+            @Override
+            public void done(int i, AVException e)
+            {
+                if (null == e)
+                {
+                    holder.descCount.setText(String.valueOf(i));
                 }
             }
         });

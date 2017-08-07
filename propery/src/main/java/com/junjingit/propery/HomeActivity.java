@@ -427,14 +427,14 @@ public class HomeActivity extends AppCompatActivity implements
                     mLayout.setPanelHeight(0);
                     springFloatingActionMenu.setVisibility(View.VISIBLE);
                     fab.setVisibility(View.VISIBLE);
-                    springFloatingActionMenu.hideMenu();
+//                    springFloatingActionMenu.hideMenu();
                     mLayout.setAnchorPoint(1.0f);
                 }
                 
                 if (newState == SlidingUpPanelLayout.PanelState.HIDDEN)
                 {
                     mLayout.setPanelHeight(0);
-                    springFloatingActionMenu.hideMenu();
+                    //                    springFloatingActionMenu.hideMenu();
                     springFloatingActionMenu.setVisibility(View.VISIBLE);
                     fab.setVisibility(View.VISIBLE);
                 }

@@ -29,6 +29,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVStatus;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
@@ -204,6 +205,22 @@ public class QuoteDetailActivity extends AppCompatActivity
         mZanCount = (TextView) findViewById(R.id.item_zan_count);
         mZanLayout = (RelativeLayout) findViewById(R.id.zan_layout);
         
+        AVQuery<AVObject> commentCountQuery = new AVQuery<>("Reply");
+        commentCountQuery.whereEqualTo("status_id", mObjId);
+        
+        commentCountQuery.countInBackground(new CountCallback()
+        {
+            @Override
+            public void done(int i, AVException e)
+            {
+                if (null == e)
+                {
+                    mCommentCount.setText(String.valueOf(i));
+                }
+            }
+        });
+        
+
         mZanLayout.setOnClickListener(new View.OnClickListener()
         {
             @Override

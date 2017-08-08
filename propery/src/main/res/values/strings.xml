@@ -37,4 +37,8 @@
     <string name="add_photo_dialog_title">图片</string>
     <string name="add_photo_dialog_take">拍照</string>
     <string name="add_photo_dialog_select">从手机相册中选择</string>
+    <string name="tip_sure">确定</string>
+    <string name="tip_cancel">取消</string>
+    <string name="follow_tip">确定不再关注这位小宝宝了吗？</string>
+    <string name="join_follow">&#043;&#160;关注</string>
 </resources>

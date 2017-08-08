@@ -44,4 +44,8 @@
     <color name="twitter_secondary_color">#CCD6DD</color>
     <color name="fb_primary_color">#667580</color>
     <color name="fb_secondary_color">#CCD6DD</color>
+
+
+    <color name="cff203a">#ff203a</color>
+    <color name="cgrey">#ccc</color>
 </resources>

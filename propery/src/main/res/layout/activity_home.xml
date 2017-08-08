@@ -115,23 +115,13 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <com.varunest.sparkbutton.SparkButton
-                    android:id="@+id/twitter_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    app:sparkbutton_activeImage="@drawable/ic_twitter"
-                    app:sparkbutton_iconSize="20dp"
-                    app:sparkbutton_primaryColor="@color/twitter_primary_color"
-                    app:sparkbutton_secondaryColor="@color/twitter_secondary_color" />
-
-                <com.varunest.sparkbutton.SparkButton
-                    android:id="@+id/fb_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    app:sparkbutton_activeImage="@drawable/ic_facebook"
-                    app:sparkbutton_iconSize="20dp"
-                    app:sparkbutton_primaryColor="@color/fb_primary_color"
-                    app:sparkbutton_secondaryColor="@color/fb_secondary_color" />
+                <TextView
+                    android:id="@+id/follow_btn"
+                    android:layout_width="80dp"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:text="@string/join_follow"
+                    android:textSize="@dimen/sp_14"/>
             </LinearLayout>
         </com.junjingit.propery.widget.SharePanel>
 

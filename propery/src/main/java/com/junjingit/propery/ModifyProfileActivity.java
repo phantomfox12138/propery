@@ -91,10 +91,8 @@ public class ModifyProfileActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_ADD_IMAGE_CODE:
-
                     //选择的图片路径
                     List<String> imageList = data.getStringArrayListExtra(IMAGE_RESULT_LIST);
-
                     break;
             }
         }

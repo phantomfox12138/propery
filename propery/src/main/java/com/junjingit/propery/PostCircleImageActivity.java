@@ -37,14 +37,11 @@ public class PostCircleImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         uploadLiatener = (OnImageUploadLiatener) PostCircleImageActivity.this;
     }
-
-
     //点击弹出添加图片的提示框
     public void onAddPic(View v){
         imageView = (ImageView) v;
         LayoutInflater inflater = LayoutInflater.from(this);
-        RelativeLayout layout = (RelativeLayout) inflater.inflate(
-                R.layout.add_pic_dialog, null);
+        RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.add_pic_dialog, null);
         dialog = new AlertDialog.Builder(this).create();
         dialog.setCancelable(true);
         dialog.show();

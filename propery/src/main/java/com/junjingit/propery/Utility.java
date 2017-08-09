@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
+import android.provider.SyncStateContract;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
@@ -15,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.junjingit.propery.utils.Helpers;
 
 import java.lang.reflect.Field;
 
@@ -178,5 +181,19 @@ public class Utility
         }
         return sbar;
     }
-    
+
+    /**
+     * 获取项目根目录
+     * @param context
+     * @return
+     */
+    public static String getFileRootPath(Context context) {
+        return Helpers.getCacheDirectory(context).getPath();
+    }
+    /**
+     * 照片存放目录（非缓存）
+     */
+    public static String getFileCameraPath(Context context) {
+        return getFileRootPath(context) + "/camera/";
+    }
 }

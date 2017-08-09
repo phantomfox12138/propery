@@ -3,9 +3,11 @@ package com.junjingit.propery.fragment;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -29,18 +31,32 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.SaveCallback;
+import com.junjingit.propery.HomeListAdapter;
 import com.junjingit.propery.Image;
 import com.junjingit.propery.ModifyProfileActivity;
 import com.junjingit.propery.R;
+import com.junjingit.propery.Utility;
 import com.junjingit.propery.common.FusionAction;
+import com.junjingit.propery.utils.Define;
 import com.junjingit.propery.utils.ImageReaderUtil;
+import com.junjingit.propery.utils.MyImageLoader;
 import com.junjingit.propery.utils.NetWorkUtil;
 import com.junjingit.propery.utils.ToastUtils;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
 import static com.junjingit.propery.common.FusionAction.QuoteExtra.IMAGE_LOADER_COUNT_EXTRA;
 import static com.junjingit.propery.common.FusionAction.QuoteExtra.IMAGE_RESULT_LIST;
 import static com.junjingit.propery.common.FusionAction.QuoteExtra.REQUEST_ADD_IMAGE_CODE;
@@ -49,7 +65,7 @@ import static com.junjingit.propery.common.FusionAction.QuoteExtra.REQUEST_ADD_I
  * A simple {@link Fragment} subclass.
  */
 public class MeFragment extends Fragment implements View.OnClickListener {
-
+    private static final  String TAG="MeFragment";
     private View mRootView;
 
     private NavigationView mNaviView;
@@ -57,12 +73,13 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     private Dialog dialog;
 
     private ImageView imageView, user_icon;
-    private TextView user_nickName,takePhoto;
+    private TextView user_nickName, takePhoto,takeAlbum,takeCancel;
 
     private View mModifyProfile;
     private String imgPath;
     private byte[] myByteArray;
-
+    String strImgPath = "";
+    String fileName = "";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -93,15 +110,16 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         user_nickName = mRootView.findViewById(R.id.user_nickName);
         setListener();
     }
-
     public void setListener() {
         user_icon.setOnClickListener(this);
     }
 
-    public void onAddPic() {
+    public void onAddPic(){
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.add_pic_dialog, null);
-        takePhoto=layout.findViewById(R.id.takePhoto);
+        takePhoto = layout.findViewById(R.id.takePhoto);
+        takeAlbum=layout.findViewById(R.id.takeAlbum);
+        takeCancel=layout.findViewById(R.id.take_cancel);
         dialog = new AlertDialog.Builder(getActivity(), R.style.ActionSheetDialogStyle).create();
         dialog.setCancelable(true);
         dialog.show();
@@ -118,11 +136,23 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 getPicFromCamera();
             }
         });
+        takeAlbum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectIconImage();
+            }
+        });
+        takeCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
     }
 
 
     @Override
-    public void onClick(View view) {
+    public void onClick(View view){
         switch (view.getId()) {
             case R.id.user_icon:
                 onAddPic();
@@ -132,17 +162,48 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * 调用相机拍照
+     */
+    public void getPicFromCamera(){
+        dialog.dismiss();
+        String state = Environment.getExternalStorageState();
+        if (state.equals(Environment.MEDIA_MOUNTED)) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            strImgPath = Utility.getFileCameraPath(getContext());// 存放照片的文件夹
+            fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".png";// 照片命名
+            File out = new File(strImgPath);
+            //是否创建新的文件目录
+            if (!out.exists()){
+                out.mkdirs();
+            }
+            out = new File(strImgPath, fileName);
+            Uri uri = Uri.fromFile(out);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            startActivityForResult(intent, 1000);
+        } else {
+            Toast.makeText(getContext(), getString(R.string.check_sd_card), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * 从相册选择照片
+     */
     public void selectIconImage() {
+        dialog.dismiss();
         //跳转选择图片页面
         Intent pickPhoto = new Intent(FusionAction.IMAGE_LOADER_ACTION);
-
         //参数2位设置可选择图片的最大值
         pickPhoto.putExtra(IMAGE_LOADER_COUNT_EXTRA, 1);
-
         startActivityForResult(pickPhoto, REQUEST_ADD_IMAGE_CODE);
     }
 
-    private void uploadUserIcon(String imgPath) throws FileNotFoundException {
+    /**
+     * 上传图片
+     * @param imgPath
+     * @throws FileNotFoundException
+     */
+    private  void uploadUserIcon(String imgPath) throws FileNotFoundException {
         final String[] ss = imgPath.split("/");
         final String imageName = ss[ss.length - 1];
         //上传图片文件
@@ -155,60 +216,61 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                     Image img = new Image();
                     img.setImagePath(image.getUrl());
                     img.setImageName(imageName);
-
                     Message msg = new Message();
                     msg.obj = img;
                     msg.what = 0x1125;
-                    //  mHandler.sendMessage(msg);
+                    mHandler.sendMessage(msg);
+                }else{
                 }
             }
         });
     }
-    /**
-     * 拍照
-     */
-    public void getPicFromCamera(){
-        dialog.dismiss();
-        String state = Environment.getExternalStorageState();
-        if (state.equals(Environment.MEDIA_MOUNTED)) {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            String path = Environment.getExternalStorageDirectory().toString()+"/物业";
-            File path1 = new File(path);
-            if (!path1.exists()) {
-                path1.mkdirs();
-            }
-            String name = System.currentTimeMillis() + ".png";
-            imgPath = path + File.separator + name;
-            File file = new File(path1, name);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-            startActivityForResult(intent, 1000);
-        } else {
-            Toast.makeText(getContext(),getString(R.string.check_sd_card), Toast.LENGTH_LONG).show();
-        }
-    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1000){
-            getImgByte();
-        }
-    }
-    private void getImgByte() {
-        if (imgPath == null){
-            return;
-        }
-        myByteArray = ImageReaderUtil.getImgByte(imgPath);
-        try {
-            if(NetWorkUtil.isNetworkAvailable(getContext())){
-                //加载圈
-               // postFile();
+        if (resultCode == RESULT_OK){
+            switch (requestCode) {
+                case 1000://系统相机
+                    String backImgPath = strImgPath + fileName;
+                    File backImgFile = new File(backImgPath);
+                    if (backImgFile.exists()){
+                        try {
+                            uploadUserIcon(backImgPath);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+                case REQUEST_ADD_IMAGE_CODE:
+                    //选择的图片路径
+                    List<String> imageList = data.getStringArrayListExtra(IMAGE_RESULT_LIST);
+                    if(imageList.size()>0){
+                        String backAlbumImg=imageList.get(0).toString();
+                        try {
+                            uploadUserIcon(backAlbumImg);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
-
-        } catch (Exception e) {
-            //隐藏加载圈
-            e.printStackTrace();
         }
-
     }
 
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0x1125:
+                    //TODO: update User表头像文件名和头像图片url字段
+                    Image img = (Image) msg.obj;
+                    img.getImagePath();
+                    ImageLoader.getInstance().displayImage(img.getImagePath(),user_icon,MyImageLoader.MyCircleDisplayImageOptions());
+                    break;
+            }
+        }
+    };
 }

@@ -80,7 +80,7 @@ public class FriendCycleActivity extends AppCompatActivity
         //.showImageForEmptyUri(R.drawable.ic_empty)
         //.showImageOnFail(R.drawable.ic_error)
         .cacheInMemory(true)
-                .cacheOnDisk(true)
+                .cacheOnDisc(true)
                 .considerExifParams(true)
                 //.displayer(new RoundedBitmapDisplayer(20))
                 .build();

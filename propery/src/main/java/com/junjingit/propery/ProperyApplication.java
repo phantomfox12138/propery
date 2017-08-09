@@ -12,11 +12,12 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class ProperyApplication extends Application
 {
+    public static ProperyApplication app;
     @Override
     public void onCreate()
     {
         super.onCreate();
-        
+        app = (ProperyApplication) this.getApplicationContext();
         AVOSCloud.initialize(this,
                 "VgKn8AnKBNQo3y8vqYsLj330-gzGzoHsz",
                 "ycNC55H0XuW6DVA7PqMbIYph");

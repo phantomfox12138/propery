@@ -56,15 +56,12 @@ public class ImageReaderUtil {
 
         byte[] myByteArray = null;
         Bitmap temp =  BitmapFactory.decodeFile(imgPath, opts);
-        //  Bitmap saveBitmap = BitmapFactory.decodeFile(imgPath, opts);
         Bitmap  saveBitmap =centerSquareScaleBitmap(temp,500);
         //计算图片翻转度数，逆时针
         int degree = readPictureDegree(imgPath);
         if (degree != 0) {
             saveBitmap = rotaingImageView(degree, saveBitmap);
-
         }
-
         if (saveBitmap != null) {
             saveBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             myByteArray = baos.toByteArray();

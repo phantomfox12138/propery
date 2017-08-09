@@ -69,30 +69,43 @@ import static com.junjingit.propery.common.FusionAction.QuoteExtra.REQUEST_ADD_I
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MeFragment extends Fragment implements View.OnClickListener {
+public class MeFragment extends Fragment implements View.OnClickListener
+{
     private static final String TAG = "MeFragment";
+    
     private View mRootView;
+    
     private Dialog dialog;
+    
     private CircleImageView user_icon;
+    
     private TextView user_nickName, takePhoto, takeAlbum, takeCancel;
+    
     private View mModifyProfile;
+    
     String strImgPath = "";
+    
     String fileName = "";
+    
     private ImageLoadingListener animateFirstListener = new MeFragment.AnimateFirstDisplayListener();
+    
     private LinearLayout exitLinearLayout;
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        if (mRootView == null) {
+            Bundle savedInstanceState)
+    {
+        if (mRootView == null)
+        {
             mRootView = inflater.inflate(R.layout.fragment_me, null);
             initView();
         }
         ViewGroup parent = (ViewGroup) mRootView.getParent();
-        if (parent != null) {
+        if (parent != null)
+        {
             parent.removeView(mRootView);
         }
-
+        
         final Toolbar toolbar = (Toolbar) mRootView.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar()
@@ -103,27 +116,32 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         collapsingToolbar.setTitle("");
         return mRootView;
     }
-
-    public void initView() {
+    
+    public void initView()
+    {
         mModifyProfile = mRootView.findViewById(R.id.profile_modify_profile);
         user_icon = (CircleImageView) mRootView.findViewById(R.id.user_icon);
         user_nickName = mRootView.findViewById(R.id.user_nickName);
         exitLinearLayout = mRootView.findViewById(R.id.exitLinearLayout);
         setListener();
     }
-
-    public void setListener() {
+    
+    public void setListener()
+    {
         user_icon.setOnClickListener(this);
         exitLinearLayout.setOnClickListener(this);
     }
-
-    public void onAddPic() {
+    
+    public void onAddPic()
+    {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.add_pic_dialog, null);
+        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.add_pic_dialog,
+                null);
         takePhoto = layout.findViewById(R.id.takePhoto);
         takeAlbum = layout.findViewById(R.id.takeAlbum);
         takeCancel = layout.findViewById(R.id.take_cancel);
-        dialog = new AlertDialog.Builder(getActivity(), R.style.ActionSheetDialogStyle).create();
+        dialog = new AlertDialog.Builder(getActivity(),
+                R.style.ActionSheetDialogStyle).create();
         dialog.setCancelable(true);
         dialog.show();
         dialog.getWindow().setContentView(layout);
@@ -133,30 +151,37 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         lp.y = 20;
         dialogWindow.setAttributes(lp);
         dialog.show();//显示对话框
-        takePhoto.setOnClickListener(new View.OnClickListener() {
+        takePhoto.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 getPicFromCamera();
             }
         });
-        takeAlbum.setOnClickListener(new View.OnClickListener() {
+        takeAlbum.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 selectIconImage();
             }
         });
-        takeCancel.setOnClickListener(new View.OnClickListener() {
+        takeCancel.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 dialog.dismiss();
             }
         });
     }
-
-
+    
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
+    public void onClick(View view)
+    {
+        switch (view.getId())
+        {
             case R.id.user_icon:
                 onAddPic();
                 break;
@@ -167,35 +192,44 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-
+    
     /**
      * 调用相机拍照
      */
-    public void getPicFromCamera() {
+    public void getPicFromCamera()
+    {
         dialog.dismiss();
         String state = Environment.getExternalStorageState();
-        if (state.equals(Environment.MEDIA_MOUNTED)) {
+        if (state.equals(Environment.MEDIA_MOUNTED))
+        {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             strImgPath = Utility.getFileCameraPath(getContext());// 存放照片的文件夹
-            fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".png";// 照片命名
+            fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
+                    + ".png";// 照片命名
             File out = new File(strImgPath);
             //是否创建新的文件目录
-            if (!out.exists()) {
+            if (!out.exists())
+            {
                 out.mkdirs();
             }
             out = new File(strImgPath, fileName);
             Uri uri = Uri.fromFile(out);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(intent, 1000);
-        } else {
-            Toast.makeText(getContext(), getString(R.string.check_sd_card), Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            Toast.makeText(getContext(),
+                    getString(R.string.check_sd_card),
+                    Toast.LENGTH_LONG).show();
         }
     }
-
+    
     /**
      * 从相册选择照片
      */
-    public void selectIconImage() {
+    public void selectIconImage()
+    {
         dialog.dismiss();
         //跳转选择图片页面
         Intent pickPhoto = new Intent(FusionAction.IMAGE_LOADER_ACTION);
@@ -203,53 +237,67 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         pickPhoto.putExtra(IMAGE_LOADER_COUNT_EXTRA, 1);
         startActivityForResult(pickPhoto, REQUEST_ADD_IMAGE_CODE);
     }
-
+    
     /**
      * 上传图片
      *
      * @param imgPath
      * @throws FileNotFoundException
      */
-    private void uploadUserIcon(String imgPath) throws FileNotFoundException {
+    private void uploadUserIcon(String imgPath) throws FileNotFoundException
+    {
         final String[] ss = imgPath.split("/");
         final String imageName = ss[ss.length - 1];
-        Log.v("##############TTTT","当前图片的名称"+imageName);
-        Log.v("##############TTTT","当前图片的路径"+imgPath);
+        Log.v("##############TTTT", "当前图片的名称" + imageName);
+        Log.v("##############TTTT", "当前图片的路径" + imgPath);
         //上传图片文件
         final AVFile image = AVFile.withAbsoluteLocalPath(imageName, imgPath);
-        image.saveInBackground(new SaveCallback() {
+        image.saveInBackground(new SaveCallback()
+        {
             @Override
-            public void done(AVException e) {
-                if (null == e) {
+            public void done(AVException e)
+            {
+                if (null == e)
+                {
                     //获取图片url
                     Image img = new Image();
-                    Log.v("##############TTTT","当前图片的名称"+image.getUrl());
-                    Log.v("##############TTTT","当前图片的路径"+image.getOriginalName());
-                    Log.v("##############TTTT","当前图片的路径"+image.getName());
+                    Log.v("##############TTTT", "当前图片的名称" + image.getUrl());
+                    Log.v("##############TTTT",
+                            "当前图片的路径" + image.getOriginalName());
+                    Log.v("##############TTTT", "当前图片的路径" + image.getName());
                     img.setImagePath(image.getUrl());
                     img.setImageName(image.getOriginalName());
                     Message msg = new Message();
                     msg.obj = img;
                     msg.what = 0x1125;
                     mHandler.sendMessage(msg);
-                } else {
+                }
+                else
+                {
                 }
             }
         });
     }
-
+    
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
+        if (resultCode == RESULT_OK)
+        {
+            switch (requestCode)
+            {
                 case 1000://系统相机
                     String backImgPath = strImgPath + fileName;
                     File backImgFile = new File(backImgPath);
-                    if (backImgFile.exists()) {
-                        try {
+                    if (backImgFile.exists())
+                    {
+                        try
+                        {
                             uploadUserIcon(backImgPath);
-                        } catch (FileNotFoundException e) {
+                        }
+                        catch (FileNotFoundException e)
+                        {
                             e.printStackTrace();
                         }
                     }
@@ -257,11 +305,15 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 case REQUEST_ADD_IMAGE_CODE:
                     //选择的图片路径
                     List<String> imageList = data.getStringArrayListExtra(IMAGE_RESULT_LIST);
-                    if (imageList.size() > 0) {
+                    if (imageList.size() > 0)
+                    {
                         String backAlbumImg = imageList.get(0).toString();
-                        try {
+                        try
+                        {
                             uploadUserIcon(backAlbumImg);
-                        } catch (FileNotFoundException e) {
+                        }
+                        catch (FileNotFoundException e)
+                        {
                             e.printStackTrace();
                         }
                     }
@@ -271,65 +323,88 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             }
         }
     }
-
-    private Handler mHandler = new Handler() {
+    
+    private Handler mHandler = new Handler()
+    {
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(Message msg)
+        {
             super.handleMessage(msg);
-            switch (msg.what) {
+            switch (msg.what)
+            {
                 case 0x1125:
                     //TODO: update User表头像文件名和头像图片url字段
                     Image img = (Image) msg.obj;
                     final String netImgPath = img.getImagePath();
                     final String netImgName = img.getImageName();
                     String userObjectId = AVUser.getCurrentUser().getObjectId();
-                    AVObject todo = AVObject.createWithoutData("_User", userObjectId);
+                    AVObject todo = AVObject.createWithoutData("_User",
+                            userObjectId);
                     todo.put("user_icon_url", netImgPath);
                     todo.put("userIcon", netImgName);
-                    todo.saveInBackground(new SaveCallback() {
+                    todo.saveInBackground(new SaveCallback()
+                    {
                         @Override
-                        public void done(AVException e) {
-                            if (e == null) {
+                        public void done(AVException e)
+                        {
+                            if (e == null)
+                            {
                                 ToastUtils.showToast(getActivity(), "头像上传成功");
-                                AVFile file = new AVFile(netImgName, netImgPath,
+                                AVFile file = new AVFile(netImgName,
+                                        netImgPath,
                                         new HashMap<String, Object>());
-                                String thumbUrl = file.getThumbnailUrl(true, 64, 64);
-                                ImageLoader.getInstance().displayImage(thumbUrl, user_icon, MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
-                            }else{
+                                String thumbUrl = file.getThumbnailUrl(true,
+                                        64,
+                                        64);
+                                ImageLoader.getInstance()
+                                        .displayImage(thumbUrl,
+                                                user_icon,
+                                                MyImageLoader.MyCircleDisplayImageOptions(),
+                                                animateFirstListener);
+                            }
+                            else
+                            {
                                 ToastUtils.showToast(getActivity(), "头像上传失败");
                             }
                         }
                     });
-
+                    
                     break;
             }
         }
     };
-
-    private class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
+    
+    private class AnimateFirstDisplayListener extends
+            SimpleImageLoadingListener
+    {
         final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
-
+        
         @Override
         public void onLoadingComplete(String imageUri, View view,
-                                      Bitmap loadedImage) {
-            if (loadedImage != null) {
+                Bitmap loadedImage)
+        {
+            if (loadedImage != null)
+            {
                 ImageView imageView = (ImageView) view;
                 boolean firstDisplay = !displayedImages.contains(imageUri);
-                if (firstDisplay) {
+                if (firstDisplay)
+                {
                     FadeInBitmapDisplayer.animate(imageView, 500);
                     displayedImages.add(imageUri);
                 }
             }
         }
     }
-
+    
     /**
      * 退出登录
      */
-    private void exitLogin() {
+    private void exitLogin()
+    {
         AVUser.logOut();//清除缓存用户对象
         AVUser currentUser = AVUser.getCurrentUser();
-        if (currentUser == null) {
+        if (currentUser == null)
+        {
             //跳转到首页
             Intent intent = new Intent(FusionAction.LOGIN_ACTION);
             startActivity(intent);

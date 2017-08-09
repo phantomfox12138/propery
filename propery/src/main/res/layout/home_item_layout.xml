@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
@@ -18,6 +19,7 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:stateListAnimator="@drawable/selector_elevation"
         android:visibility="visible"
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"

@@ -37,6 +37,7 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -150,6 +151,19 @@ public class FriendCycleActivity extends AppCompatActivity
                                         {
                                             mFriendStatusList.clear();
                                             mFriendStatusList.addAll(list);
+                                            
+                                            Collections.sort(mFriendStatusList,
+                                                    new Comparator<AVStatus>()
+                                                    {
+                                                        @Override
+                                                        public int compare(
+                                                                AVStatus avObject,
+                                                                AVStatus t1)
+                                                        {
+                                                            return t1.getCreatedAt()
+                                                                    .compareTo(avObject.getCreatedAt());
+                                                        }
+                                                    });
                                             
                                             mAdapter.notifyDataSetChanged();
                                         }
@@ -353,38 +367,39 @@ public class FriendCycleActivity extends AppCompatActivity
                 }
             });
             
-            //            if (getItemViewType(position) == 2)
-            //            {
-            //                holder.imgContent.setOnClickListener(new View.OnClickListener()
-            //                {
-            //                    @Override
-            //                    public void onClick(View view)
-            //                    {
-            //                        Intent intent = new Intent(
-            //                                "com.junjing.propery.QUOTE_DETAIL");
-            //                        intent.putExtra("objectId", status.getObjectId());
-            //                        intent.putExtra("type", "status");
-            //                        
-            //                        startActivity(intent);
-            //                    }
-            //                });
-            //            }
-            //            else
-            //            {
-            //                holder.container.setOnClickListener(new View.OnClickListener()
-            //                {
-            //                    @Override
-            //                    public void onClick(View view)
-            //                    {
-            //                        Intent intent = new Intent(
-            //                                "com.junjing.propery.QUOTE_DETAIL");
-            //                        intent.putExtra("objectId", status.getObjectId());
-            //                        intent.putExtra("type", "status");
-            //                        
-            //                        startActivity(intent);
-            //                    }
-            //                });
-            //            }
+            if (getItemViewType(position) == 2)
+            {
+                holder.container.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        Intent intent = new Intent(
+                                "com.junjing.propery.QUOTE_DETAIL");
+                        intent.putExtra("objectId", status.getObjectId());
+                        intent.putExtra("type", "status");
+                        
+                        startActivity(intent);
+                    }
+                });
+            }
+            else
+            {
+                holder.imgContent.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        Intent intent = new Intent(
+                                "com.junjing.propery.QUOTE_DETAIL");
+                        intent.putExtra("objectId", status.getObjectId());
+                        intent.putExtra("type", "status");
+                        
+                        startActivity(intent);
+                    }
+                });
+                
+            }
             
         }
         

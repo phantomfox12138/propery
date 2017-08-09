@@ -23,29 +23,44 @@ public class FusionAction
     
     public static final String USER_STATUS_LIST_ACTION = "com.junjingit.propery.USER_STATUS";
     
-    public static final String FRIEND_CYCLE_ACTION = "com.junjingit.propery.friend_cycle";
+    public static final String FRIEND_CYCLE_ACTION = "com.junjingit.propery.FRIEND_CYCLE";
+    
+    public static final String HOME_TITLE_LIST_ACTION = "com.junjingit.propery.HOME_TITLE_LIST";
+    
+    public static final String HOME_TITLE_PAY_ACTION = "com.junjingit.propery.PROPERY_PAY";
+    
+    public interface HomeListExtra
+    {
+        String TYPE = "list_type";
+        
+        String NOTIFY = "notify";
+        
+        String ACTIVE = "active";
+        
+        String TITLE_NAME = "title_name";
+    }
     
     public interface QuoteExtra
     {
-        public int REQUEST_ADD_IMAGE_CODE = 0x33ff;
+        int REQUEST_ADD_IMAGE_CODE = 0x33ff;
         
-        public int REQUEST_CODE_ASK_PERMISSIONS = 0x22ff;
+        int REQUEST_CODE_ASK_PERMISSIONS = 0x22ff;
         
         /**
          * 获取图片总数
          */
-        public String IMAGE_LOADER_COUNT_EXTRA = "maxnum";
+        String IMAGE_LOADER_COUNT_EXTRA = "maxnum";
         
-        public String IMAGE_RESULT_LIST = "datalist";
+        String IMAGE_RESULT_LIST = "datalist";
     }
     
     public interface FocusListExtra
     {
-        public String OBJECT_ID = "object_id";
+        String OBJECT_ID = "object_id";
         
-        public String USER_ID = "user_id";
+        String USER_ID = "user_id";
         
-        public String FROM = "from_where";
+        String FROM = "from_where";
     }
     
 }

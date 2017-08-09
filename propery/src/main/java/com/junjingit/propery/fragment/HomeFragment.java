@@ -1,5 +1,6 @@
 package com.junjingit.propery.fragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -21,14 +22,17 @@ import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.junjingit.propery.AppBarStateChangeListener;
 import com.junjingit.propery.HomeListAdapter;
 import com.junjingit.propery.R;
+import com.junjingit.propery.common.FusionAction;
 
 import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment
+public class HomeFragment extends Fragment implements View.OnClickListener
 {
+    private static final String TAG = "HomeFragment";
+    
     private View mRootView;
     
     private RecyclerView mHomeList;
@@ -42,6 +46,12 @@ public class HomeFragment extends Fragment
     private Toolbar mToolbar;
     
     private SliderLayout mHomeSlider;
+    
+    private View mNotifyView;
+    
+    private View mActiveView;
+    
+    private View mPayView;
     
     public HomeListAdapter getHomeAdapter()
     {
@@ -88,6 +98,13 @@ public class HomeFragment extends Fragment
         mAppBarLayout = mRootView.findViewById(R.id.appbar);
         mToolbar = mRootView.findViewById(R.id.tb_toolbar);
         mHomeSlider = mRootView.findViewById(R.id.home_slider);
+        mNotifyView = mRootView.findViewById(R.id.home_title_notification);
+        mActiveView = mRootView.findViewById(R.id.home_title_activity);
+        mPayView = mRootView.findViewById(R.id.home_title_pay);
+        
+        mNotifyView.setOnClickListener(this);
+        mActiveView.setOnClickListener(this);
+        mPayView.setOnClickListener(this);
         
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         
@@ -116,34 +133,49 @@ public class HomeFragment extends Fragment
             mHomeSlider.addSlider(textSliderView);
         }
         
-        mHomeList.setOnScrollListener(new RecyclerView.OnScrollListener()
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener()
         {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            public void onOffsetChanged(AppBarLayout appBarLayout,
+                    int verticalOffset)
             {
                 //滑动的距离
-                mDistanceY += dy;
+                mDistanceY += verticalOffset;
                 //toolbar的高度
                 int toolbarHeight = mToolbar.getBottom();
                 
                 //当滑动的距离 <= toolbar高度的时候，改变Toolbar背景色的透明度，达到渐变的效果
-                if (mDistanceY <= toolbarHeight)
+                if (Math.abs(verticalOffset) < appBarLayout.getTotalScrollRange())
                 {
                     
-                    float scale = (float) mDistanceY / toolbarHeight;
+                    float scale = (float) Math.abs(verticalOffset)
+                            / appBarLayout.getTotalScrollRange();
                     float alpha = scale * 255;
-                    mToolbar.setBackgroundColor(Color.argb((int) alpha + 180,
-                            0,
-                            0,
-                            0));
+                    
+                    int resultAplha = ((int) alpha + 100) > 255 ? 255
+                            : ((int) alpha + 100);
+                    
+                    mToolbar.setBackgroundColor(Color.argb(resultAplha,
+                            18,
+                            23,
+                            52));
                 }
                 else
                 {
                     //上述虽然判断了滑动距离与toolbar高度相等的情况，但是实际测试时发现，标题栏的背景色
                     //很少能达到完全不透明的情况，所以这里又判断了滑动距离大于toolbar高度的情况，
                     //将标题栏的颜色设置为完全不透明状态
-                    mToolbar.setBackgroundResource(R.color.blue);
+                    mToolbar.setBackgroundResource(R.color.blue_black);
                 }
+            }
+        });
+        
+        mHomeList.setOnScrollListener(new RecyclerView.OnScrollListener()
+        {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                
             }
         });
         
@@ -176,6 +208,37 @@ public class HomeFragment extends Fragment
                 }
             }
         });
+        
+    }
+    
+    @Override
+    public void onClick(View view)
+    {
+        Intent toNotify = new Intent(FusionAction.HOME_TITLE_LIST_ACTION);
+        switch (view.getId())
+        {
+            case R.id.home_title_notification:
+                
+                toNotify.putExtra(FusionAction.HomeListExtra.TYPE,
+                        FusionAction.HomeListExtra.NOTIFY);
+                toNotify.putExtra(FusionAction.HomeListExtra.TITLE_NAME, "通知公告");
+                startActivity(toNotify);
+                break;
+            
+            case R.id.home_title_activity:
+                
+                toNotify.putExtra(FusionAction.HomeListExtra.TYPE,
+                        FusionAction.HomeListExtra.ACTIVE);
+                toNotify.putExtra(FusionAction.HomeListExtra.TITLE_NAME, "园区活动");
+                startActivity(toNotify);
+                break;
+            case R.id.home_title_pay:
+                
+                Intent toPay = new Intent(FusionAction.HOME_TITLE_PAY_ACTION);
+                toPay.putExtra(FusionAction.HomeListExtra.TITLE_NAME, "费用缴纳");
+                startActivity(toPay);
+                break;
+        }
         
     }
 }

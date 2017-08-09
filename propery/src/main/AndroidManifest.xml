@@ -49,7 +49,7 @@
         </activity>
         <activity
             android:name=".NotifyDetailActivity"
-            android:theme="@style/OverFlowMenuTheme">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="com.junjignit.propery.NOTIFY_DETAIL" />
 
@@ -58,7 +58,7 @@
         </activity>
         <activity
             android:name=".QuoteDetailActivity"
-            android:theme="@style/NormalAppTheme">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="com.junjing.propery.QUOTE_DETAIL" />
 
@@ -67,7 +67,7 @@
         </activity>
         <activity
             android:name=".QuoteEditorActivity"
-            android:theme="@style/NormalAppTheme">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="com.junjing.propery.QUOTE_EDITOR" />
 
@@ -76,7 +76,7 @@
         </activity>
         <activity
             android:name=".imageloader.ImageLoadActivity"
-            android:theme="@style/NormalAppTheme">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="com.junjing.propery.IMAGE_LOADER" />
 
@@ -86,7 +86,7 @@
         <activity android:name=".ImageDetailActivity" />
         <activity
             android:name=".CycleActivity"
-            android:theme="@style/OverFlowMenuTheme">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="com.junjing.propery.CYCLE_LIST" />
 
@@ -101,7 +101,9 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateCycleActivity">
+        <activity
+            android:name=".CreateCycleActivity"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="com.junjing.propery.CREATE_CYCLE" />
 
@@ -137,7 +139,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomeListActivity" />
+        <activity
+            android:name=".HomeListActivity"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="com.junjingit.propery.HOME_TITLE_LIST" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".FocusListActivity"
             android:theme="@style/ActionBarTheme">
@@ -158,12 +168,20 @@
             android:name=".FriendCycleActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
-                <action android:name="com.junjingit.propery.friend_cycle" />
+                <action android:name="com.junjingit.propery.FRIEND_CYCLE" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ModifyProfileActivity"></activity>
+        <activity android:name=".ModifyProfileActivity" />
+        <activity android:name=".ProperyPayActivity">
+            <intent-filter>
+                <action android:name="com.junjingit.propery.PROPERY_PAY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>

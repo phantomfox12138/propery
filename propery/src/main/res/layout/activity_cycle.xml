@@ -13,18 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:adjustViewBounds="true"
-        android:background="@color/blue"
+        android:background="@color/blue_black"
         android:fitsSystemWindows="true"
         app:layout_collapseMode="pin"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="加圈子"
         app:titleTextColor="@color/white" />
 
-    <Button
-        android:id="@+id/create_cycle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="创建圈子" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/cycle_list"

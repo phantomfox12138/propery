@@ -30,6 +30,7 @@ import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVStatus;
+import com.avos.avoscloud.AVStatusQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
@@ -80,6 +81,8 @@ public class QuoteDetailActivity extends AppCompatActivity
     
     private String mObjId;
     
+    private String mType;
+    
     private boolean isReply;
     
     private AVObject mReplyObj;
@@ -93,6 +96,7 @@ public class QuoteDetailActivity extends AppCompatActivity
         setContentView(R.layout.activity_quote_detail);
         
         mObjId = getIntent().getStringExtra("objectId");
+        mType = getIntent().getStringExtra("type");
         
         initView();
         
@@ -104,6 +108,31 @@ public class QuoteDetailActivity extends AppCompatActivity
     {
         mUserName = (TextView) findViewById(R.id.user_name);
         
+        if (!StringUtil.isNullOrEmpty(mType) && mType.equals("status"))
+        {
+            AVStatusQuery query = AVStatus.inboxQuery(AVUser.getCurrentUser(),
+                    AVStatus.INBOX_TYPE.TIMELINE.toString());
+            
+            query.getInBackground(mObjId, new GetCallback<AVStatus>()
+            {
+                @Override
+                public void done(AVStatus avStatus, AVException e)
+                {
+                    if (null == e)
+                    {
+                        mFullText = avStatus.getMessage();
+                        mTextContent.setFullString(mFullText);
+                        
+                        mUserName.setText(avStatus.getSource()
+                                .getString("nickname"));
+                        
+                        loadStatusImages(avStatus);
+                        
+                    }
+                }
+            });
+        }
+        
         AVQuery<AVObject> avquery = new AVQuery<>("Public_Status");
         avquery.getInBackground(mObjId, new GetCallback<AVObject>()
         {
@@ -112,15 +141,8 @@ public class QuoteDetailActivity extends AppCompatActivity
             {
                 if (null == e)
                 {
-                    List<String> imgNameList = new ArrayList<String>();
-                    List<String> imgUrlList = new ArrayList<String>();
-                    List<String> imgThumbList = new ArrayList<String>();
-                    
                     mFullText = avObject.getString("message");
                     mTextContent.setFullString(mFullText);
-                    
-                    String image = avObject.getString("image");
-                    String imageName = avObject.getString("image_name");
                     
                     AVQuery<AVUser> query = new AVQuery<AVUser>("_User");
                     query.getInBackground(avObject.getString("userId"),
@@ -136,40 +158,93 @@ public class QuoteDetailActivity extends AppCompatActivity
                                 }
                             });
                     
-                    if (!StringUtil.isNullOrEmpty(image)
-                            && !StringUtil.isNullOrEmpty(imageName))
-                    {
-                        String[] images = image.split(",");
-                        String[] imageNames = imageName.split(",");
-                        
-                        for (int i = 0; i < images.length; i++)
-                        {
-                            String imgUrl = images[i];
-                            String imgName = imageNames[i];
-                            
-                            imgNameList.add(imgName);
-                            imgUrlList.add(imgUrl);
-                            
-                            AVFile file = new AVFile(imgName, imgUrl,
-                                    new HashMap<String, Object>());
-                            imgThumbList.add(file.getThumbnailUrl(true,
-                                    100,
-                                    100));
-                            
-                        }
-                        
-                        mImage.setImageNameList(imgNameList);
-                        mImage.setImagePathList(imgUrlList);
-                        mImage.setImgThumbUrlList(imgThumbList);
-                        
-                        mImageAdapter.notifyDataSetChanged();
-                    }
+                    loadStatusImages(avObject);
                 }
                 
             }
         });
         
         updateCommentList();
+    }
+    
+    private void loadStatusImages(AVObject avObject)
+    {
+        
+        if (avObject instanceof AVStatus)
+        {
+            AVStatus avStatus = (AVStatus) avObject;
+            
+            List<String> imgNameList = new ArrayList<String>();
+            List<String> imgUrlList = new ArrayList<String>();
+            List<String> imgThumbList = new ArrayList<String>();
+            
+            String image = (String) avStatus.getData().get("image");
+            String imageName = (String) avStatus.getData().get("imageName");
+            
+            if (!StringUtil.isNullOrEmpty(image)
+                    && !StringUtil.isNullOrEmpty(imageName))
+            {
+                String[] images = image.split(",");
+                String[] imageNames = imageName.split(",");
+                
+                for (int i = 0; i < images.length; i++)
+                {
+                    String imgUrl = images[i];
+                    String imgName = imageNames[i];
+                    
+                    imgNameList.add(imgName);
+                    imgUrlList.add(imgUrl);
+                    
+                    AVFile file = new AVFile(imgName, imgUrl,
+                            new HashMap<String, Object>());
+                    imgThumbList.add(file.getThumbnailUrl(true, 100, 100));
+                    
+                }
+                
+                mImage.setImageNameList(imgNameList);
+                mImage.setImagePathList(imgUrlList);
+                mImage.setImgThumbUrlList(imgThumbList);
+                
+                mImageAdapter.notifyDataSetChanged();
+            }
+        }
+        else
+        {
+            List<String> imgNameList = new ArrayList<String>();
+            List<String> imgUrlList = new ArrayList<String>();
+            List<String> imgThumbList = new ArrayList<String>();
+            
+            String image = avObject.getString("image");
+            String imageName = avObject.getString("image_name");
+            
+            if (!StringUtil.isNullOrEmpty(image)
+                    && !StringUtil.isNullOrEmpty(imageName))
+            {
+                String[] images = image.split(",");
+                String[] imageNames = imageName.split(",");
+                
+                for (int i = 0; i < images.length; i++)
+                {
+                    String imgUrl = images[i];
+                    String imgName = imageNames[i];
+                    
+                    imgNameList.add(imgName);
+                    imgUrlList.add(imgUrl);
+                    
+                    AVFile file = new AVFile(imgName, imgUrl,
+                            new HashMap<String, Object>());
+                    imgThumbList.add(file.getThumbnailUrl(true, 100, 100));
+                    
+                }
+                
+                mImage.setImageNameList(imgNameList);
+                mImage.setImagePathList(imgUrlList);
+                mImage.setImgThumbUrlList(imgThumbList);
+                
+                mImageAdapter.notifyDataSetChanged();
+            }
+        }
+        
     }
     
     private void updateCommentList()
@@ -220,7 +295,6 @@ public class QuoteDetailActivity extends AppCompatActivity
             }
         });
         
-
         mZanLayout.setOnClickListener(new View.OnClickListener()
         {
             @Override

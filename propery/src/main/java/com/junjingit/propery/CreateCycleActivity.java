@@ -2,6 +2,8 @@ package com.junjingit.propery;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EdgeEffect;
@@ -20,6 +22,8 @@ public class CreateCycleActivity extends AppCompatActivity
     
     private Button mCreateBtn;
     
+    private Toolbar mToolbar;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -33,6 +37,12 @@ public class CreateCycleActivity extends AppCompatActivity
     {
         mCreateEdit = (EditText) findViewById(R.id.cycle_name);
         mCreateBtn = (Button) findViewById(R.id.create_cycle_btn);
+        mToolbar = (Toolbar) findViewById(R.id.create_cycle_toolbar);
+        
+        setSupportActionBar(mToolbar);
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
         mCreateBtn.setOnClickListener(new View.OnClickListener()
         {
@@ -60,5 +70,19 @@ public class CreateCycleActivity extends AppCompatActivity
                 });
             }
         });
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        
+        return super.onOptionsItemSelected(item);
     }
 }

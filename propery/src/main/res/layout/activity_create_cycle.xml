@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#eee"
     android:orientation="vertical"
     tools:context="com.junjingit.propery.CreateCycleActivity">
 
@@ -12,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:adjustViewBounds="true"
-        android:background="@color/blue"
+        android:background="@color/blue_black"
         android:fitsSystemWindows="true"
         app:layout_collapseMode="pin"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -26,6 +27,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_64"
+        android:textColorHint="@android:color/darker_gray"
         android:hint="给你的圈子起一个响亮的名字吧！"
         android:lines="1" />
 

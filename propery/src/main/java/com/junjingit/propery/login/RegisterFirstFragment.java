@@ -126,10 +126,10 @@ public class RegisterFirstFragment extends Fragment implements View.OnClickListe
        AVUser user = new AVUser();
        user.setUsername("defaultuser");
        user.setPassword("123456");
-       user.put("nikename","defaultuser");
+       user.put("nickname","nickname");
        user.put("mobilePhoneNumber",mobile);
        user.signUpInBackground(new SignUpCallback(){
-           public void done(AVException e) {
+           public void done(AVException e){
                if (e == null) {
                    getMessageHttp(mobile);
                    Log.v(TAG,"#######################"+e);

@@ -3,7 +3,6 @@ package com.junjingit.propery.utils;
 import android.graphics.Bitmap;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.display.CircularBitmapDisplayer;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
@@ -26,8 +25,8 @@ public class Define {
      */
     public final static DisplayImageOptions CIRCULAR_OPTIONS = new DisplayImageOptions.Builder()
             .cacheInMemory(true).bitmapConfig(Bitmap.Config.RGB_565)
-            .cacheOnDisc(true).considerExifParams(true)
-            .displayer(new CircularBitmapDisplayer()).build();
+            .cacheOnDisc(true).considerExifParams(true).build();
+           // .displayer(new CircularBitmapDisplayer()).build();
 
     /**
      * imageloader图片处理属性(圆角)

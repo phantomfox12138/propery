@@ -21,6 +21,7 @@ import com.avos.avoscloud.SaveCallback;
 import com.junjingit.propery.R;
 import com.junjingit.propery.common.FusionAction;
 import com.junjingit.propery.utils.ToastUtils;
+import com.ns.developer.tagview.entity.Tag;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -101,12 +102,11 @@ public class RegisterSecondFragment extends Fragment implements View.OnClickList
                 if (toCheckMessage()) {
                     //去更新用户信息
                     String objectId = AVUser.getCurrentUser().getObjectId();
-                    Log.v(TAG, "##############objectId" + objectId);
                     AVObject avObject = AVObject.createWithoutData("_User", objectId);
                     avObject.put("username", mobile);
                     avObject.put("nickname", nick_name.getText().toString().trim());
                     avObject.put("password", register_second_psd.getText().toString());
-                    avObject.saveInBackground(new SaveCallback() {
+                    avObject.saveInBackground(new SaveCallback(){
                         @Override
                         public void done(AVException e) {
                             if (e == null) {
@@ -130,6 +130,8 @@ public class RegisterSecondFragment extends Fragment implements View.OnClickList
                                 Intent intent = new Intent(FusionAction.LOGIN_ACTION);
                                 startActivity(intent);
                                 getActivity().finish();
+                            }else{
+                                Log.v(TAG,"##################"+e);
                             }
                         }
                     });//保存到服务器

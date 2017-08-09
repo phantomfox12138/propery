@@ -542,12 +542,6 @@ public class QuoteDetailActivity extends AppCompatActivity
                             holder.image.setImageBitmap(loadedImage);
                             
                         }
-
-                        @Override
-                        public void onLoadingRegionComplete(String s, View view, Object o) {
-
-                        }
-
                         @Override
                         public void onLoadingCancelled(String imageUri,
                                 View view)

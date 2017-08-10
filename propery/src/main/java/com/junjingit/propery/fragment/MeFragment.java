@@ -65,6 +65,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
+import static com.avos.avoscloud.AVUser.getCurrentUser;
 import static com.junjingit.propery.common.FusionAction.QuoteExtra.IMAGE_LOADER_COUNT_EXTRA;
 import static com.junjingit.propery.common.FusionAction.QuoteExtra.IMAGE_RESULT_LIST;
 import static com.junjingit.propery.common.FusionAction.QuoteExtra.REQUEST_ADD_IMAGE_CODE;
@@ -81,7 +82,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
 
     private CircleImageView user_icon;
 
-    private TextView user_nickName, takePhoto, takeAlbum, takeCancel;
+    private TextView user_nickName, takePhoto, takeAlbum, takeCancel,myFans_txt,myFollow_txt;
 
     private View mModifyProfile;
 
@@ -122,6 +123,8 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         user_nickName = mRootView.findViewById(R.id.user_nickName);
         exitLinearLayout = mRootView.findViewById(R.id.exitLinearLayout);
         me_circle_layout=mRootView.findViewById(R.id.me_circle_layout);
+        myFans_txt=mRootView.findViewById(R.id.myFans_txt);
+        myFollow_txt=mRootView.findViewById(R.id.myFollow_txt);
         setListener();
         initData();
     }
@@ -130,26 +133,26 @@ public class MeFragment extends Fragment implements View.OnClickListener {
      * 初始化数据
      */
     private void initData() {
-        String userObjectId = AVUser.getCurrentUser().getObjectId();
+        String userObjectId = getCurrentUser().getObjectId();
         String nickName;
         String userIconUrl;
-        if (AVUser.getCurrentUser().get("user_icon_url") == null) {
+        if (getCurrentUser().get("user_icon_url") == null) {
             userIconUrl = "";
         } else {
-            userIconUrl = AVUser.getCurrentUser().get("user_icon_url").toString();
+            userIconUrl = getCurrentUser().get("user_icon_url").toString();
         }
-        if (AVUser.getCurrentUser().get("nickname") == null) {
+        if (getCurrentUser().get("nickname") == null) {
             user_nickName.setText(getString(R.string.nickname_empty));
         } else {
-            nickName = AVUser.getCurrentUser().get("nickname").toString();
+            nickName = getCurrentUser().get("nickname").toString();
             user_nickName.setText(nickName);
         }
         if (!TextUtils.isEmpty(userIconUrl)) {
             //暂时还没有头像
             ImageLoader.getInstance().displayImage(userIconUrl, user_icon, MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
         }
-
-
+        getMyFollow(userObjectId);
+        getMyFans();
     }
 
     public void setListener() {
@@ -262,8 +265,8 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     private void uploadUserIcon(String imgPath) throws FileNotFoundException {
         final String[] ss = imgPath.split("/");
         final String imageName = ss[ss.length - 1];
-        Log.v("##############TTTT", "当前图片的名称" + imageName);
-        Log.v("##############TTTT", "当前图片的路径" + imgPath);
+        Log.v(TAG, "当前图片的名称" + imageName);
+        Log.v(TAG, "当前图片的路径" + imgPath);
         //上传图片文件
         final AVFile image = AVFile.withAbsoluteLocalPath(imageName, imgPath);
         image.saveInBackground(new SaveCallback() {
@@ -272,10 +275,9 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 if (null == e) {
                     //获取图片url
                     Image img = new Image();
-                    Log.v("##############TTTT", "当前图片的名称" + image.getUrl());
-                    Log.v("##############TTTT",
-                            "当前图片的路径" + image.getOriginalName());
-                    Log.v("##############TTTT", "当前图片的路径" + image.getName());
+                    Log.v(TAG, "当前图片的名称" + image.getUrl());
+                    Log.v(TAG, "当前图片的路径" + image.getOriginalName());
+                    Log.v(TAG, "当前图片的路径" + image.getName());
                     img.setImagePath(image.getUrl());
                     img.setImageName(image.getOriginalName());
                     Message msg = new Message();
@@ -332,7 +334,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                     Image img = (Image) msg.obj;
                     final String netImgPath = img.getImagePath();
                     final String netImgName = img.getImageName();
-                    String userObjectId = AVUser.getCurrentUser().getObjectId();
+                    String userObjectId = getCurrentUser().getObjectId();
                     AVObject todo = AVObject.createWithoutData("_User",
                             userObjectId);
 
@@ -386,7 +388,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
      */
     private void exitLogin() {
         AVUser.logOut();//清除缓存用户对象
-        AVUser currentUser = AVUser.getCurrentUser();
+        AVUser currentUser = getCurrentUser();
         if (currentUser == null) {
             //跳转到首页
             Intent intent = new Intent(FusionAction.LOGIN_ACTION);
@@ -397,12 +399,15 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     /**
      * 获取我的关注
      */
-    private void getMyFollow(){
-        AVQuery<AVUser> followeeQuery = AVUser.followeeQuery(AVUser.getCurrentUser().getObjectId(), AVUser.class);
+    private void getMyFollow(String userObjectId){
+        AVQuery<AVUser> followeeQuery = AVUser.followeeQuery(userObjectId, AVUser.class);
         followeeQuery.findInBackground(new FindCallback<AVUser>() {
             @Override
             public void done(List<AVUser> avObjects, AVException avException) {
                 //avObjects 就是用户的关注用户列表
+                if(avObjects!=null){
+                   myFollow_txt.setText("我的关注"+avObjects.size());
+                }
             }
         });
     }
@@ -411,13 +416,23 @@ public class MeFragment extends Fragment implements View.OnClickListener {
      * 得到我的粉丝
      */
     private void getMyFans(){
-        /*AVQuery<AVUser> followerQuery =AVUser.getCurrentUser().followerQuery(AVUser.class);
-        followerQuery.findInBackground(new FindCallback<AVUser>() {
-            @Override
-            public void done(List<AVUser> avObjects, AVException avException) {
-                // avObjects 包含了 userA 的粉丝列表
-            }
-        });*/
+        AVUser  currentUser=AVUser.getCurrentUser();
+        AVQuery<AVUser> followerQuery = null;
+        try {
+            followerQuery = currentUser.followerQuery(AVUser.class);
+            followerQuery.findInBackground(new FindCallback<AVUser>() {
+                @Override
+                public void done(List<AVUser> avObjects, AVException avException) {
+                    // avObjects 包含了 userA 的粉丝列表
+                    if(avObjects!=null){
+                       myFans_txt.setText("我的粉丝"+avObjects.size());
+                    }
+                }
+            });
+        } catch (AVException e) {
+            e.printStackTrace();
+        }
+
 
     }
 }

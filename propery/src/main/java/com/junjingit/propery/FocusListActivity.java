@@ -69,7 +69,7 @@ public class FocusListActivity extends AppCompatActivity
                     //                    .setImage(R.mipmap.ic_action_close)
                     .setWidth(width)
                     .setText("取消关注")
-                    .setTextColor(getColor(R.color.white))
+                    .setTextColor(getResources().getColor(R.color.white))
                     .setHeight(height);
             swipeRightMenu.addMenuItem(closeItem); // 添加菜单到右侧。
         }

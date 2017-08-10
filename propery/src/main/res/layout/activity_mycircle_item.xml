@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="62dp"
+    android:orientation="vertical"
+    android:background="@color/white">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16">
+        <ImageView
+            android:id="@+id/circle_img"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:src="@mipmap/ic_avatar" />
+        <TextView
+            android:id="@+id/circle_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@id/circle_img"
+            android:text="美食吧"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_14" />
+        <TextView
+            android:id="@+id/circle_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_below="@+id/circle_name"
+            android:layout_toRightOf="@+id/circle_img"
+            android:text="100人"
+            android:textColor="#444"
+            android:textSize="@dimen/sp_12"/>
+    </RelativeLayout>
+</LinearLayout>

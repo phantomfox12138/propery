@@ -182,6 +182,14 @@
             </intent-filter>
 
         </activity>
+        <activity android:name=".circle.CircleListActivity">
+            <intent-filter>
+                <action android:name="com.junjingit.propery.PROPERY_MY_CIRCLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>

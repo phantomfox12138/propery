@@ -99,6 +99,7 @@
                         android:background="@color/white"
                         android:orientation="horizontal"
                         android:weightSum="3.8">
+
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="45dp"
@@ -106,7 +107,7 @@
                             android:background="@drawable/layout_border_right"
                             android:gravity="center|center_vertical"
                             android:text="@string/my_follow"
-                            android:textColor="@color/c4343434"/>
+                            android:textColor="@color/c4343434" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -114,7 +115,7 @@
                             android:layout_weight="1.9"
                             android:gravity="center|center_horizontal"
                             android:text="@string/my_fans"
-                            android:textColor="@color/c4343434"/>
+                            android:textColor="@color/c4343434" />
                     </LinearLayout>
                 </RelativeLayout>
             </android.support.v7.widget.CardView>

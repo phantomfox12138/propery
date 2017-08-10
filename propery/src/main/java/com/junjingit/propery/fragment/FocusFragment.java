@@ -105,11 +105,8 @@ public class FocusFragment extends Fragment
                              Bundle savedInstanceState)
     {
         mRootView = inflater.inflate(R.layout.fragment_focus, null);
-
         initView();
-
         initData();
-
         return mRootView;
     }
 
@@ -226,7 +223,6 @@ public class FocusFragment extends Fragment
             {
             }
         });
-
     }
 
     class FocusListAdapter extends RecyclerView.Adapter<FocusHolder>
@@ -308,7 +304,7 @@ public class FocusFragment extends Fragment
                                         public void done(AVObject avObject,
                                                          AVException e)
                                         {
-                                            if (null == e)
+                                            if (null == e&&avObject!=null)
                                             {
                                                 String msg = avObject.getString("message");
 

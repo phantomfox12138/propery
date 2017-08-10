@@ -60,5 +60,8 @@ public class FusionAction {
 
         String FROM = "from_where";
     }
+    public interface  CircleListExtra{
+        String CIRCLE_ID="circle_id";
+    }
 
 }

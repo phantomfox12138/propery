@@ -53,7 +53,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Ci
 
     @Override
     public CircleHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        CircleHolder circleHolder = new CircleHolder(LayoutInflater.from(mContext).inflate(R.layout.activity_mycircle_item, null));
+        CircleHolder circleHolder = new CircleHolder(LayoutInflater.from(mContext).inflate(R.layout.activity_mynember_item, null));
         return circleHolder;
     }
 
@@ -61,29 +61,21 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Ci
     public void onBindViewHolder(CircleHolder holder, int position) {
 
         final AVObject obj = mListData.get(position);
-        if (getmFrom().equals("myCircle")) {
             String circleImg;
             String circleName;
-            String circleNum;
-            if (obj.get("cycle_name") == null) {
+            if (obj.get("member_img") == null) {
                 circleImg = "";
             } else {
-                circleImg = obj.get("cycle_name").toString();
+                circleImg = obj.get("member_img").toString();
             }
-            if (obj.get("cycle_name") == null) {
+            if (obj.get("member_name") == null) {
                 circleName = "";
             } else {
-                circleName = obj.get("cycle_name").toString();
+                circleName = obj.get("member_name").toString();
             }
-            if (obj.get("focus_count") == null) {
-                circleNum = "";
-            } else {
-                circleNum = obj.get("focus_count").toString();
-            }
-            ImageLoader.getInstance().displayImage(circleImg, holder.circle_img,MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
-            holder.circle_name.setText(circleName);
-            holder.circle_number.setText(circleNum);
-        }
+
+            ImageLoader.getInstance().displayImage(circleImg, holder.member_img,MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
+            holder.member_name.setText(circleName);
     }
 
     @Override
@@ -92,14 +84,13 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Ci
     }
 
     class CircleHolder extends RecyclerView.ViewHolder {
-        private ImageView circle_img;
-        private TextView circle_name, circle_number;
+        private ImageView member_img;
+        private TextView member_name;
 
         public CircleHolder(View itemView) {
             super(itemView);
-            circle_img = itemView.findViewById(R.id.circle_img);
-            circle_name = itemView.findViewById(R.id.circle_name);
-            circle_number = itemView.findViewById(R.id.circle_number);
+            member_img = itemView.findViewById(R.id.member_img);
+            member_name = itemView.findViewById(R.id.member_name);
         }
     }
 

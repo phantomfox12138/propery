@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,10 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVCloudQueryResult;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.CloudQueryCallback;
 import com.avos.avoscloud.FindCallback;
 import com.junjingit.propery.HomeListAdapter;
 import com.junjingit.propery.R;
@@ -33,6 +37,8 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
+import com.yanzhenjie.recyclerview.swipe.widget.GridItemDecoration;
+import com.yanzhenjie.recyclerview.swipe.widget.ListItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +81,7 @@ public class CircleListActivity extends AppCompatActivity {
         mycircle_list.setAdapter(circleListAdapter);
         mycircle_list.setItemAnimator(new DefaultItemAnimator());
         //添加分割线
-        mycircle_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        mycircle_list.addItemDecoration(getItemDecoration());
 
         // 设置菜单创建器。
         mycircle_list.setSwipeMenuCreator(swipeMenuCreator);
@@ -86,7 +92,7 @@ public class CircleListActivity extends AppCompatActivity {
         String userObjectId= AVUser.getCurrentUser().getObjectId();
         AVQuery<AVObject> query = new AVQuery<>("cycle");
         query.orderByAscending("createdAt");
-        query.whereContains("cycle_created_by",userObjectId);
+        //query.whereContains("cycle_created_by",userObjectId);
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
@@ -94,7 +100,6 @@ public class CircleListActivity extends AppCompatActivity {
                     mDataList.clear();
                     mDataList.addAll(list);
                     circleListAdapter.notifyDataSetChanged();
-                    ToastUtils.showToast(CircleListActivity.this, "查询当前的圈子的数量" + list.size());
                 } else {
                     Log.v(TAG, "##################" + e);
                 }
@@ -142,12 +147,56 @@ public class CircleListActivity extends AppCompatActivity {
             int menuPosition = menuBridge.getPosition(); // 菜单在RecyclerView的Item中的Position。
             if (direction == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
                 if(menuPosition==0){//成员列表
-                    Intent intent=new Intent(FusionAction.MINE_NUMBER);
-                    startActivity(intent);
-                }else{ //解散
+                    Intent memberIntent=new Intent(FusionAction.MINE_NUMBER);
+                    memberIntent.putExtra(FusionAction.CircleListExtra.CIRCLE_ID,mDataList.get(adapterPosition).getObjectId());
+                    startActivity(memberIntent);
+                }else if(menuPosition==1){ //解散
+                    disBand(mDataList.get(adapterPosition).getObjectId(),menuPosition);
                 }
             } else if (direction == SwipeMenuRecyclerView.LEFT_DIRECTION) {
             }
         }
     };
+
+    /**
+     * 解散一个圈子
+     */
+    private void disBand(String objectId,final int position){
+        // 执行 CQL 语句实现删除一个 Todo 对象
+        AVQuery.doCloudQueryInBackground("delete from cycle where objectId='"+objectId+"'", new CloudQueryCallback<AVCloudQueryResult>() {
+            @Override
+            public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
+                // 如果 e 为空，说明保存成功
+                if(e==null){
+                    ToastUtils.showToast(CircleListActivity.this,"圈子解散成功!");
+                    removeData(position);
+                    circleListAdapter.notifyDataSetChanged();
+                }else{
+                    ToastUtils.showToast(CircleListActivity.this,"圈子解散失败!");
+                    circleListAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+    }
+    /**
+     * 获取RecyclerView的Item分割线。
+     */
+    protected RecyclerView.ItemDecoration getItemDecoration() {
+        RecyclerView.LayoutManager layoutManager = mycircle_list.getLayoutManager();
+        if (layoutManager instanceof GridLayoutManager) {
+            return new GridItemDecoration(ContextCompat.getColor(this, R.color.divider_color));
+        } else {
+            return new ListItemDecoration(ContextCompat.getColor(this, R.color.divider_color));
+        }
+    }
+
+    /**
+     * 更新列表数据
+     * @param position
+     */
+    public void removeData(int position) {
+        mDataList.remove(position);
+        circleListAdapter.notifyDataSetChanged();
+    }
 }

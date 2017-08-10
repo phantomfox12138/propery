@@ -49,4 +49,5 @@
 
     <color name="cff203a">#ff203a</color>
     <color name="cgrey">#ccc</color>
+    <color name="divider_color">#FFB7B2B2</color>
 </resources>

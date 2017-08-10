@@ -32,7 +32,9 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.junjingit.propery.HomeListAdapter;
 import com.junjingit.propery.Image;
@@ -146,6 +148,8 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             //暂时还没有头像
             ImageLoader.getInstance().displayImage(userIconUrl, user_icon, MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
         }
+
+
     }
 
     public void setListener() {
@@ -389,5 +393,31 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             startActivity(intent);
             getActivity().finish();
         }
+    }
+    /**
+     * 获取我的关注
+     */
+    private void getMyFollow(){
+        AVQuery<AVUser> followeeQuery = AVUser.followeeQuery(AVUser.getCurrentUser().getObjectId(), AVUser.class);
+        followeeQuery.findInBackground(new FindCallback<AVUser>() {
+            @Override
+            public void done(List<AVUser> avObjects, AVException avException) {
+                //avObjects 就是用户的关注用户列表
+            }
+        });
+    }
+
+    /**
+     * 得到我的粉丝
+     */
+    private void getMyFans(){
+        /*AVQuery<AVUser> followerQuery =AVUser.getCurrentUser().followerQuery(AVUser.class);
+        followerQuery.findInBackground(new FindCallback<AVUser>() {
+            @Override
+            public void done(List<AVUser> avObjects, AVException avException) {
+                // avObjects 包含了 userA 的粉丝列表
+            }
+        });*/
+
     }
 }

@@ -1,6 +1,7 @@
 package com.junjingit.propery.circle;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,6 +24,7 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.junjingit.propery.HomeListAdapter;
 import com.junjingit.propery.R;
+import com.junjingit.propery.common.FusionAction;
 import com.junjingit.propery.utils.ToastUtils;
 import com.ns.developer.tagview.entity.Tag;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
@@ -139,7 +141,11 @@ public class CircleListActivity extends AppCompatActivity {
             int adapterPosition = menuBridge.getAdapterPosition();//RecyclerView的Item的position。
             int menuPosition = menuBridge.getPosition(); // 菜单在RecyclerView的Item中的Position。
             if (direction == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
-                ToastUtils.showToast(CircleListActivity.this,"list第" + adapterPosition + "; 右侧菜单第" + menuPosition);
+                if(menuPosition==0){//成员列表
+                    Intent intent=new Intent(FusionAction.MINE_NUMBER);
+                    startActivity(intent);
+                }else{ //解散
+                }
             } else if (direction == SwipeMenuRecyclerView.LEFT_DIRECTION) {
             }
         }

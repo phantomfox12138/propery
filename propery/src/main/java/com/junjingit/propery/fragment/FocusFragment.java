@@ -54,17 +54,17 @@ import q.rorbin.badgeview.QBadgeView;
 public class FocusFragment extends Fragment
 {
     private static final String TAG = "FocusFragment";
-    
+
     private View mRootView;
-    
+
     private SwipeMenuRecyclerView mFocusList;
-    
+
     private CommunityFragment.CommunityAdapter mCommunityAdapter;
-    
+
     private List<AVUser> mFocusCycleList = new ArrayList<>();
-    
+
     private FocusListAdapter mAdapter;
-    
+
     /**
      * 菜单创建器，在Item要创建菜单的时候调用。
      */
@@ -72,15 +72,15 @@ public class FocusFragment extends Fragment
     {
         @Override
         public void onCreateMenu(SwipeMenu swipeLeftMenu,
-                SwipeMenu swipeRightMenu, int viewType)
+                                 SwipeMenu swipeRightMenu, int viewType)
         {
             int width = getResources().getDimensionPixelSize(R.dimen.dp_72);
-            
+
             // 1. MATCH_PARENT 自适应高度，保持和Item一样高;
             // 2. 指定具体的高，比如80;
             // 3. WRAP_CONTENT，自身高度，不推荐;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
-            
+
             SwipeMenuItem closeItem = new SwipeMenuItem(getActivity()).setBackground(android.R.color.holo_red_light)
                     //                    .setImage(R.mipmap.ic_action_close)
                     .setWidth(width)
@@ -88,37 +88,37 @@ public class FocusFragment extends Fragment
                     .setTextColor(getActivity().getResources()
                             .getColor(R.color.white))
                     .setHeight(height);
-            
+
             // 添加菜单到右侧。
             swipeRightMenu.addMenuItem(closeItem);
         }
     };
-    
+
     public void setCommunityAdapter(
             CommunityFragment.CommunityAdapter communityAdapter)
     {
         this.mCommunityAdapter = communityAdapter;
     }
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+                             Bundle savedInstanceState)
     {
         mRootView = inflater.inflate(R.layout.fragment_focus, null);
-        
+
         initView();
-        
+
         initData();
-        
+
         return mRootView;
     }
-    
+
     private void initData()
     {
-        
+
         //查询关注者
         AVQuery<AVUser> followeeQuery = AVUser.followeeQuery(AVUser.getCurrentUser()
-                .getObjectId(),
+                        .getObjectId(),
                 AVUser.class);
         followeeQuery.findInBackground(new FindCallback<AVUser>()
         {
@@ -130,13 +130,13 @@ public class FocusFragment extends Fragment
                     mFocusCycleList.clear();
                     mFocusCycleList.add(0, new AVUser());
                     mFocusCycleList.addAll(avObjects);
-                    
+
                     mAdapter.notifyDataSetChanged();
                 }
             }
         });
     }
-    
+
     private void initView()
     {
         mFocusList = mRootView.findViewById(R.id.focus_list);
@@ -144,66 +144,66 @@ public class FocusFragment extends Fragment
         mAdapter.setFocusList(mFocusCycleList);
         mFocusList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mFocusList.setAdapter(mAdapter);
-        
+
         mFocusList.setSwipeMenuItemClickListener(new SwipeMenuItemClickListener()
         {
             @Override
             public void onItemClick(SwipeMenuBridge menuBridge)
             {
                 menuBridge.closeMenu();
-                
+
                 // 左侧还是右侧菜单。
                 int direction = menuBridge.getDirection();
-                
+
                 // RecyclerView的Item的position。
                 final int adapterPosition = menuBridge.getAdapterPosition();
-                
+
                 // 菜单在RecyclerView的Item中的Position。
                 // int menuPosition = menuBridge.getPosition();
-                
+
                 if (direction == SwipeMenuRecyclerView.RIGHT_DIRECTION)
                 {
                     AVUser.getCurrentUser()
                             .unfollowInBackground(mFocusCycleList.get(adapterPosition)
-                                    .getObjectId(),
+                                            .getObjectId(),
                                     new FollowCallback()
                                     {
                                         @Override
                                         public void done(AVObject avObject,
-                                                AVException e)
+                                                         AVException e)
                                         {
                                             if (null == e)
                                             {
                                                 mFocusCycleList.remove(adapterPosition);
                                                 mAdapter.notifyDataSetChanged();
-                                                
+
                                                 //                                                mCommunityAdapter.setPosition(1);
                                                 //                                                mCommunityAdapter.notifyDataSetChanged();
-                                                
+
                                                 Log.d(TAG, "取消关注成功");
                                             }
                                         }
-                                        
+
                                     });
                 }
             }
         });
-        
+
         // 设置菜单创建器。
         // 设置菜单Item点击监听。
         //        mFocusList.setLongPressDragEnabled(true); // 开启拖拽。
         //        mFocusList.setItemViewSwipeEnabled(true);
         mFocusList.setSwipeMenuCreator(mSwipeMenuCreator);
-        
+
         mFocusList.setOnItemStateChangedListener(new OnItemStateChangedListener()
         {
             @Override
             public void onSelectedChanged(RecyclerView.ViewHolder viewHolder,
-                    int actionState)
+                                          int actionState)
             {
                 if (actionState == OnItemStateChangedListener.ACTION_STATE_SWIPE)
                 {
-                    
+
                     if (viewHolder.getPosition() == 0)
                     {
                         mAdapter.notifyDataSetChanged();
@@ -211,51 +211,51 @@ public class FocusFragment extends Fragment
                 }
             }
         });
-        
+
         mFocusList.setOnItemMoveListener(new OnItemMoveListener()
         {
             @Override
             public boolean onItemMove(RecyclerView.ViewHolder srcHolder,
-                    RecyclerView.ViewHolder targetHolder)
+                                      RecyclerView.ViewHolder targetHolder)
             {
                 return false;
             }
-            
+
             @Override
             public void onItemDismiss(int position)
             {
             }
         });
-        
+
     }
-    
+
     class FocusListAdapter extends RecyclerView.Adapter<FocusHolder>
     {
         private Context context;
-        
+
         private List<AVUser> focusList;
-        
+
         private Badge badge;
-        
+
         public void setFocusList(List<AVUser> focusList)
         {
             this.focusList = focusList;
         }
-        
+
         public FocusListAdapter(Context context)
         {
             this.context = context;
         }
-        
+
         @Override
         public FocusHolder onCreateViewHolder(ViewGroup parent, int viewType)
         {
             FocusHolder holder = new FocusHolder(LayoutInflater.from(context)
                     .inflate(R.layout.focus_item_layout, null));
-            
+
             return holder;
         }
-        
+
         @Override
         public int getItemViewType(int position)
         {
@@ -267,53 +267,53 @@ public class FocusFragment extends Fragment
             //            {
             //                return 3;
             //            }
-            
+
             return super.getItemViewType(position);
         }
-        
+
         @Override
         public void onBindViewHolder(final FocusHolder holder,
-                final int position)
+                                     final int position)
         {
             final AVUser user = focusList.get(position);
-            
+
             if (getItemViewType(position) == 2)
             {
                 holder.itemName.setVisibility(View.VISIBLE);
                 holder.itemName.setText("我的圈子");
-                
+
                 AVRelation<AVObject> relation = AVUser.getCurrentUser()
                         .getRelation("cycle");
-                
+
                 relation.getQuery()
                         .getFirstInBackground(new GetCallback<AVObject>()
                         {
                             @Override
                             public void done(final AVObject avObject,
-                                    AVException e)
+                                             AVException e)
                             {
                                 if (null == e && null != avObject)
                                 {
                                     String lastUpdateCycleId = avObject.getObjectId();
-                                    
+
                                     AVQuery<AVObject> query = new AVQuery<AVObject>(
                                             "Public_Status");
                                     query.whereEqualTo("cycle_id",
                                             lastUpdateCycleId);
                                     query.orderByAscending("createdAt");
-                                    
+
                                     query.getFirstInBackground(new GetCallback<AVObject>()
                                     {
                                         @Override
                                         public void done(AVObject avObject,
-                                                AVException e)
+                                                         AVException e)
                                         {
                                             if (null == e)
                                             {
                                                 String msg = avObject.getString("message");
-                                                
+
                                                 holder.msgPerview.setText(msg);
-                                                
+
                                                 Date date = avObject.getCreatedAt();
                                                 SimpleDateFormat sdf = new SimpleDateFormat(
                                                         "yyyy-MM-dd hh:mm");
@@ -321,21 +321,21 @@ public class FocusFragment extends Fragment
                                             }
                                         }
                                     });
-                                    
+
                                 }
                             }
                         });
-                
+
             }
             else
             {
                 holder.itemName.setVisibility(View.GONE);
-                
+
                 //                AVUser.getCurrentUser().followeeQuery()
-                
+
                 Log.d(TAG, "nikename = "
                         + AVUser.getCurrentUser().getObjectId());
-                
+
                 AVUser.getQuery().getInBackground(user.getObjectId(),
                         new GetCallback<AVUser>()
                         {
@@ -348,7 +348,7 @@ public class FocusFragment extends Fragment
                                 }
                             }
                         });
-                
+
                 AVStatusQuery inboxQuery = AVStatus.inboxQuery(AVUser.getCurrentUser(),
                         AVStatus.INBOX_TYPE.TIMELINE.toString());
                 inboxQuery.orderByAscending("createdAt");
@@ -361,16 +361,16 @@ public class FocusFragment extends Fragment
                         {
                             String msg = avStatus.getMessage();
                             holder.msgPerview.setText(msg);
-                            
+
                             Date date = avStatus.getCreatedAt();
                             SimpleDateFormat sdf = new SimpleDateFormat(
                                     "yyyy-MM-dd hh:mm");
                             holder.updateTime.setText(sdf.format(date.getTime()));
-                            
+
                         }
                     }
                 });
-                
+
                 AVStatus.getUnreadStatusesCountInBackground(AVStatus.INBOX_TYPE.TIMELINE.toString(),
                         new CountCallback()
                         {
@@ -383,14 +383,14 @@ public class FocusFragment extends Fragment
                                 }
                             }
                         });
-                
+
             }
-            
+
             //            if (getItemViewType(position) == 3)
             //            {
             //                holder.name.setText("我关注的");
             //            }
-            
+
             holder.item.setOnClickListener(new View.OnClickListener()
             {
                 @Override
@@ -400,9 +400,9 @@ public class FocusFragment extends Fragment
                     {
                         Intent toFocusList = new Intent(
                                 FusionAction.FOCUS_LIST_ACTION);
-                        
+
                         startActivity(toFocusList);
-                        
+
                     }
                     else
                     {
@@ -415,36 +415,36 @@ public class FocusFragment extends Fragment
                     }
                 }
             });
-            
+
         }
-        
+
         @Override
         public int getItemCount()
         {
             int size = null != focusList ? focusList.size() : 0;
-            
+
             return size;// == 0 ? 1 : size;
         }
     }
-    
+
     class FocusHolder extends RecyclerView.ViewHolder
     {
         ImageView icon;
-        
+
         TextView name;
-        
+
         TextView msgPerview;
-        
+
         TextView updateTime;
-        
+
         TextView itemName;
-        
+
         LinearLayout item;
-        
+
         public FocusHolder(View itemView)
         {
             super(itemView);
-            
+
             icon = itemView.findViewById(R.id.item_icon);
             name = itemView.findViewById(R.id.item_user_id);
             msgPerview = itemView.findViewById(R.id.item_msg_perview);
@@ -452,9 +452,9 @@ public class FocusFragment extends Fragment
             item = itemView.findViewById(R.id.focus_item);
             itemName = itemView.findViewById(R.id.item_name);
         }
-        
+
     }
-    
+
     private Badge addBadgeAt(View view, int number)
     {
         // add badge
@@ -465,18 +465,18 @@ public class FocusFragment extends Fragment
                 {
                     @Override
                     public void onDragStateChanged(int dragState, Badge badge,
-                            View targetView)
+                                                   View targetView)
                     {
                         if (Badge.OnDragStateChangedListener.STATE_SUCCEED == dragState)
                         {
                             //                            Toast.makeText(getActivity(),
                             //                                    "已读",
                             //                                    Toast.LENGTH_SHORT).show();
-                            
+
                             badge.hide(true);
                         }
                     }
                 });
     }
-    
+
 }

@@ -34,7 +34,7 @@ import java.util.List;
  */
 
 public class MemberListActivity extends AppCompatActivity {
-    private static String TAG = "CircleListActivity";
+    private static String TAG = "MemberListActivity";
     private Toolbar title_bar;
     private SwipeRefreshLayout refresh_layout;
     private SwipeMenuRecyclerView mycircle_list;
@@ -56,11 +56,11 @@ public class MemberListActivity extends AppCompatActivity {
         mycircle_list = (SwipeMenuRecyclerView) findViewById(R.id.mycircle_list);
         title_bar = (Toolbar) findViewById(R.id.title_bar);
         setSupportActionBar(title_bar);
-        getSupportActionBar().setTitle(getString(R.string.my_circle));
+        getSupportActionBar().setTitle(getString(R.string.my_member));
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         circleListAdapter = new CircleListAdapter(this);
-        circleListAdapter.setmFrom("myCircle");
+        circleListAdapter.setmFrom("myMember");
         circleListAdapter.setmListData(mDataList);
         mycircle_list.setLayoutManager(new LinearLayoutManager(this));
         mycircle_list.setAdapter(circleListAdapter);
@@ -103,14 +103,14 @@ public class MemberListActivity extends AppCompatActivity {
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             SwipeMenuItem addItem1 = new SwipeMenuItem(mContext)
                     .setBackground(android.R.color.holo_green_dark)// 点击的背景。
-                    .setText("成员列表")
+                    .setText("禁言")
                     .setTextSize(16)
                     .setTextColor(getResources().getColor(R.color.white))
                     .setWidth(width) // 宽度。
                     .setHeight(height); // 高度。
             SwipeMenuItem addItem2 = new SwipeMenuItem(mContext)
                     .setBackground(android.R.color.holo_red_light)// 点击的背景。
-                    .setText("解散")
+                    .setText("删除")
                     .setTextSize(16)
                     .setTextColor(getResources().getColor(R.color.white))
                     .setWidth(width) // 宽度。
@@ -132,7 +132,6 @@ public class MemberListActivity extends AppCompatActivity {
             int adapterPosition = menuBridge.getAdapterPosition();//RecyclerView的Item的position。
             int menuPosition = menuBridge.getPosition(); // 菜单在RecyclerView的Item中的Position。
             if (direction == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
-                ToastUtils.showToast(MemberListActivity.this,"list第" + adapterPosition + "; 右侧菜单第" + menuPosition);
             } else if (direction == SwipeMenuRecyclerView.LEFT_DIRECTION) {
             }
         }

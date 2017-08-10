@@ -29,8 +29,7 @@ public class FusionAction {
     public static final String HOME_TITLE_PAY_ACTION = "com.junjingit.propery.PROPERY_PAY";
 
     public static final String MINE_CIRCLE = "com.junjingit.propery.PROPERY_MY_CIRCLE";
-
-
+    public static final String MINE_NUMBER = "com.junjingit.propery.PROPERY_MY_NUMBER";
     public interface HomeListExtra {
         String TYPE = "list_type";
 

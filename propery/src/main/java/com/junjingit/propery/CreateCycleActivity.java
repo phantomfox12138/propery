@@ -1,5 +1,6 @@
 package com.junjingit.propery;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SaveCallback;
 
 public class CreateCycleActivity extends AppCompatActivity
@@ -40,7 +42,7 @@ public class CreateCycleActivity extends AppCompatActivity
         mToolbar = (Toolbar) findViewById(R.id.create_cycle_toolbar);
         
         setSupportActionBar(mToolbar);
-
+        
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
@@ -51,9 +53,10 @@ public class CreateCycleActivity extends AppCompatActivity
             {
                 String cycleName = mCreateEdit.getText().toString();
                 
-                AVObject object = new AVObject("cycle");
+                final AVObject object = new AVObject("cycle");
                 object.put("cycle_name", cycleName);
-                object.put("focus_count", "1");
+                object.put("cycle_created_by", AVUser.getCurrentUser()
+                        .getObjectId());
                 
                 object.saveInBackground(new SaveCallback()
                 {
@@ -65,6 +68,23 @@ public class CreateCycleActivity extends AppCompatActivity
                             Toast.makeText(CreateCycleActivity.this,
                                     "创建成功",
                                     Toast.LENGTH_LONG).show();
+                            
+                            AVUser user = AVUser.getCurrentUser();
+                            
+                            user.getRelation("cycle").add(object);
+                            user.saveInBackground(new SaveCallback()
+                            {
+                                @Override
+                                public void done(AVException e)
+                                {
+                                    if (null == e)
+                                    {
+                                        object.increment("focus_count");
+                                        object.saveInBackground();
+                                        
+                                    }
+                                }
+                            });
                         }
                     }
                 });

@@ -331,6 +331,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                     String userObjectId = AVUser.getCurrentUser().getObjectId();
                     AVObject todo = AVObject.createWithoutData("_User",
                             userObjectId);
+
                     todo.put("user_icon_url", netImgPath);
                     todo.put("userIcon", netImgName);
                     todo.saveInBackground(new SaveCallback() {

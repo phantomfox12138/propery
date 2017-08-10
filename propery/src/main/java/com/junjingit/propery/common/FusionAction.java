@@ -30,6 +30,7 @@ public class FusionAction {
 
     public static final String MINE_CIRCLE = "com.junjingit.propery.PROPERY_MY_CIRCLE";
 
+
     public interface HomeListExtra {
         String TYPE = "list_type";
 

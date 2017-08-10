@@ -33,6 +33,7 @@ public class CircleListAdapter extends RecyclerView.Adapter<CircleListAdapter.Ci
     private Context mContext;
     private List<AVObject> mListData;
     private String mFrom;
+
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
     public List<AVObject> getmListData() {
         return mListData;

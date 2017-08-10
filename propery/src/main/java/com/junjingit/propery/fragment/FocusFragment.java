@@ -106,9 +106,9 @@ public class FocusFragment extends Fragment
     {
         mRootView = inflater.inflate(R.layout.fragment_focus, null);
         
-        initData();
-        
         initView();
+        
+        initData();
         
         return mRootView;
     }

@@ -59,6 +59,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Ci
 
     @Override
     public void onBindViewHolder(CircleHolder holder, int position) {
+
         final AVObject obj = mListData.get(position);
         if (getmFrom().equals("myCircle")) {
             String circleImg;

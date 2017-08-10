@@ -55,6 +55,7 @@ public class CircleListActivity extends AppCompatActivity {
         mContext = CircleListActivity.this;
         initView();
         initData();
+
     }
 
     private void initView() {

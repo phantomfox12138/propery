@@ -41,6 +41,7 @@ public class MemberListActivity extends AppCompatActivity {
     private CircleListAdapter circleListAdapter;
     private List<AVObject> mDataList = new ArrayList<>();
     private Context mContext;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

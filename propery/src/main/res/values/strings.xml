@@ -42,4 +42,7 @@
     <string name="follow_tip">确定不再关注这位小宝宝了吗？</string>
     <string name="join_follow">&#043;&#160;关注</string>
     <string name="exit_login">退出登录</string>
+    <string name="nickname_empty">你还没有昵称</string>
+    <string name="my_follow">我的关注</string>
+    <string name="my_fans">我的粉丝</string>
 </resources>

@@ -26,11 +26,9 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.CloudQueryCallback;
 import com.avos.avoscloud.FindCallback;
-import com.junjingit.propery.HomeListAdapter;
 import com.junjingit.propery.R;
 import com.junjingit.propery.common.FusionAction;
 import com.junjingit.propery.utils.ToastUtils;
-import com.ns.developer.tagview.entity.Tag;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
@@ -86,13 +84,28 @@ public class CircleListActivity extends AppCompatActivity {
         // 设置菜单创建器。
         mycircle_list.setSwipeMenuCreator(swipeMenuCreator);
         mycircle_list.setSwipeMenuItemClickListener(mMenuItemClickListener);
+        refresh_layout.setOnRefreshListener(mRefreshListener); // 刷新监听。
     }
+    /**
+     * 刷新。
+     */
+    private SwipeRefreshLayout.OnRefreshListener mRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            mycircle_list.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    initData();
+                }
+            }, 1000);
+        }
+    };
 
     private void initData() {
         String userObjectId= AVUser.getCurrentUser().getObjectId();
         AVQuery<AVObject> query = new AVQuery<>("cycle");
         query.orderByAscending("createdAt");
-        //query.whereContains("cycle_created_by",userObjectId);
+        query.whereContains("cycle_created_by",userObjectId);
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
@@ -105,6 +118,11 @@ public class CircleListActivity extends AppCompatActivity {
                 }
             }
         });
+        refresh_layout.setRefreshing(false);
+        // 第一次加载数据：一定要调用这个方法，否则不会触发加载更多。
+        // 第一个参数：表示此次数据是否为空，假如你请求到的list为空(== null || list.size == 0)，那么这里就要true。
+        // 第二个参数：表示是否还有更多数据，根据服务器返回给你的page等信息判断是否还有更多，这样可以提供性能，如果不能判断则传true。
+        mycircle_list.loadMoreFinish(false, true);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.junjingit.propery.circle;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +13,14 @@ import android.widget.TextView;
 import com.avos.avoscloud.AVObject;
 import com.junjingit.propery.R;
 import com.junjingit.propery.utils.MyImageLoader;
+import com.junjingit.propery.utils.ToastUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,12 +35,16 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Ci
     private List<AVObject> mListData;
     private String mFrom;
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+    private ArrayList<String> slientList;
+    IClickListener iClickListener;
+
     public List<AVObject> getmListData() {
         return mListData;
     }
 
-    public void setmListData(List<AVObject> mListData) {
+    public void setmListData(List<AVObject> mListData, ArrayList<String> slientList) {
         this.mListData = mListData;
+        this.slientList = slientList;
     }
 
     public String getmFrom() {
@@ -59,23 +67,34 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Ci
 
     @Override
     public void onBindViewHolder(CircleHolder holder, int position) {
-
         final AVObject obj = mListData.get(position);
-            String circleImg;
-            String circleName;
-            if (obj.get("member_img") == null) {
-                circleImg = "";
-            } else {
-                circleImg = obj.get("member_img").toString();
+        Log.v("MemberListActivity", "onBindViewHolder"+position);
+        String currentMemberId = obj.getObjectId().toString();//得到当前成员的id
+        String circleImg;
+        String circleName;
+        iClickListener.changeMenuType(position);
+       /* if(slientList!=null){
+            for (int i=0;i<slientList.size();i++){
+                String currentValue=slientList.get(i).toString();
+                if(currentMemberId.equals(currentValue)){
+                    //说明该成员已经被禁言
+                    iClickListener.changeMenuType(position);
+                }
             }
-            if (obj.get("member_name") == null) {
-                circleName = "";
-            } else {
-                circleName = obj.get("member_name").toString();
-            }
+        }*/
+        if (obj.get("member_img") == null) {
+            circleImg = "";
+        } else {
+            circleImg = obj.get("member_img").toString();
+        }
+        if (obj.get("username") == null) {
+            circleName = "";
+        } else {
+            circleName = obj.get("username").toString();
+        }
 
-            ImageLoader.getInstance().displayImage(circleImg, holder.member_img,MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
-            holder.member_name.setText(circleName);
+        ImageLoader.getInstance().displayImage(circleImg, holder.member_img, MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
+        holder.member_name.setText(circleName);
     }
 
     @Override
@@ -109,5 +128,11 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Ci
                 }
             }
         }
+    }
+    public interface IClickListener{
+        void changeMenuType(int type);
+    }
+    public void setIClickListener(IClickListener iClickListener){
+        this.iClickListener = iClickListener;
     }
 }

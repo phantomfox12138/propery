@@ -68,10 +68,10 @@ public class CircleListAdapter extends RecyclerView.Adapter<CircleListAdapter.Ci
             String circleImg;
             String circleName;
             String circleNum;
-            if (obj.get("cycle_name") == null) {
+            if (obj.get("cycle_icon_url") == null) {
                 circleImg = "";
             } else {
-                circleImg = obj.get("cycle_name").toString();
+                circleImg = obj.get("cycle_icon_url").toString();
             }
             if (obj.get("cycle_name") == null) {
                 circleName = "";
@@ -83,7 +83,7 @@ public class CircleListAdapter extends RecyclerView.Adapter<CircleListAdapter.Ci
             } else {
                 circleNum = obj.get("focus_count").toString();
             }
-            ImageLoader.getInstance().displayImage(circleImg, holder.circle_img,MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
+            ImageLoader.getInstance().displayImage(circleImg, holder.circle_img,MyImageLoader.DisplayImageOptions(), animateFirstListener);
             holder.circle_name.setText(circleName);
             holder.circle_number.setText(circleNum);
         }

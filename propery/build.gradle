@@ -72,4 +72,5 @@ dependencies {
     compile 'com.daimajia.slider:library:1.1.5@aar'
     compile 'com.github.varunest:sparkbutton:+'
     testCompile 'junit:junit:4.12'
+    compile project(':collapsibletext')
 }

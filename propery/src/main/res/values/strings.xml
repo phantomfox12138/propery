@@ -47,4 +47,5 @@
     <string name="my_fans">我的粉丝</string>
     <string name="my_circle">我的圈子</string>
     <string name="my_member">成员列表</string>
+    <string name="my_userinfo">个人资料</string>
 </resources>

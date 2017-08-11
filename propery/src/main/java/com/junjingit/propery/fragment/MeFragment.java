@@ -92,7 +92,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
 
     private ImageLoadingListener animateFirstListener = new MeFragment.AnimateFirstDisplayListener();
 
-    private LinearLayout exitLinearLayout,me_circle_layout;
+    private LinearLayout exitLinearLayout,me_circle_layout,me_modify_layout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -125,6 +125,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         me_circle_layout=mRootView.findViewById(R.id.me_circle_layout);
         myFans_txt=mRootView.findViewById(R.id.myFans_txt);
         myFollow_txt=mRootView.findViewById(R.id.myFollow_txt);
+        me_modify_layout=mRootView.findViewById(R.id.me_modify_layout);
         setListener();
         initData();
     }
@@ -159,6 +160,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         user_icon.setOnClickListener(this);
         exitLinearLayout.setOnClickListener(this);
         me_circle_layout.setOnClickListener(this);
+        me_modify_layout.setOnClickListener(this);
     }
 
     public void onAddPic() {
@@ -211,6 +213,10 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.exitLinearLayout:
                 exitLogin();
+                break;
+            case R.id.me_modify_layout:
+                Intent toUserInfo=new Intent(FusionAction.USER_INFO);
+                startActivity(toUserInfo);
                 break;
             default:
                 break;

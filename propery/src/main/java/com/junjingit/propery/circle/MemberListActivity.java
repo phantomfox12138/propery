@@ -20,6 +20,7 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.junjingit.propery.R;
 import com.junjingit.propery.common.FusionAction;
 import com.junjingit.propery.utils.ToastUtils;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
@@ -30,7 +31,6 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import com.yanzhenjie.recyclerview.swipe.widget.GridItemDecoration;
 import com.yanzhenjie.recyclerview.swipe.widget.ListItemDecoration;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -271,12 +271,6 @@ public class MemberListActivity extends AppCompatActivity implements MemberListA
         });
     }
 
-    /**
-     * 删除成员
-     */
-    private void myMemberDelete(String objectId, final int position) {
-    }
-
 
     /**
      * 更新列表数据
@@ -340,5 +334,63 @@ public class MemberListActivity extends AppCompatActivity implements MemberListA
         itemPosition = type;
     }
 
+    /**
+     * 删除成员
+     * @param userObjectId
+     * @param memberPosition
+     */
+    public void myMemberDelete(String userObjectId,final int memberPosition) {
+        Log.v(TAG, "deleteMember#################打印当前的" + userObjectId);
 
+       /* AVObject todoFolder = AVObject.createWithoutData("_User",AVUser.getCurrentUser().getObjectId());
+        AVRelation<AVObject> relation = todoFolder.getRelation("cycle");
+        AVQuery<AVObject> query = relation.getQuery();
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e){
+                if(e==null){
+                   Log.v(TAG,"deleteMember#################打印当前的"+list.size());
+                }else{
+                    Log.v(TAG,"deleteMember#################打印当前的"+e);
+                }
+            }
+        });*/
+        AVQuery<AVUser> queryMember = new AVQuery<>("_User");
+        queryMember.whereEqualTo("cycle", memberAvObject);
+        queryMember.findInBackground(new FindCallback<AVUser>() {
+            @Override
+            public void done(List<AVUser> list, AVException e) {
+                if (e == null) {
+                    memberDataList.clear();
+                    memberDataList.addAll(list);
+                    String currentValue = memberDataList.get(memberPosition).getObjectId();
+                    for (int i = 0; i < memberDataList.size(); i++) {
+                        String tempValue = memberDataList.get(i).getObjectId().toString();
+                        if (currentValue.equals(tempValue)) {
+                            memberDataList.remove(i);
+                            --i;
+                        }
+                    }
+
+                    AVObject todoFolder = AVObject.createWithoutData("_User",AVUser.getCurrentUser().getObjectId());
+                    todoFolder.put("cycle",memberDataList);
+                    todoFolder.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(AVException e) {
+                            if(e==null){
+                            }
+                            Log.v(TAG,"deleteMember#################打印当前的"+e);
+                        }
+                    });
+                    if (memberDataList == null) {
+                        Log.v(TAG, "##################当前已经没有数据" + memberDataList);
+                    } else {
+                        Log.v(TAG, "##################当前成员的size" + memberDataList.size());
+                    }
+                } else {
+                    Log.v(TAG, "##################" + e);
+                }
+            }
+        });
+    }
 }

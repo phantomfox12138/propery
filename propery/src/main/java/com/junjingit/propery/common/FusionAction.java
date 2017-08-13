@@ -34,7 +34,10 @@ public class FusionAction
     public static final String MINE_NUMBER = "com.junjingit.propery.PROPERY_MY_NUMBER";
     
     public static final String USER_INFO = "com.junjingit.propery.PROPERY_MY_USERINFO";
-    
+
+    public static final String MODIFY_USER_INFO ="com.junjingit.propery.PROPERY_MY_MODIFY_INFO";
+
+    public static final String MODIFY_USER_PSW ="com.junjingit.propery.PROPERY_MY_MODIFY_PSW";
     public interface HomeListExtra
     {
         String TYPE = "list_type";

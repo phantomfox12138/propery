@@ -2,7 +2,10 @@ package com.junjingit.propery.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -35,6 +39,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.junjingit.propery.HomeListAdapter;
 import com.junjingit.propery.Image;
@@ -52,6 +57,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.xander.panel.PanelInterface;
+import com.xander.panel.XanderPanel;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -82,21 +89,25 @@ public class MeFragment extends Fragment implements View.OnClickListener {
 
     private CircleImageView user_icon;
 
-    private TextView user_nickName, takePhoto, takeAlbum, takeCancel,myFans_txt,myFollow_txt;
+    private TextView user_nickName, takePhoto, takeAlbum, takeCancel, myFans_txt, myFollow_txt;
 
     private View mModifyProfile;
 
     String strImgPath = "";
 
     String fileName = "";
-
+    String nickName;
+    String userIconUrl;
     private ImageLoadingListener animateFirstListener = new MeFragment.AnimateFirstDisplayListener();
 
-    private LinearLayout exitLinearLayout,me_circle_layout,me_modify_layout;
+    private LinearLayout exitLinearLayout, me_circle_layout, me_modify_layout;
+    private UpDateReceiver updateReceiver;
+    private Button exit_btn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        upViewData();//注册广播
         if (mRootView == null) {
             mRootView = inflater.inflate(R.layout.fragment_me, null);
             initView();
@@ -121,11 +132,11 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         mModifyProfile = mRootView.findViewById(R.id.profile_modify_profile);
         user_icon = (CircleImageView) mRootView.findViewById(R.id.user_icon);
         user_nickName = mRootView.findViewById(R.id.user_nickName);
-        exitLinearLayout = mRootView.findViewById(R.id.exitLinearLayout);
-        me_circle_layout=mRootView.findViewById(R.id.me_circle_layout);
-        myFans_txt=mRootView.findViewById(R.id.myFans_txt);
-        myFollow_txt=mRootView.findViewById(R.id.myFollow_txt);
-        me_modify_layout=mRootView.findViewById(R.id.me_modify_layout);
+        exit_btn = mRootView.findViewById(R.id.exit_btn);
+        me_circle_layout = mRootView.findViewById(R.id.me_circle_layout);
+        myFans_txt = mRootView.findViewById(R.id.myFans_txt);
+        myFollow_txt = mRootView.findViewById(R.id.myFollow_txt);
+        me_modify_layout = mRootView.findViewById(R.id.me_modify_layout);
         setListener();
         initData();
     }
@@ -135,30 +146,37 @@ public class MeFragment extends Fragment implements View.OnClickListener {
      */
     private void initData() {
         String userObjectId = getCurrentUser().getObjectId();
-        String nickName;
-        String userIconUrl;
-        if (getCurrentUser().get("user_icon_url") == null) {
-            userIconUrl = "";
-        } else {
-            userIconUrl = getCurrentUser().get("user_icon_url").toString();
-        }
-        if (getCurrentUser().get("nickname") == null) {
-            user_nickName.setText(getString(R.string.nickname_empty));
-        } else {
-            nickName = getCurrentUser().get("nickname").toString();
-            user_nickName.setText(nickName);
-        }
-        if (!TextUtils.isEmpty(userIconUrl)) {
-            //暂时还没有头像
-            ImageLoader.getInstance().displayImage(userIconUrl, user_icon, MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
-        }
+        AVObject anotherTodo = AVObject.createWithoutData("_User", userObjectId);
+        anotherTodo.fetchInBackground(new GetCallback<AVObject>(){
+            @Override
+            public void done(AVObject avObject, AVException e) {
+                if (e == null) {
+                    if (avObject.get("user_icon_url") == null) {
+                        userIconUrl = "";
+                    } else {
+                        userIconUrl = avObject.get("user_icon_url").toString();
+                    }
+                    if (avObject.get("nickname") == null) {
+                        user_nickName.setText(getString(R.string.nickname_empty));
+                    } else {
+                        nickName = avObject.get("nickname").toString();
+                        user_nickName.setText(nickName);
+                    }
+                    if (!TextUtils.isEmpty(userIconUrl)) {
+                        //暂时还没有头像
+                        ImageLoader.getInstance().displayImage(userIconUrl, user_icon, MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
+                    }
+                }
+            }
+        });
         getMyFollow(userObjectId);
         getMyFans();
+
     }
 
     public void setListener() {
         user_icon.setOnClickListener(this);
-        exitLinearLayout.setOnClickListener(this);
+        exit_btn.setOnClickListener(this);
         me_circle_layout.setOnClickListener(this);
         me_modify_layout.setOnClickListener(this);
     }
@@ -205,17 +223,18 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.user_icon:
-                onAddPic();
+                // onAddPic();
+                getSheet();
                 break;
             case R.id.me_circle_layout:
-                Intent toMyCircle=new Intent(FusionAction.MINE_CIRCLE);
+                Intent toMyCircle = new Intent(FusionAction.MINE_CIRCLE);
                 startActivity(toMyCircle);
                 break;
-            case R.id.exitLinearLayout:
+            case R.id.exit_btn:
                 exitLogin();
                 break;
             case R.id.me_modify_layout:
-                Intent toUserInfo=new Intent(FusionAction.USER_INFO);
+                Intent toUserInfo = new Intent(FusionAction.USER_INFO);
                 startActivity(toUserInfo);
                 break;
             default:
@@ -227,7 +246,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
      * 调用相机拍照
      */
     public void getPicFromCamera() {
-        dialog.dismiss();
+        // dialog.dismiss();
         String state = Environment.getExternalStorageState();
         if (state.equals(Environment.MEDIA_MOUNTED)) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -254,7 +273,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
      * 从相册选择照片
      */
     public void selectIconImage() {
-        dialog.dismiss();
+        //  dialog.dismiss();
         //跳转选择图片页面
         Intent pickPhoto = new Intent(FusionAction.IMAGE_LOADER_ACTION);
         //参数2位设置可选择图片的最大值
@@ -393,26 +412,43 @@ public class MeFragment extends Fragment implements View.OnClickListener {
      * 退出登录
      */
     private void exitLogin() {
-        AVUser.logOut();//清除缓存用户对象
-        AVUser currentUser = getCurrentUser();
-        if (currentUser == null) {
-            //跳转到首页
-            Intent intent = new Intent(FusionAction.LOGIN_ACTION);
-            startActivity(intent);
-            getActivity().finish();
-        }
+        XanderPanel.Builder mBuilder = new XanderPanel.Builder(getActivity());
+        mBuilder.setTitle(getString(R.string.tip))
+                .setMessage(getString(R.string.exit_login_tip))
+                .setGravity(Gravity.BOTTOM)
+                .setController(getString(R.string.tip_cancel), getString(R.string.tip_sure), new PanelInterface.PanelControllerListener() {
+                    @Override
+                    public void onPanelNagetiiveClick(XanderPanel panel) {
+                        ToastUtils.showToast(getActivity(),"取消");
+                    }
+                    @Override
+                    public void onPanelPositiveClick(XanderPanel panel) {
+                        AVUser.logOut();//清除缓存用户对象
+                        AVUser currentUser = getCurrentUser();
+                        if (currentUser == null) {
+                            //跳转到首页
+                            Intent intent = new Intent(FusionAction.LOGIN_ACTION);
+                            startActivity(intent);
+                            getActivity().finish();
+                        }
+                    }
+                })
+                .setCanceledOnTouchOutside(true);
+        XanderPanel xanderPanel = mBuilder.create();
+        xanderPanel.show();
     }
+
     /**
      * 获取我的关注
      */
-    private void getMyFollow(String userObjectId){
+    private void getMyFollow(String userObjectId) {
         AVQuery<AVUser> followeeQuery = AVUser.followeeQuery(userObjectId, AVUser.class);
         followeeQuery.findInBackground(new FindCallback<AVUser>() {
             @Override
             public void done(List<AVUser> avObjects, AVException avException) {
                 //avObjects 就是用户的关注用户列表
-                if(avObjects!=null){
-                   myFollow_txt.setText("我的关注"+avObjects.size());
+                if (avObjects != null) {
+                    myFollow_txt.setText("我的关注  " + avObjects.size());
                 }
             }
         });
@@ -421,8 +457,8 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     /**
      * 得到我的粉丝
      */
-    private void getMyFans(){
-        AVUser  currentUser=AVUser.getCurrentUser();
+    private void getMyFans() {
+        AVUser currentUser = AVUser.getCurrentUser();
         AVQuery<AVUser> followerQuery = null;
         try {
             followerQuery = currentUser.followerQuery(AVUser.class);
@@ -430,15 +466,88 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void done(List<AVUser> avObjects, AVException avException) {
                     // avObjects 包含了 userA 的粉丝列表
-                    if(avObjects!=null){
-                       myFans_txt.setText("我的粉丝"+avObjects.size());
+                    if (avObjects != null) {
+                        myFans_txt.setText("我的粉丝  " + avObjects.size());
                     }
                 }
             });
         } catch (AVException e) {
             e.printStackTrace();
         }
-
-
     }
+
+    private void getSheet() {
+        XanderPanel.Builder mBuilder = new XanderPanel.Builder(getActivity());
+        mBuilder.setSheet(
+                new String[]{getString(R.string.add_photo_dialog_take), getString(R.string.add_photo_dialog_select)}, true, getString(R.string.tip_cancel),
+                new PanelInterface.SheetListener() {
+                    @Override
+                    public void onSheetItemClick(int position) {
+                        if (position == 0) {//拍照
+                            getPicFromCamera();
+                        } else if (position == 1) {//从相册选择
+                            selectIconImage();
+                        }
+                    }
+
+                    @Override
+                    public void onSheetCancelClick() {
+                    }
+                }
+        );
+        XanderPanel xanderPanel = mBuilder.create();
+        xanderPanel.show();
+    }
+
+    /**
+     * 广播注册 用于修改头像 昵称等
+     */
+    class UpDateReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("modifyUserIcon")||intent.getAction().equals("modifyNickName")) {
+                  fetchData();
+            }
+        }
+    }
+
+    private void upViewData(){
+        updateReceiver = new UpDateReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("modifyUserIcon");
+        filter.addAction("modifyNickName");
+        getActivity().registerReceiver(updateReceiver, filter);
+    }
+
+    /**
+     * 销毁广播
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (updateReceiver != null) {
+            getActivity().unregisterReceiver(updateReceiver);
+        }
+    }
+    /**
+     * 拉取服务端最新数据
+     */
+    private void fetchData() {
+        AVObject todo = AVObject.createWithoutData("_User", getCurrentUser().getObjectId());
+        todo.fetchInBackground(new GetCallback<AVObject>() {
+            @Override
+            public void done(AVObject avObject, AVException e) {
+                if(e==null){
+                    nickName = avObject.getString("nickname");
+                    userIconUrl = avObject.getString("user_icon_url").toString();
+                    user_nickName.setText(nickName);
+                    if (!TextUtils.isEmpty(userIconUrl)) {
+                        //暂时还没有头像
+                        ImageLoader.getInstance().displayImage(userIconUrl, user_icon, MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
+                    }
+                }
+            }
+        });
+    }
+
 }

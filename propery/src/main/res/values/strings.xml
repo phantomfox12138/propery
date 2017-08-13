@@ -48,4 +48,22 @@
     <string name="my_circle">我的圈子</string>
     <string name="my_member">成员列表</string>
     <string name="my_userinfo">个人资料</string>
+    <string name="modify_nickname_empty">请填写昵称</string>
+    <string name="modify_nickname_length">昵称不能超过10个字</string>
+    <string name="common_no_network">网络错误或服务器故障，请稍后再试!</string>
+    <string name="upload_img_success">头像上传成功</string>
+    <string name="upload_img_failed">头像上传失败</string>
+    <string name="modify_password">修改密码</string>
+    <string name="modify_password_old">原密码</string>
+    <string name="modify_password_new">输入新密码</string>
+    <string name="modify_password_renew">再次输入密码</string>
+    <string name="modify_sure">确认修改</string>
+    <string name="modify_old_psw_empty">原密码不能为空</string>
+    <string name="modify_psw_length">密码长度在6-25之间</string>
+    <string name="modify_psw_newEmpty">新密码不能为空</string>
+    <string name="modify_psw_newOld">两次密码不相同</string>
+    <string name="modify_psw_success">密码修改成功</string>
+    <string name="modify_psw_failed">密码修改失败</string>
+    <string name="exit_login_tip">确定要退出登录?</string>
+    <string name="tip">提示</string>
 </resources>

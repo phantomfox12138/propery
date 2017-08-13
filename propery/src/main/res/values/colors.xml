@@ -36,7 +36,7 @@
     <color name="primary_darker">#00B2EE</color>
     <color name="accent">#FFFFF0</color>
     <color name="iron">#CCCCCC</color>
-    <color name="cebebeb">#ebebeb</color>
+    <color name="cebebeb">#eee</color>
     <color name="c999999">#999999</color>
     <color name="c4343434">#434343</color>
     <color name="ca3a3a3">#a3a3a3</color>
@@ -51,7 +51,9 @@
     <color name="cgrey">#ccc</color>
     <color name="divider_color">#FFB7B2B2</color>
 
-
-
-
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="ccccccc">#ccc</color>
+    <color name="ce44848">#e44848</color>
 </resources>

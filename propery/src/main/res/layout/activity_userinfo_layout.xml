@@ -49,8 +49,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:scaleType="centerCrop"
-                        android:src="@mipmap/ic_avatar" />
+                        android:scaleType="centerCrop"/>
                 </RelativeLayout>
 
                 <View
@@ -83,7 +82,8 @@
                         android:layout_marginLeft="54dp"
                         android:layout_toLeftOf="@+id/right_3"
                         android:layout_toRightOf="@+id/userinfo_name_lable"
-                        android:gravity="center_vertical"
+                        android:gravity="center_vertical|right"
+                        android:paddingRight="@dimen/dp_8"
                         android:hint=""
                         android:textColorHint="@color/c999999" />
 
@@ -124,7 +124,8 @@
                         android:layout_height="fill_parent"
                         android:layout_marginLeft="37dp"
                         android:layout_toRightOf="@+id/userinfo_company_lable"
-                        android:gravity="center_vertical"
+                        android:gravity="center_vertical|right"
+                        android:paddingRight="@dimen/dp_8"
                         android:text="" />
                 </RelativeLayout>
 
@@ -155,18 +156,11 @@
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:layout_marginLeft="21dp"
-                        android:layout_toLeftOf="@+id/right_2"
                         android:layout_toRightOf="@+id/userinfo_mobile_lable"
-                        android:gravity="center_vertical"
+                        android:gravity="center_vertical|right"
+                        android:paddingRight="@dimen/dp_8"
                         android:text="" />
 
-                    <ImageView
-                        android:id="@+id/right_2"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:src="@mipmap/com_ic_right_arrow" />
                 </RelativeLayout>
 
 

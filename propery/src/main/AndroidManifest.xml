@@ -1,213 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:Android="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.junjingit.propery">
+xmlns:Android="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+package="com.junjingit.propery">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
 
-    <uses-sdk tools:overrideLibrary="com.junjingit.collapsibletext" />
+<uses-sdk tools:overrideLibrary="com.junjingit.collapsibletext" />
 
-    <application
-        android:name=".ProperyApplication"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
+<application
+    android:name=".ProperyApplication"
+    android:allowBackup="true"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:roundIcon="@mipmap/ic_launcher_round"
+    android:supportsRtl="true"
+    android:theme="@style/AppTheme">
+    <activity
+        android:name=".WelcomeActivity"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".HomeActivity"
+        android:screenOrientation="portrait"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".WelcomeActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <intent-filter>
+            <action android:name="com.junjingit.propery.HOME_PAGE" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".HomeActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="com.junjingit.propery.HOME_PAGE" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".LoginNewActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/loginTheme">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.LOGIN_ACTION" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".LoginNewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/loginTheme">
-            <intent-filter>
-                <action android:name="com.junjingit.propery.LOGIN_ACTION" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".NotifyDetailActivity"
+        android:theme="@style/AppTheme">
+        <intent-filter>
+            <action android:name="com.junjignit.propery.NOTIFY_DETAIL" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".NotifyDetailActivity"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="com.junjignit.propery.NOTIFY_DETAIL" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".QuoteDetailActivity"
+        android:theme="@style/AppTheme">
+        <intent-filter>
+            <action android:name="com.junjing.propery.QUOTE_DETAIL" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".QuoteDetailActivity"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="com.junjing.propery.QUOTE_DETAIL" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".QuoteEditorActivity"
+        android:theme="@style/AppTheme">
+        <intent-filter>
+            <action android:name="com.junjing.propery.QUOTE_EDITOR" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".QuoteEditorActivity"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="com.junjing.propery.QUOTE_EDITOR" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".imageloader.ImageLoadActivity"
+        android:theme="@style/AppTheme">
+        <intent-filter>
+            <action android:name="com.junjing.propery.IMAGE_LOADER" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".imageloader.ImageLoadActivity"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="com.junjing.propery.IMAGE_LOADER" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity android:name=".ImageDetailActivity" />
+    <activity
+        android:name=".CycleActivity"
+        android:theme="@style/AppTheme">
+        <intent-filter>
+            <action android:name="com.junjing.propery.CYCLE_LIST" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".ImageDetailActivity" />
-        <activity
-            android:name=".CycleActivity"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="com.junjing.propery.CYCLE_LIST" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+        <meta-data
+            android:name="android.app.searchable"
+            android:resource="@xml/searchable" />
 
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
+        <intent-filter>
+            <action android:name="android.intent.action.SEARCH" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".CreateCycleActivity"
+        android:theme="@style/AppTheme">
+        <intent-filter>
+            <action android:name="com.junjing.propery.CREATE_CYCLE" />
 
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".CreateCycleActivity"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="com.junjing.propery.CREATE_CYCLE" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".RegisterActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/regAndFor">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.REGISTER_ACTION" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".RegisterActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/regAndFor">
-            <intent-filter>
-                <action android:name="com.junjingit.propery.REGISTER_ACTION" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".ForgetActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/regAndFor">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.FORGET_ACTION" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ForgetActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/regAndFor">
-            <intent-filter>
-                <action android:name="com.junjingit.propery.FORGET_ACTION" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".CycleDetailListActivity"
+        android:theme="@style/ActionBarTheme">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.CYCLE_DETAIL_LIST" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".CycleDetailListActivity"
-            android:theme="@style/ActionBarTheme">
-            <intent-filter>
-                <action android:name="com.junjingit.propery.CYCLE_DETAIL_LIST" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".HomeListActivity"
+        android:theme="@style/AppTheme">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.HOME_TITLE_LIST" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".HomeListActivity"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="com.junjingit.propery.HOME_TITLE_LIST" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".FocusListActivity"
+        android:theme="@style/ActionBarTheme">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.FOCUS_LIST" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".FocusListActivity"
-            android:theme="@style/ActionBarTheme">
-            <intent-filter>
-                <action android:name="com.junjingit.propery.FOCUS_LIST" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity android:name=".UserStatusActivity">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.USER_STATUS" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".UserStatusActivity">
-            <intent-filter>
-                <action android:name="com.junjingit.propery.USER_STATUS" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".FriendCycleActivity"
+        android:theme="@style/AppTheme">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.FRIEND_CYCLE" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".FriendCycleActivity"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="com.junjingit.propery.FRIEND_CYCLE" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity android:name=".ModifyProfileActivity" />
+    <activity android:name=".ProperyPayActivity">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.PROPERY_PAY" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".ModifyProfileActivity" />
-        <activity android:name=".ProperyPayActivity">
-            <intent-filter>
-                <action android:name="com.junjingit.propery.PROPERY_PAY" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+    </activity>
+    <activity android:name=".circle.CircleListActivity"
+        android:screenOrientation="portrait">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.PROPERY_MY_CIRCLE" />
 
-        </activity>
-        <activity android:name=".circle.CircleListActivity">
-            <intent-filter>
-                <action android:name="com.junjingit.propery.PROPERY_MY_CIRCLE" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity android:name=".circle.MemberListActivity"
+        android:screenOrientation="portrait">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.PROPERY_MY_NUMBER" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".circle.MemberListActivity">
-            <intent-filter>
-                <action android:name="com.junjingit.propery.PROPERY_MY_NUMBER" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity android:name=".setting.UserInfoActivity"
+        android:screenOrientation="portrait">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.PROPERY_MY_USERINFO" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".setting.UserInfoActivity">
-            <intent-filter>
-                <action android:name="com.junjingit.propery.PROPERY_MY_USERINFO" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity android:name=".setting.ModifyNameActivity"
+        android:screenOrientation="portrait">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.PROPERY_MY_MODIFY_INFO" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <!---->
-    </application>
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+    <activity android:name=".setting.ModifyPassWordActivity"
+        android:screenOrientation="portrait">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.PROPERY_MY_MODIFY_PSW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
+</application>
 
 </manifest>

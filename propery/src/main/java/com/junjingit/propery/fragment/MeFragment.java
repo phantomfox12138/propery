@@ -179,6 +179,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         exit_btn.setOnClickListener(this);
         me_circle_layout.setOnClickListener(this);
         me_modify_layout.setOnClickListener(this);
+        myFollow_txt.setOnClickListener(this);
     }
 
     public void onAddPic() {
@@ -236,6 +237,10 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             case R.id.me_modify_layout:
                 Intent toUserInfo = new Intent(FusionAction.USER_INFO);
                 startActivity(toUserInfo);
+                break;
+            case R.id.myFollow_txt:
+                Intent followUser = new Intent(FusionAction.FOLLOW_USER);
+                startActivity(followUser);
                 break;
             default:
                 break;

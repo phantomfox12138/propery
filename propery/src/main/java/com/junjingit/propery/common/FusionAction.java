@@ -38,6 +38,8 @@ public class FusionAction
     public static final String MODIFY_USER_INFO ="com.junjingit.propery.PROPERY_MY_MODIFY_INFO";
 
     public static final String MODIFY_USER_PSW ="com.junjingit.propery.PROPERY_MY_MODIFY_PSW";
+
+    public static final String FOLLOW_USER="com.junjingit.propery.PROPERY_MY_FOLLOW_USER";
     public interface HomeListExtra
     {
         String TYPE = "list_type";

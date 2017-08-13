@@ -249,4 +249,21 @@
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">#ffffff</item>
     </style>
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <!-- 改变指示器下标的颜色-->
+        <item name="tabIndicatorColor">@color/blue</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabPaddingStart">12dp</item>
+        <item name="tabPaddingEnd">12dp</item>
+        <item name="tabBackground">@color/white</item>
+        <!-- 改变tab内部字体的大小颜色 -->
+        <item name="tabTextAppearance">@style/MyCustomTabTextAppearance</item>
+        <!-- 改变选中文字的颜色 -->
+        <item name="tabSelectedTextColor">@color/blue</item>
+    </style>
+    <style name="MyCustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/c4343434</item>
+        <item name="textAllCaps">true</item>
+    </style>
 </resources>

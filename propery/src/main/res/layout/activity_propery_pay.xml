@@ -75,6 +75,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/propery_order"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -115,6 +116,7 @@
 
 
         <LinearLayout
+            android:id="@+id/elec_order"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

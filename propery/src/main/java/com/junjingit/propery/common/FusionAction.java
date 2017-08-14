@@ -34,14 +34,17 @@ public class FusionAction
     public static final String MINE_NUMBER = "com.junjingit.propery.PROPERY_MY_NUMBER";
     
     public static final String USER_INFO = "com.junjingit.propery.PROPERY_MY_USERINFO";
-
-    public static final String MODIFY_USER_INFO ="com.junjingit.propery.PROPERY_MY_MODIFY_INFO";
-
-    public static final String MODIFY_USER_PSW ="com.junjingit.propery.PROPERY_MY_MODIFY_PSW";
-
-    public static final String FOLLOW_USER="com.junjingit.propery.PROPERY_MY_FOLLOW_USER";
-
-    public static final String FOLLOW_FANS="com.junjingit.propery.PROPERY_MY_FOLLOW_FANS";
+    
+    public static final String MODIFY_USER_INFO = "com.junjingit.propery.PROPERY_MY_MODIFY_INFO";
+    
+    public static final String MODIFY_USER_PSW = "com.junjingit.propery.PROPERY_MY_MODIFY_PSW";
+    
+    public static final String FOLLOW_USER = "com.junjingit.propery.PROPERY_MY_FOLLOW_USER";
+    
+    public static final String FOLLOW_FANS = "com.junjingit.propery.PROPERY_MY_FOLLOW_FANS";
+    
+    public static final String HOME_ORDER_LIST_ACTION = "com.junjingit.propery.HOME_ORDER_LIST";
+    
     public interface HomeListExtra
     {
         String TYPE = "list_type";

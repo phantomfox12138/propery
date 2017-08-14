@@ -235,6 +235,16 @@ package="com.junjingit.propery">
             <category android:name="android.intent.category.DEFAULT" />
         </intent-filter>
     </activity>
+
+    <activity
+        android:name=".circle.MyFansActivity"
+        android:screenOrientation="portrait">
+        <intent-filter>
+            <action android:name="com.junjingit.propery.PROPERY_MY_FOLLOW_FANS" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+    </activity>
 </application>
 
 </manifest>

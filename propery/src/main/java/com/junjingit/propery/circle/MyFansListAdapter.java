@@ -3,6 +3,7 @@ package com.junjingit.propery.circle;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,24 +13,21 @@ import android.widget.TextView;
 import com.avos.avoscloud.AVObject;
 import com.junjingit.propery.R;
 import com.junjingit.propery.utils.MyImageLoader;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by jxy on 2017/8/10.
  */
 
-public class CircleListAdapter extends RecyclerView.Adapter<CircleListAdapter.CircleHolder> {
-
+public class MyFansListAdapter extends RecyclerView.Adapter<MyFansListAdapter.CircleHolder> {
     private Context mContext;
     private List<AVObject> mListData;
     private String mFrom;
@@ -42,50 +40,36 @@ public class CircleListAdapter extends RecyclerView.Adapter<CircleListAdapter.Ci
         this.mListData = mListData;
     }
 
-    public String getmFrom() {
-        return mFrom;
-    }
-
-    public void setmFrom(String mFrom) {
-        this.mFrom = mFrom;
-    }
-
-    public CircleListAdapter(Context mContext) {
+    public MyFansListAdapter(Context mContext) {
         this.mContext = mContext;
     }
 
     @Override
     public CircleHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        CircleHolder circleHolder = new CircleHolder(LayoutInflater.from(mContext).inflate(R.layout.activity_mycircle_item, null));
+        CircleHolder circleHolder = new CircleHolder(LayoutInflater.from(mContext).inflate(R.layout.activity_myfans_item, null));
         return circleHolder;
     }
 
     @Override
     public void onBindViewHolder(CircleHolder holder, int position) {
         final AVObject obj = mListData.get(position);
-        if (getmFrom().equals("myCircle")) {
-            String circleImg;
-            String circleName;
-            String circleNum;
-            if (obj.get("cycle_icon_url") == null) {
-                circleImg = "";
-            } else {
-                circleImg = obj.get("cycle_icon_url").toString();
-            }
-            if (obj.get("cycle_name") == null) {
-                circleName = "";
-            } else {
-                circleName = obj.get("cycle_name").toString();
-            }
-            if (obj.get("focus_count") == null) {
-                circleNum = "";
-            } else {
-                circleNum = obj.get("focus_count").toString();
-            }
-            ImageLoader.getInstance().displayImage(circleImg, holder.circle_img,MyImageLoader.DisplayImageOptions(), animateFirstListener);
-            holder.circle_name.setText(circleName);
-            holder.circle_number.setText(circleNum);
+        Log.v("MemberListActivity", "onBindViewHolder"+position);
+        String fansImg;
+        String fansName;
+
+        if(obj.get("user_icon_url")==null){
+            fansImg="";
+        }else {
+            fansImg=obj.get("user_icon_url").toString();
         }
+        if (obj.get("username") == null) {
+            fansName = "";
+        } else {
+            fansName = obj.get("username").toString();
+        }
+
+        ImageLoader.getInstance().displayImage(fansImg, holder.fans_img, MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
+        holder.fans_name.setText(fansName);
     }
 
     @Override
@@ -94,14 +78,15 @@ public class CircleListAdapter extends RecyclerView.Adapter<CircleListAdapter.Ci
     }
 
     class CircleHolder extends RecyclerView.ViewHolder {
-        private ImageView circle_img;
-        private TextView circle_name, circle_number;
+        private ImageView fans_img;
+        private TextView fans_name,fans_to_follow;
+
 
         public CircleHolder(View itemView) {
             super(itemView);
-            circle_img = itemView.findViewById(R.id.circle_img);
-            circle_name = itemView.findViewById(R.id.circle_name);
-            circle_number = itemView.findViewById(R.id.circle_number);
+            fans_img = itemView.findViewById(R.id.fans_img);
+            fans_name = itemView.findViewById(R.id.fans_name);
+            fans_to_follow=itemView.findViewById(R.id.fans_to_follow);
         }
     }
 

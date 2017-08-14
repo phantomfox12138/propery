@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.junjingit.propery.login.RegisterFirstFragment;
 import com.junjingit.propery.login.RegisterSecondFragment;
@@ -23,12 +25,18 @@ public class RegisterActivity extends AppCompatActivity implements
     private RegisterFirstFragment registerFirstFragment;
     
     private RegisterSecondFragment registerSecondFragment;
+    private Toolbar title_bar;
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        title_bar = (Toolbar) findViewById(R.id.title_bar);
+        setSupportActionBar(title_bar);
+        getSupportActionBar().setTitle(getString(R.string.register_title));
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         registerFirstFragment = new RegisterFirstFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -80,5 +88,17 @@ public class RegisterActivity extends AppCompatActivity implements
     @Override
     public void onBAction()
     {
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //Toolbar上的左上角的返回箭头的键值为Android.R.id.home  不是R.id.home
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

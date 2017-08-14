@@ -66,4 +66,12 @@
     <string name="modify_psw_failed">密码修改失败</string>
     <string name="exit_login_tip">确定要退出登录?</string>
     <string name="tip">提示</string>
+    <string name="email_hint">请输入公司名称</string>
+    <string name="email_tip">公司不能为空</string>
+    <string name="email_error">邮箱格式不正确</string>
+    <string name="register_title">注册</string>
+    <string name="upload_usericon_success">头像上传成功</string>
+    <string name="upload_usericon_failed">头像上传成功</string>
+    <string name="upload_cover_success">封面上传成功</string>
+    <string name="upload_cover_failed">封面上传失败</string>
 </resources>

@@ -104,6 +104,9 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     private UpDateReceiver updateReceiver;
     private Button exit_btn;
 
+    private ImageView backdrop;//封面上传
+
+    private int coverFlag=0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -137,6 +140,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         myFans_txt = mRootView.findViewById(R.id.myFans_txt);
         myFollow_txt = mRootView.findViewById(R.id.myFollow_txt);
         me_modify_layout = mRootView.findViewById(R.id.me_modify_layout);
+        backdrop=(ImageView)mRootView.findViewById(R.id.backdrop);
         setListener();
         initData();
     }
@@ -180,6 +184,8 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         me_circle_layout.setOnClickListener(this);
         me_modify_layout.setOnClickListener(this);
         myFollow_txt.setOnClickListener(this);
+        myFans_txt.setOnClickListener(this);
+        backdrop.setOnClickListener(this);
     }
 
     public void onAddPic() {
@@ -224,7 +230,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.user_icon:
-                // onAddPic();
+                coverFlag=0;
                 getSheet();
                 break;
             case R.id.me_circle_layout:
@@ -241,6 +247,14 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             case R.id.myFollow_txt:
                 Intent followUser = new Intent(FusionAction.FOLLOW_USER);
                 startActivity(followUser);
+                break;
+            case R.id.myFans_txt:
+                Intent followFans= new Intent(FusionAction.FOLLOW_FANS);
+                startActivity(followFans);
+                break;
+            case R.id.backdrop:
+                coverFlag=1;
+                getSheet();
                 break;
             default:
                 break;
@@ -295,8 +309,6 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     private void uploadUserIcon(String imgPath) throws FileNotFoundException {
         final String[] ss = imgPath.split("/");
         final String imageName = ss[ss.length - 1];
-        Log.v(TAG, "当前图片的名称" + imageName);
-        Log.v(TAG, "当前图片的路径" + imgPath);
         //上传图片文件
         final AVFile image = AVFile.withAbsoluteLocalPath(imageName, imgPath);
         image.saveInBackground(new SaveCallback() {
@@ -305,9 +317,6 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 if (null == e) {
                     //获取图片url
                     Image img = new Image();
-                    Log.v(TAG, "当前图片的名称" + image.getUrl());
-                    Log.v(TAG, "当前图片的路径" + image.getOriginalName());
-                    Log.v(TAG, "当前图片的路径" + image.getName());
                     img.setImagePath(image.getUrl());
                     img.setImageName(image.getOriginalName());
                     Message msg = new Message();
@@ -365,31 +374,42 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                     final String netImgPath = img.getImagePath();
                     final String netImgName = img.getImageName();
                     String userObjectId = getCurrentUser().getObjectId();
-                    AVObject todo = AVObject.createWithoutData("_User",
-                            userObjectId);
-
-                    todo.put("user_icon_url", netImgPath);
-                    todo.put("userIcon", netImgName);
-                    todo.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(AVException e) {
-                            if (e == null) {
-                                ToastUtils.showToast(getActivity(), "头像上传成功");
-                                AVFile file = new AVFile(netImgName,
-                                        netImgPath,
-                                        new HashMap<String, Object>());
-                                String thumbUrl = file.getThumbnailUrl(true, 128, 128);
-                                ImageLoader.getInstance()
-                                        .displayImage(thumbUrl,
-                                                user_icon,
-                                                MyImageLoader.MyCircleDisplayImageOptions(),
-                                                animateFirstListener);
-                            } else {
-                                ToastUtils.showToast(getActivity(), "头像上传失败");
+                    AVObject todo = AVObject.createWithoutData("_User",userObjectId);
+                    if(coverFlag==0){//上传头像
+                        todo.put("user_icon_url", netImgPath);
+                        todo.put("userIcon", netImgName);
+                        todo.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                if (e == null) {
+                                    ToastUtils.showToast(getActivity(),getString(R.string.upload_usericon_success));
+                                    AVFile file = new AVFile(netImgName,
+                                            netImgPath,
+                                            new HashMap<String, Object>());
+                                    String thumbUrl = file.getThumbnailUrl(true, 128, 128);
+                                    ImageLoader.getInstance().displayImage(thumbUrl,user_icon,MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
+                                } else {
+                                    ToastUtils.showToast(getActivity(),getString(R.string.upload_usericon_failed));
+                                }
                             }
-                        }
-                    });
-
+                        });
+                    }else if(coverFlag==1){
+                        todo.put("user_cover_img_url", netImgPath);
+                        todo.put("user_cover_img_name", netImgName);
+                        todo.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                if (e == null) {
+                                    ToastUtils.showToast(getActivity(),getString(R.string.upload_cover_success));
+                                    AVFile file = new AVFile(netImgName, netImgPath,new HashMap<String, Object>());
+                                    String thumbUrl = file.getThumbnailUrl(true, 1920, 1080);
+                                    ImageLoader.getInstance().displayImage(thumbUrl,backdrop,MyImageLoader.MyNormalCoverImageOptions(), animateFirstListener);
+                                } else {
+                                    ToastUtils.showToast(getActivity(),getString(R.string.upload_cover_failed));
+                                }
+                            }
+                        });
+                    }
                     break;
             }
         }

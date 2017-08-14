@@ -57,4 +57,13 @@ public class MyImageLoader {
         return options;
     }
 
+    public static DisplayImageOptions MyNormalCoverImageOptions(){
+        DisplayImageOptions options =new DisplayImageOptions.Builder()
+                .showImageForEmptyUri(R.mipmap.header)//设置图片Uri为空或是错误的时候显示的图片
+                .showImageOnFail(R.mipmap.header)  //设置图片加载/解码过程中错误时候显示的图片
+                .cacheInMemory(true)
+                .cacheOnDisc(true)
+                .build();//构建完成
+        return options;
+    }
 }

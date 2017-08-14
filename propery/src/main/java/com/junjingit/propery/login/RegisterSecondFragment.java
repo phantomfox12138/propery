@@ -19,6 +19,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SaveCallback;
 import com.junjingit.propery.R;
+import com.junjingit.propery.StringUtil;
 import com.junjingit.propery.common.FusionAction;
 import com.junjingit.propery.utils.ToastUtils;
 import com.ns.developer.tagview.entity.Tag;
@@ -41,6 +42,8 @@ public class RegisterSecondFragment extends Fragment implements View.OnClickList
     EditText register_second_rePsd;
     @Bind(R.id.register_second_btn)
     Button register_second_btn;
+    @Bind(R.id.register_company_name)
+    EditText register_company_name;
     public IRegisterSecondClickListener iRegisterSecondClickListener;
     public String mobile = "";
     public String messageCode = "";
@@ -70,11 +73,14 @@ public class RegisterSecondFragment extends Fragment implements View.OnClickList
 
     public boolean toCheckMessage() {
         String nickName = nick_name.getText().toString().trim();
+        String company = register_company_name.getText().toString().trim();
         String psw1 = register_second_psd.getText().toString().trim();
         String psw2 = register_second_psd.getText().toString().trim();
         if (TextUtils.isEmpty(nickName)) {
             ToastUtils.showToast(getActivity(), getString(R.string.nick_tip));
             return false;
+        } else if (TextUtils.isEmpty(company)) {
+            ToastUtils.showToast(getActivity(), getString(R.string.email_tip));
         } else if (TextUtils.isEmpty(psw1)) {
             ToastUtils.showToast(getActivity(), getString(R.string.login_password_empty));
             return false;
@@ -103,10 +109,11 @@ public class RegisterSecondFragment extends Fragment implements View.OnClickList
                     //去更新用户信息
                     String objectId = AVUser.getCurrentUser().getObjectId();
                     AVObject avObject = AVObject.createWithoutData("_User", objectId);
-                    avObject.put("username", mobile);
-                    avObject.put("nickname", nick_name.getText().toString().trim());
-                    avObject.put("password", register_second_psd.getText().toString());
-                    avObject.saveInBackground(new SaveCallback(){
+                    avObject.put("username",mobile);
+                    avObject.put("nickname",nick_name.getText().toString().trim());
+                    avObject.put("password",register_second_psd.getText().toString());
+                    avObject.put("company", register_company_name.getText().toString());
+                    avObject.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(AVException e) {
                             if (e == null) {
@@ -130,8 +137,8 @@ public class RegisterSecondFragment extends Fragment implements View.OnClickList
                                 Intent intent = new Intent(FusionAction.LOGIN_ACTION);
                                 startActivity(intent);
                                 getActivity().finish();
-                            }else{
-                                Log.v(TAG,"##################"+e);
+                            } else {
+                                Log.v(TAG, "##################" + e);
                             }
                         }
                     });//保存到服务器

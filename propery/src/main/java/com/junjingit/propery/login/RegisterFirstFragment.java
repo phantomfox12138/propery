@@ -124,10 +124,11 @@ public class RegisterFirstFragment extends Fragment implements View.OnClickListe
    private void insertOwner(final String mobile){
        timer.start();
        AVUser user = new AVUser();
-       user.setUsername("defaultuser");
-       user.setPassword("123456");
+       user.put("username","defaultuser");
+       user.put("password","123456");
        user.put("nickname","nickname");
        user.put("mobilePhoneNumber",mobile);
+       user.put("company","company");
        user.signUpInBackground(new SignUpCallback(){
            public void done(AVException e){
                if (e == null) {

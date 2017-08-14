@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/dp_16">
+
+    <ImageView
+        android:id="@+id/order_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:src="@mipmap/ic_unpay" />
+
+    <TextView
+        android:id="@+id/order_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_toRightOf="@id/order_icon"
+        android:text="物业账单"
+        android:textColor="#444"
+        android:textSize="@dimen/sp_16" />
+
+    <TextView
+        android:id="@+id/order_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/order_name"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_toRightOf="@id/order_icon"
+        android:text="2017-08-11 14:30"
+        android:textColor="@android:color/darker_gray" />
+
+
+    <Button
+        android:id="@+id/item_pay_btn"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_32"
+        android:layout_alignParentRight="true"
+        android:background="@color/light_blue"
+        android:text="付款"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/order_cost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        android:text="2000"
+        android:textColor="@color/light_blue"
+        android:textSize="@dimen/sp_18" />
+
+
+</RelativeLayout>

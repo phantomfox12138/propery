@@ -45,6 +45,8 @@ public class FusionAction
     
     public static final String HOME_ORDER_LIST_ACTION = "com.junjingit.propery.HOME_ORDER_LIST";
     
+    public static final String HOME_SEND_ACTION = "com.junjingit.propery.HOME_SEND";
+    
     public interface HomeListExtra
     {
         String TYPE = "list_type";
@@ -74,6 +76,12 @@ public class FusionAction
         String IMAGE_LOADER_COUNT_EXTRA = "maxnum";
         
         String IMAGE_RESULT_LIST = "datalist";
+        
+        String SEND_TYPE = "send_type";
+        
+        String SEND_FIX = "send_fix";
+        
+        String SEND_FEEDBACK = "send_feedback";
     }
     
     public interface FocusListExtra

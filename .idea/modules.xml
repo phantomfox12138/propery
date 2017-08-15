@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Propery.iml" filepath="$PROJECT_DIR$/Propery.iml" />
-      <module fileurl="file://$PROJECT_DIR$/collapsibletext/collapsibletext.iml" filepath="$PROJECT_DIR$/collapsibletext/collapsibletext.iml" />
       <module fileurl="file://$PROJECT_DIR$/expansionPanel/expansionPanel.iml" filepath="$PROJECT_DIR$/expansionPanel/expansionPanel.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />

@@ -1,6 +1,5 @@
 package com.junjingit.propery;
 
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,7 +35,7 @@ import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
-import com.junjingit.collapsibletext.CollapsibleTextView;
+import com.junjingit.propery.widget.CollapsibleTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -616,6 +615,7 @@ public class QuoteDetailActivity extends AppCompatActivity
                             holder.image.setImageBitmap(loadedImage);
                             
                         }
+                        
                         @Override
                         public void onLoadingCancelled(String imageUri,
                                 View view)

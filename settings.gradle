@@ -1,1 +1,1 @@
-include ':propery', ':library', ':collapsibletext', ':lib', ':recyclerview-swipe', ':expansionPanel'
+include ':propery', ':library', ':lib', ':recyclerview-swipe', ':expansionPanel'

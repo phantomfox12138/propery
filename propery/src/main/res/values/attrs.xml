@@ -17,4 +17,13 @@
         <attr name="layout_verticalSpacing" format="dimension" />
     </declare-styleable>
 
+
+    <declare-styleable name="CollapsibleTextView">
+        <attr name="suffixColor" format="color" />
+        <attr name="collapsedLines" format="integer" />
+        <attr name="collapsedText" format="string" />
+        <attr name="expandedText" format="string" />
+        <attr name="suffixTrigger" format="boolean" />
+    </declare-styleable>
+
 </resources>

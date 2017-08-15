@@ -1,7 +1,8 @@
-package com.junjingit.collapsibletext;
+package com.junjingit.propery.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -10,7 +11,8 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
+
+import com.junjingit.propery.R;
 
 /**
  * Copyright 2017 Tim Qi
@@ -27,7 +29,7 @@ import android.widget.TextView;
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-public class CollapsibleTextView extends TextView
+public class CollapsibleTextView extends AppCompatTextView
 {
     
     private int mSuffixColor = 0xff0000ff;

@@ -31,6 +31,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -58,6 +59,7 @@ import com.junjingit.propery.common.FusionAction;
 import com.ns.developer.tagview.entity.Tag;
 import com.ns.developer.tagview.widget.TagCloudLinkView;
 import com.tiancaicc.springfloatingactionmenu.Utils;
+import com.xander.panel.PanelInterface;
 import com.xander.panel.XanderPanel;
 
 public class QuoteEditorActivity extends AppCompatActivity implements
@@ -77,6 +79,8 @@ public class QuoteEditorActivity extends AppCompatActivity implements
     private static final int FILTER_TYPE_CYCLE = 4;
     
     private int mFilterState = 0;
+    
+    private Toolbar mToolbar;
     
     private RecyclerView mCorpImage;
     
@@ -129,6 +133,10 @@ public class QuoteEditorActivity extends AppCompatActivity implements
     private List<AVUser> mFansList = new ArrayList<>();
     
     private XanderPanel mXanderPanel;
+    
+    private XanderPanel.Builder mBuilder;
+    
+    private XanderPanel mBackDialog;
     
     private boolean mHasFans;
     
@@ -331,78 +339,148 @@ public class QuoteEditorActivity extends AppCompatActivity implements
         mCycleLayout = findViewById(R.id.cycle_layout);
         mCycleSelectPanel = (ExpansionPanel) findViewById(R.id.expansion_panel_dialog);
         mWhoBtn = findViewById(R.id.who_btn);
-        
-        mCycleLayout.setVisibility(View.GONE);
-        
-        final XanderPanel.Builder xanderPanelBuilder = new XanderPanel.Builder(
-                this);
-        xanderPanelBuilder.setCanceledOnTouchOutside(true);
-        xanderPanelBuilder.setGravity(Gravity.BOTTOM);
-        final View mCustomViewBottom = LayoutInflater.from(this)
-                .inflate(R.layout.bottom_fans_list_layout, null);
-        
-        mFansListAdapter = new FansListAdapter();
-        mFansListAdapter.setList(mFansList);
-        
-        mBottomFansList = mCustomViewBottom.findViewById(R.id.fans_list);
-        mBottomBack = mCustomViewBottom.findViewById(R.id.bottom_fans_back);
-        mBottomCount = mCustomViewBottom.findViewById(R.id.bottom_fans_count);
-        mBottomConfirm = mCustomViewBottom.findViewById(R.id.bottom_fans_confirm);
-        mBottomCount.setText(mSelectedFansList.size() + "人");
-        
-        mBottomFansList.setLayoutManager(new LinearLayoutManager(this));
-        mBottomFansList.setAdapter(mFansListAdapter);
-        
-        mBottomBack.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                mXanderPanel.dismiss();
-            }
-        });
-        
-        mBottomConfirm.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-            }
-        });
-        
-        mCycleSelectPanel.hideStateIcon(true);
         mFilterType = (TextView) findViewById(R.id.who_state);
         
-        registerForContextMenu(mWhoBtn);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         
-        try
-        {
-            AVUser.getCurrentUser()
-                    .followerQuery(AVUser.class)
-                    .findInBackground(new FindCallback<AVUser>()
-                    {
-                        @Override
-                        public void done(List<AVUser> list, AVException e)
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        
+        mBuilder = new XanderPanel.Builder(this);
+        final XanderPanel menu = mBuilder.list()
+                .setMenu(R.menu.who_menu,
+                        new PanelInterface.PanelMenuListener()
                         {
-                            if (null == e)
+                            @Override
+                            public void onMenuClick(MenuItem menuItem)
                             {
-                                mFansList.clear();
-                                mFansList.addAll(list);
-                                
-                                mFansListAdapter.notifyDataSetChanged();
-                                
-                                xanderPanelBuilder.setView(mCustomViewBottom);
-                                mXanderPanel = xanderPanelBuilder.create();
-                                mHasFans = list.size() > 0;
-                                
+                                switch (menuItem.getItemId())
+                                {
+                                    case R.id.menu_public:
+                                        mFilterState = FILTER_TYPE_PUBLIC;
+                                        mFilterType.setText("公开");
+                                        mCycleLayout.setVisibility(View.GONE);
+                                        break;
+                                    
+                                    case R.id.menu_friend:
+                                        mFilterState = FILTER_TYPE_FRIEND;
+                                        mFilterType.setText("好友圈");
+                                        mCycleLayout.setVisibility(View.GONE);
+                                        break;
+                                    
+                                    case R.id.menu_cycle:
+                                        mFilterState = FILTER_TYPE_CYCLE;
+                                        mCycleLayout.setVisibility(View.VISIBLE);
+                                        mFilterType.setText("我关注的圈子");
+                                        break;
+                                }
                             }
-                        }
-                    });
-        }
-        catch (AVException e)
+                        })
+                .setGravity(Gravity.BOTTOM)
+                .setCanceledOnTouchOutside(true)
+                .create();
+        
+        XanderPanel.Builder builder = new XanderPanel.Builder(this);
+        mBackDialog = builder.setTitle("提示")
+                .setIcon(R.mipmap.ic_launcher)
+                .setMessage("你确定要退出吗？")
+                .setGravity(Gravity.TOP)
+                .setController("取消",
+                        "确定",
+                        new PanelInterface.PanelControllerListener()
+                        {
+                            @Override
+                            public void onPanelNagetiiveClick(XanderPanel panel)
+                            {
+                            }
+                            
+                            @Override
+                            public void onPanelPositiveClick(XanderPanel panel)
+                            {
+                                finish();
+                            }
+                        })
+                .setCanceledOnTouchOutside(true)
+                .create();
+        
+        mCycleLayout.setVisibility(View.GONE);
+        //        final XanderPanel.Builder xanderPanelBuilder = new XanderPanel.Builder(
+        //                this);
+        //        xanderPanelBuilder.setCanceledOnTouchOutside(true);
+        //        xanderPanelBuilder.setGravity(Gravity.BOTTOM);
+        //        final View mCustomViewBottom = LayoutInflater.from(this)
+        //                .inflate(R.layout.bottom_fans_list_layout, null);
+        //        
+        //        mFansListAdapter = new FansListAdapter();
+        //        mFansListAdapter.setList(mFansList);
+        //        
+        //        mBottomFansList = mCustomViewBottom.findViewById(R.id.fans_list);
+        //        mBottomBack = mCustomViewBottom.findViewById(R.id.bottom_fans_back);
+        //        mBottomCount = mCustomViewBottom.findViewById(R.id.bottom_fans_count);
+        //        mBottomConfirm = mCustomViewBottom.findViewById(R.id.bottom_fans_confirm);
+        //        mBottomCount.setText(mSelectedFansList.size() + "人");
+        //        
+        //        mBottomFansList.setLayoutManager(new LinearLayoutManager(this));
+        //        mBottomFansList.setAdapter(mFansListAdapter);
+        //        
+        //        mBottomBack.setOnClickListener(new View.OnClickListener()
+        //        {
+        //            @Override
+        //            public void onClick(View view)
+        //            {
+        //                mXanderPanel.dismiss();
+        //            }
+        //        });
+        //        
+        //        mBottomConfirm.setOnClickListener(new View.OnClickListener()
+        //        {
+        //            @Override
+        //            public void onClick(View view)
+        //            {
+        //            }
+        //        });
+        //        
+        mCycleSelectPanel.hideStateIcon(true);
+        
+        mWhoBtn.setOnClickListener(new View.OnClickListener()
         {
-            e.printStackTrace();
-        }
+            @Override
+            public void onClick(View view)
+            {
+                menu.show();
+            }
+        });
+        
+        //        try
+        //        {
+        //            AVUser.getCurrentUser()
+        //                    .followerQuery(AVUser.class)
+        //                    .findInBackground(new FindCallback<AVUser>()
+        //                    {
+        //                        @Override
+        //                        public void done(List<AVUser> list, AVException e)
+        //                        {
+        //                            if (null == e)
+        //                            {
+        //                                mFansList.clear();
+        //                                mFansList.addAll(list);
+        //
+        //                                mFansListAdapter.notifyDataSetChanged();
+        //
+        //                                xanderPanelBuilder.setView(mCustomViewBottom);
+        //                                mXanderPanel = xanderPanelBuilder.create();
+        //                                mHasFans = list.size() > 0;
+        //
+        //                            }
+        //                        }
+        //                    });
+        //        }
+        //        catch (AVException e)
+        //        {
+        //            e.printStackTrace();
+        //        }
         
         //        mXanderPanel.setCanceledOnTouchOutside(false);
         //        mXanderPanel.setOnShowListener(new DialogInterface.OnShowListener()
@@ -413,15 +491,6 @@ public class QuoteEditorActivity extends AppCompatActivity implements
         //                
         //            }
         //        });
-        
-        mWhoBtn.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                openContextMenu(view);
-            }
-        });
         
         mCycleSelectPanel.setListener(new ExpansionPanelListener()
         {
@@ -691,28 +760,7 @@ public class QuoteEditorActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed()
     {
-        AlertDialog dialog = new AlertDialog.Builder(this).setTitle(R.string.app_name)
-                .setMessage("你确定要退出吗？")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        finish();
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        dialogInterface.dismiss();
-                    }
-                })
-                .create();
-        
-        dialog.show();
-        
+        mBackDialog.show();
     }
     
     @Override
@@ -833,99 +881,6 @@ public class QuoteEditorActivity extends AppCompatActivity implements
         }
     }
     
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-            ContextMenu.ContextMenuInfo menuInfo)
-    {
-        
-        getMenuInflater().inflate(R.menu.who_menu, menu);
-        
-        super.onCreateContextMenu(menu, v, menuInfo);
-    }
-    
-    @Override
-    public boolean onContextItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.menu_public:
-                mFilterState = FILTER_TYPE_PUBLIC;
-                mFilterType.setText("公开");
-                mCycleLayout.setVisibility(View.GONE);
-                break;
-            
-            case R.id.menu_friend:
-                mFilterState = FILTER_TYPE_FRIEND;
-                mFilterType.setText("好友圈");
-                mCycleLayout.setVisibility(View.GONE);
-                break;
-            
-            case R.id.menu_cycle:
-                mFilterState = FILTER_TYPE_CYCLE;
-                mCycleLayout.setVisibility(View.VISIBLE);
-                mFilterType.setText("我关注的圈子");
-                break;
-        
-        //            case R.id.menu_who_can_see:
-        //                
-        //                mFilterState = FILTER_TYPE_WHO_CAN_SEE;
-        //                //                mFilterType.setText("仅粉丝可见");
-        //                if (!mHasFans)
-        //                {
-        //                    Toast.makeText(QuoteEditorActivity.this,
-        //                            "你还没有粉丝哦！",
-        //                            Toast.LENGTH_LONG).show();
-        //                }
-        //                else
-        //                {
-        //                    mXanderPanel.show();
-        //                }
-        //                break;
-        //            
-        //            case R.id.menu_who_canont_see:
-        //                
-        //                mFilterState = FILTER_TYPE_WHO_CANNOT_SEE;
-        //                //                mFilterType.setText("仅部分粉丝不可见");
-        //                if (!mHasFans)
-        //                {
-        //                    Toast.makeText(QuoteEditorActivity.this,
-        //                            "你还没有粉丝哦！",
-        //                            Toast.LENGTH_LONG).show();
-        //                }
-        //                else
-        //                {
-        //                    mXanderPanel.show();
-        //                }
-        //                break;
-        }
-        
-        return super.onContextItemSelected(item);
-    }
-    
-    @Override
-    public void onContextMenuClosed(Menu menu)
-    {
-        super.onContextMenuClosed(menu);
-        switch (mFilterState)
-        {
-        
-            case FILTER_TYPE_WHO_CAN_SEE:
-                
-                break;
-            
-            case FILTER_TYPE_WHO_CANNOT_SEE:
-                
-                break;
-        }
-    }
-    
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-        unregisterForContextMenu(mWhoBtn);
-    }
-    
     class FansListAdapter extends RecyclerView.Adapter<FansHolder>
     {
         private List<AVUser> list;
@@ -995,5 +950,19 @@ public class QuoteEditorActivity extends AppCompatActivity implements
             userName = itemView.findViewById(R.id.fans_item_name);
             fansItem = itemView.findViewById(R.id.fans_item);
         }
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                
+                finish();
+                break;
+        }
+        
+        return super.onOptionsItemSelected(item);
     }
 }

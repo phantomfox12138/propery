@@ -8,8 +8,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="我关注的圈子："
         android:paddingLeft="@dimen/dp_8"
+        android:text="我关注的圈子："
+        android:textColor="#444"
         android:textSize="@dimen/sp_16" />
 
     <com.ns.developer.tagview.widget.TagCloudLinkView

@@ -1,41 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#eee"
-    android:orientation="vertical"
-    tools:context="com.junjingit.propery.QuoteEditorActivity">
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:background="@color/blue_black"
-        android:paddingBottom="@dimen/dp_8"
-        android:paddingTop="@dimen/dp_8">
+        android:layout_height="?attr/actionBarSize">
 
-        <TextView
-            android:id="@+id/back_btn"
-            android:layout_width="@dimen/dp_64"
-            android:layout_height="@dimen/dp_32"
-            android:gravity="center"
-            android:text="返回"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_18" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/send_btn"
-            android:layout_width="@dimen/dp_64"
-            android:layout_height="@dimen/dp_32"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dp_4"
-            android:gravity="center"
-            android:text="发送"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_18" />
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/send_btn"
+                android:layout_width="@dimen/dp_64"
+                android:layout_height="@dimen/dp_32"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dp_4"
+                android:gravity="center"
+                android:text="发送"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_18" />
+
+        </RelativeLayout>
+
+
+    </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -60,6 +57,7 @@
                 android:gravity="top"
                 android:hint="请输入想说的话..."
                 android:lines="10"
+                android:textColor="#444"
                 android:textColorHint="@android:color/darker_gray"
                 android:textCursorDrawable="@drawable/color_cursor" />
 
@@ -117,6 +115,7 @@
                     android:paddingRight="@dimen/dp_8"
                     android:paddingTop="@dimen/dp_8"
                     android:text="发布到："
+                    android:textColor="#444"
                     android:textSize="@dimen/sp_16" />
 
 
@@ -176,6 +175,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="谁可以看"
+                    android:textColor="#444"
                     android:textSize="@dimen/sp_16" />
 
                 <TextView
@@ -185,6 +185,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="公开"
+                    android:textColor="#444"
                     android:textSize="@dimen/sp_16" />
 
             </LinearLayout>

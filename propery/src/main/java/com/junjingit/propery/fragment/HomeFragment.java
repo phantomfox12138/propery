@@ -53,6 +53,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener
     
     private View mPayView;
     
+    private View mFix;
+    
+    private View mFeedback;
+    
     public HomeListAdapter getHomeAdapter()
     {
         return mHomeAdapter;
@@ -101,10 +105,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         mNotifyView = mRootView.findViewById(R.id.home_title_notification);
         mActiveView = mRootView.findViewById(R.id.home_title_activity);
         mPayView = mRootView.findViewById(R.id.home_title_pay);
+        mFix = mRootView.findViewById(R.id.home_title_fix);
+        mFeedback = mRootView.findViewById(R.id.home_title_feedback);
         
         mNotifyView.setOnClickListener(this);
         mActiveView.setOnClickListener(this);
         mPayView.setOnClickListener(this);
+        mFix.setOnClickListener(this);
+        mFeedback.setOnClickListener(this);
         
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         
@@ -237,6 +245,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                 Intent toPay = new Intent(FusionAction.HOME_TITLE_PAY_ACTION);
                 toPay.putExtra(FusionAction.HomeListExtra.TITLE_NAME, "费用缴纳");
                 startActivity(toPay);
+                break;
+            case R.id.home_title_fix:
+                
+                Intent toFix = new Intent(FusionAction.HOME_SEND_ACTION);
+                toFix.putExtra(FusionAction.QuoteExtra.SEND_TYPE,
+                        FusionAction.QuoteExtra.SEND_FIX);
+                
+                startActivity(toFix);
+                
+                break;
+            
+            case R.id.home_title_feedback:
+                
+                Intent toFeedback = new Intent(FusionAction.HOME_SEND_ACTION);
+                toFeedback.putExtra(FusionAction.QuoteExtra.SEND_TYPE,
+                        FusionAction.QuoteExtra.SEND_FIX);
+                
+                startActivity(toFeedback);
                 break;
         }
         

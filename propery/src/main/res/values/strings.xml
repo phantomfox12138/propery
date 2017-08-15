@@ -74,4 +74,5 @@
     <string name="upload_usericon_failed">头像上传成功</string>
     <string name="upload_cover_success">封面上传成功</string>
     <string name="upload_cover_failed">封面上传失败</string>
+    <string name="title_activity_home_send">HomeSendActivity</string>
 </resources>

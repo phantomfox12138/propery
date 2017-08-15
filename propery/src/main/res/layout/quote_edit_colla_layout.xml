@@ -8,7 +8,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_8"
-        android:textSize="@dimen/sp_16"
-        android:text="我关注的圈子：" />
+        android:text="我关注的圈子："
+        android:textColor="#444"
+        android:textSize="@dimen/sp_16" />
 
 </LinearLayout>

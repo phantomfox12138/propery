@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.junjingit.propery">
 
+    <uses-sdk tools:overrideLibrary="com.junjingit.collapsibletext" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
-
-    <uses-sdk tools:overrideLibrary="com.junjingit.collapsibletext" />
 
     <application
         android:name=".ProperyApplication"
@@ -35,7 +34,6 @@
             android:name=".HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
-
             <intent-filter>
                 <action android:name="com.junjingit.propery.HOME_PAGE" />
 
@@ -185,7 +183,6 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".circle.CircleListActivity"
@@ -241,7 +238,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".circle.MyFansActivity"
             android:screenOrientation="portrait">
@@ -251,13 +247,20 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".HomeOrderListActivity"
             android:theme="@style/AppTheme">
-
             <intent-filter>
                 <action android:name="com.junjingit.propery.HOME_ORDER_LIST" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".HomeSendActivity"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="com.junjingit.propery.HOME_SEND" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

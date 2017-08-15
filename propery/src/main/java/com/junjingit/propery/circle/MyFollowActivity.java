@@ -17,6 +17,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
 import com.junjingit.propery.R;
 import com.junjingit.propery.fragment.ActiveFragment;
@@ -36,9 +37,7 @@ public class MyFollowActivity extends AppCompatActivity {
     private TabLayout sliding_tabs;
     private ViewPager follow_viewPage;
     private List<Fragment> mFragments;
-    private List<String> titleList;
     MyFollowPagerAdapter myFollowPagerAdapter;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,23 +63,18 @@ public class MyFollowActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         sliding_tabs.setTabMode(TabLayout.MODE_FIXED);
-        sliding_tabs.addTab(sliding_tabs.newTab().setText("已关注人"));
-        sliding_tabs.addTab(sliding_tabs.newTab().setText("已关注圈子"));
-
+        sliding_tabs.addTab(sliding_tabs.newTab().setText(getString(R.string.haved_follow_user)));
+        sliding_tabs.addTab(sliding_tabs.newTab().setText(getString(R.string.haved_follow_circle)));
 
         mFragments = new ArrayList<>();
         mFragments.add(new FollowUserFragment());//我所关注的人
         mFragments.add(new FollowCircleFragment());//我所关注的圈子
 
-        //focus.setCommunityAdapter(mCommunityAdapter);
-
-
-
         // 实例化ViewPage的适配器
         myFollowPagerAdapter = new MyFollowPagerAdapter(getSupportFragmentManager(), mFragments);
         follow_viewPage.setAdapter(myFollowPagerAdapter);
 
-        initUserData();
+
 
         sliding_tabs.setupWithViewPager(follow_viewPage, true);
         sliding_tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -103,7 +97,7 @@ public class MyFollowActivity extends AppCompatActivity {
 
     public class MyFollowPagerAdapter extends FragmentPagerAdapter {
         private List<Fragment> fragmentList;
-        private String tabTitles[] = new String[]{"已关注人", "已关注圈子"};
+        private String tabTitles[] = new String[]{getString(R.string.haved_follow_user),getString(R.string.haved_follow_circle)};
 
         public MyFollowPagerAdapter(FragmentManager fm, List<Fragment> fragmentList) {
             super(fm);
@@ -141,26 +135,5 @@ public class MyFollowActivity extends AppCompatActivity {
 
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    /**
-     * 初始化已关注人的列表
-     */
-    private void initUserData() {
-        //查询关注者
-        AVQuery<AVUser> followeeQuery = AVUser.followeeQuery(AVUser.getCurrentUser().getObjectId(), AVUser.class);
-        followeeQuery.findInBackground(new FindCallback<AVUser>() {
-            @Override
-            public void done(List<AVUser> avObjects, AVException avException) {
-                //avObjects 就是用户的关注用户列表
-                if (avException == null) {
-                    ((FollowUserFragment) mFragments.get(0)).getActiveAdapter().setmListData(avObjects);
-                    ((FollowUserFragment) mFragments.get(0)).notifyDataSetChanged();
-                } else {
-                    Log.v(TAG, "############" + avException);
-                }
-            }
-        });
     }
 }

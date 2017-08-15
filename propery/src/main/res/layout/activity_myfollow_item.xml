@@ -26,18 +26,22 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_toRightOf="@id/follow_img"
             android:layout_toLeftOf="@+id/haved_follow"
-            android:text="王二"
-            android:textColor="@color/black"
+            android:text=""
+            android:textColor="@color/c666"
             android:textSize="@dimen/sp_14" />
         <TextView
             android:id="@+id/haved_follow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:text="已关注"
-            android:textColor="@color/cgrey"
+            android:textColor="@color/c999"
+            android:background="@drawable/grey_border_txt"
             />
     </RelativeLayout>
 </LinearLayout>

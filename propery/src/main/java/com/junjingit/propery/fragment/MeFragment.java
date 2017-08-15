@@ -98,6 +98,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     String fileName = "";
     String nickName;
     String userIconUrl;
+    String user_cover_img_url;
     private ImageLoadingListener animateFirstListener = new MeFragment.AnimateFirstDisplayListener();
 
     private LinearLayout exitLinearLayout, me_circle_layout, me_modify_layout;
@@ -155,20 +156,26 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void done(AVObject avObject, AVException e) {
                 if (e == null) {
-                    if (avObject.get("user_icon_url") == null) {
+                    if (avObject.get("user_icon_url") == null){
                         userIconUrl = "";
-                    } else {
+                    }else{
                         userIconUrl = avObject.get("user_icon_url").toString();
                     }
-                    if (avObject.get("nickname") == null) {
+                    if (avObject.get("nickname") == null){
                         user_nickName.setText(getString(R.string.nickname_empty));
                     } else {
                         nickName = avObject.get("nickname").toString();
                         user_nickName.setText(nickName);
                     }
-                    if (!TextUtils.isEmpty(userIconUrl)) {
+                    if (!TextUtils.isEmpty(userIconUrl)){
                         //暂时还没有头像
                         ImageLoader.getInstance().displayImage(userIconUrl, user_icon, MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
+                    }
+                    if(avObject.get("user_cover_img_url")==null){
+                        user_cover_img_url="";
+                    }else{
+                        user_cover_img_url=avObject.get("user_cover_img_url").toString();
+                        ImageLoader.getInstance().displayImage(user_cover_img_url,backdrop, MyImageLoader.MyNormalCoverImageOptions(), animateFirstListener);
                     }
                 }
             }

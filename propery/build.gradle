@@ -21,6 +21,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
@@ -72,4 +74,5 @@ dependencies {
     compile 'com.daimajia.slider:library:1.1.5@aar'
     compile 'com.github.varunest:sparkbutton:+'
     testCompile 'junit:junit:4.12'
+    compile 'com.belerweb:pinyin4j:2.5.1'
 }

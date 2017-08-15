@@ -49,11 +49,14 @@
 
     <color name="cff203a">#ff203a</color>
     <color name="cgrey">#ccc</color>
-    <color name="divider_color">#FFB7B2B2</color>
+    <color name="divider_color">#cacaca</color>
 
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="ccccccc">#ccc</color>
     <color name="ce44848">#e44848</color>
+    <color name="c333">#333</color>
+    <color name="c666">#666</color>
+    <color name="c999">#999</color>
 </resources>

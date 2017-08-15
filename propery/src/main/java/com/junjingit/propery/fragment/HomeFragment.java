@@ -260,7 +260,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                 
                 Intent toFeedback = new Intent(FusionAction.HOME_SEND_ACTION);
                 toFeedback.putExtra(FusionAction.QuoteExtra.SEND_TYPE,
-                        FusionAction.QuoteExtra.SEND_FIX);
+                        FusionAction.QuoteExtra.SEND_FEEDBACK);
                 
                 startActivity(toFeedback);
                 break;

@@ -74,7 +74,7 @@ public class MyFansListAdapter extends RecyclerView.Adapter<MyFansListAdapter.Ci
 
     @Override
     public int getItemCount() {
-        return mListData.size();
+        return mListData==null? 0 : mListData.size();
     }
 
     class CircleHolder extends RecyclerView.ViewHolder {

@@ -3,6 +3,7 @@ package com.junjingit.propery.circle;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,11 +30,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public class CircleListAdapter extends RecyclerView.Adapter<CircleListAdapter.CircleHolder> {
+    private static  final  String TAG="CircleListAdapter";
 
     private Context mContext;
     private List<AVObject> mListData;
     private String mFrom;
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+
     public List<AVObject> getmListData() {
         return mListData;
     }
@@ -61,36 +64,38 @@ public class CircleListAdapter extends RecyclerView.Adapter<CircleListAdapter.Ci
     }
 
     @Override
-    public void onBindViewHolder(CircleHolder holder, int position) {
-        final AVObject obj = mListData.get(position);
-        if (getmFrom().equals("myCircle")) {
-            String circleImg;
-            String circleName;
-            String circleNum;
-            if (obj.get("cycle_icon_url") == null) {
-                circleImg = "";
-            } else {
-                circleImg = obj.get("cycle_icon_url").toString();
-            }
-            if (obj.get("cycle_name") == null) {
-                circleName = "";
-            } else {
-                circleName = obj.get("cycle_name").toString();
-            }
-            if (obj.get("focus_count") == null) {
-                circleNum = "";
-            } else {
-                circleNum = obj.get("focus_count").toString();
-            }
-            ImageLoader.getInstance().displayImage(circleImg, holder.circle_img,MyImageLoader.DisplayImageOptions(), animateFirstListener);
-            holder.circle_name.setText(circleName);
-            holder.circle_number.setText(circleNum);
+    public void onBindViewHolder(CircleHolder holder, int position){
+        if(mListData.size()>0){
+            final AVObject obj = mListData.get(position);
+            if (getmFrom().equals("myCircle")) {
+                String circleImg;
+                String circleName;
+                String circleNum;
+                if (obj.get("cycle_icon_url") == null) {
+                    circleImg = "";
+                } else {
+                    circleImg = obj.get("cycle_icon_url").toString();
+                }
+                if (obj.get("cycle_name") == null) {
+                    circleName = "";
+                } else {
+                    circleName = obj.get("cycle_name").toString();
+                }
+                if (obj.get("focus_count") == null) {
+                    circleNum = "";
+                } else {
+                    circleNum = obj.get("focus_count").toString();
+                }
+                ImageLoader.getInstance().displayImage(circleImg, holder.circle_img, MyImageLoader.DisplayImageOptions(), animateFirstListener);
+                holder.circle_name.setText(circleName);
+                holder.circle_number.setText(circleNum);
+          }
         }
     }
 
     @Override
     public int getItemCount() {
-        return mListData.size();
+        return mListData == null ? 0 : mListData.size();
     }
 
     class CircleHolder extends RecyclerView.ViewHolder {

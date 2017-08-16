@@ -45,7 +45,7 @@ public class FollowBar extends View {
         int singleHeight = height / b.length;
         for (int i = 0; i < b.length; i++) {
             paint.setColor(getResources().getColor(R.color.blue));
-            paint.setTextSize(28);
+            paint.setTextSize(30);
             paint.setTypeface(Typeface.DEFAULT_BOLD);
             paint.setAntiAlias(true);
             if (i == choose) {

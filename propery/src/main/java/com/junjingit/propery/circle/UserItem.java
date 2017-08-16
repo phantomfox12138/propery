@@ -9,6 +9,36 @@ import com.avos.avoscloud.AVUser;
 public class UserItem extends AVObject{
     private String userName;
     private String sortLetters;//拼音的首字母
+    private String user_img;
+    private String focus_num;
+    private String objectId;
+
+    @Override
+    public String getObjectId() {
+        return objectId;
+    }
+
+    @Override
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
+    public String getUser_img() {
+        return user_img;
+    }
+
+    public void setUser_img(String user_img) {
+        this.user_img = user_img;
+    }
+
+    public String getFocus_num() {
+        return focus_num;
+    }
+
+    public void setFocus_num(String focus_num) {
+        this.focus_num = focus_num;
+    }
+
     public String getUserName() {
         return userName;
     }

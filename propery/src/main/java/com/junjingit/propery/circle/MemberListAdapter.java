@@ -30,7 +30,7 @@ import java.util.List;
  */
 
 public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.CircleHolder> {
-
+    private static String TAG = "MemberListActivity";
     private Context mContext;
     private List<AVObject> mListData;
     private String mFrom;
@@ -45,10 +45,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Ci
     public void setmListData(List<AVObject> mListData, ArrayList<String> slientList) {
         this.mListData = mListData;
         this.slientList = slientList;
-    }
-
-    public String getmFrom() {
-        return mFrom;
     }
 
     public void setmFrom(String mFrom) {
@@ -68,38 +64,26 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Ci
     @Override
     public void onBindViewHolder(CircleHolder holder, int position) {
         final AVObject obj = mListData.get(position);
-        Log.v("MemberListActivity", "onBindViewHolder"+position);
         String currentMemberId = obj.getObjectId().toString();//得到当前成员的id
         String circleImg;
         String circleName;
-        iClickListener.changeMenuType(position);
-       /* if(slientList!=null){
-            for (int i=0;i<slientList.size();i++){
-                String currentValue=slientList.get(i).toString();
-                if(currentMemberId.equals(currentValue)){
-                    //说明该成员已经被禁言
-                    iClickListener.changeMenuType(position);
-                }
-            }
-        }*/
-        if (obj.get("member_img") == null) {
+        if (obj.get("user_icon_url") == null) {
             circleImg = "";
         } else {
-            circleImg = obj.get("member_img").toString();
+            circleImg = obj.get("user_icon_url").toString();
         }
-        if (obj.get("username") == null) {
+        if (obj.get("nickname") == null) {
             circleName = "";
         } else {
-            circleName = obj.get("username").toString();
+            circleName = obj.get("nickname").toString();
         }
-
         ImageLoader.getInstance().displayImage(circleImg, holder.member_img, MyImageLoader.MyCircleDisplayImageOptions(), animateFirstListener);
         holder.member_name.setText(circleName);
     }
 
     @Override
     public int getItemCount() {
-        return mListData.size();
+        return mListData==null? 0: mListData.size();
     }
 
     class CircleHolder extends RecyclerView.ViewHolder {

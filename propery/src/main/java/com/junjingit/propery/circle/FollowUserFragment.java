@@ -22,10 +22,16 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.FollowCallback;
 import com.junjingit.propery.HomeListAdapter;
 import com.junjingit.propery.R;
 import com.junjingit.propery.utils.ToastUtils;
 import com.tencent.qc.stat.common.User;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import com.yanzhenjie.recyclerview.swipe.widget.GridItemDecoration;
 import com.yanzhenjie.recyclerview.swipe.widget.ListItemDecoration;
@@ -70,12 +76,9 @@ public class FollowUserFragment extends Fragment {
 
             follow_user_list.setLayoutManager(new LinearLayoutManager(getActivity()));
             follow_user_list.addItemDecoration(new ListItemDecoration(ContextCompat.getColor(getActivity(), R.color.divider_color)));
-
+            follow_user_list.setSwipeMenuCreator(mSwipeMenuCreator);
             // follow_user_list.useDefaultLoadMore(); //使用默认的加载更多的View。
             // follow_user_list.setLoadMoreListener(mLoadMoreListener); // 加载更多的监听。
-
-            myFollowListAdapter = new MyFollowListAdapter(getActivity(), userFollowList, userList);
-            follow_user_list.setAdapter(myFollowListAdapter);
             //请求服务端数据
             initData();
         }
@@ -131,8 +134,12 @@ public class FollowUserFragment extends Fragment {
                     Log.v(TAG, "################打印当前的关注的人数" + avObjects.size());
                     userFollowList.clear();
                     userFollowList.addAll(avObjects);
-                    transFormPin(avObjects);
-
+                    userList = transFormPin(avObjects);
+                    myFollowListAdapter = new MyFollowListAdapter(getActivity(), userFollowList, userList);
+                    initBar();
+                    initAlpSecData();
+                    cancelFoucs();//取消关注
+                    follow_user_list.setAdapter(myFollowListAdapter);
                     myFollowListAdapter.notifyDataSetChanged();
                     swipe_layout.setRefreshing(false);
                     follow_user_list.loadMoreFinish(false, true);
@@ -143,12 +150,62 @@ public class FollowUserFragment extends Fragment {
         });
     }
 
+
+    private void cancelFoucs() {
+        follow_user_list.setSwipeMenuItemClickListener(new SwipeMenuItemClickListener() {
+            @Override
+            public void onItemClick(SwipeMenuBridge menuBridge) {
+                menuBridge.closeMenu();
+                int direction = menuBridge.getDirection();// 左侧还是右侧菜单。
+                final int adapterPosition = menuBridge.getAdapterPosition();// RecyclerView的Item的position。
+                if (direction == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
+                    AVUser.getCurrentUser()
+                            .unfollowInBackground(userList.get(adapterPosition).getObjectId(),
+                                    new FollowCallback() {
+                                        @Override
+                                        public void done(AVObject avObject,
+                                                         AVException e) {
+                                            if (null == e) {
+                                                userList.remove(adapterPosition);
+                                                myFollowListAdapter.notifyDataSetChanged();
+                                                ToastUtils.showToast(getActivity(), "取消关注成功!");
+                                            }
+                                        }
+                                    });
+                }
+            }
+        });
+    }
+
+    /**
+     * 初始化侧边栏检索Bar
+     */
     private void initBar() {
+        user_bar.setOnTouchingLetterChangedListener(new LetterListViewListener());
         alphaIndexer = new HashMap<String, Integer>();
         handler = new Handler();
         overlayThread = new OverlayThread();
         initOverlay();
+    }
 
+
+    /**
+     * 初始化侧边栏提示框首字母
+     */
+    private void initAlpSecData() {
+        sections = new String[userList.size()];
+        for (int i = 0; i < userList.size(); i++) {
+            // 当前汉语拼音首字母
+            String currentStr = userList.get(i).getSortLetters().toString();
+            // 上一个汉语拼音首字母，如果不存在为" "
+            String previewStr = (i - 1) >= 0 ? userList.get(i - 1).getSortLetters().toString() : " ";
+            if (!previewStr.equals(currentStr)) {
+                String name = userList.get(i).getSortLetters().toString();
+                Log.v(TAG, "#########initAlpSecData" + name);
+                alphaIndexer.put(name, i);
+                sections[i] = name;
+            }
+        }
     }
 
     private class LetterListViewListener implements FollowBar.OnTouchingLetterChangedListener {
@@ -156,9 +213,7 @@ public class FollowUserFragment extends Fragment {
         public void onTouchingLetterChanged(final String s) {
             if (alphaIndexer.get(s) != null) {
                 int position = alphaIndexer.get(s);
-
                 smoothMoveToPosition(follow_user_list, position);
-
                 overlay.setText(sections[position]);
                 overlay.setVisibility(View.VISIBLE);
                 handler.removeCallbacks(overlayThread);
@@ -183,7 +238,8 @@ public class FollowUserFragment extends Fragment {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         overlay = (TextView) inflater.inflate(R.layout.my_overlay, null);
         overlay.setVisibility(View.INVISIBLE);
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(160, 160,
+        overlay.getBackground().setAlpha(80);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(180, 180,
                 WindowManager.LayoutParams.TYPE_APPLICATION,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                         | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -237,30 +293,48 @@ public class FollowUserFragment extends Fragment {
 
     /**
      * 获取用户信息的首字母
+     *
      * @param avObjects
      */
     private List<UserItem> transFormPin(List<AVUser> avObjects) {
-        List<UserItem> userList=new ArrayList<UserItem>();
-        if (avObjects != null){
-            for (int i = 0; i < avObjects.size(); i++) {
+        List<UserItem> userList = new ArrayList<UserItem>();
+        if (avObjects != null) {
+            for (int i = 0; i < 5; i++) {
                 String pinyin;
-                String userName;
+                String nickname;
+                String objectId;
+                String user_img;
                 String contactSort;
-                final AVObject obj = avObjects.get(i);
-                if (obj.get("username") == null) {
-                    userName="";
+                final AVObject obj = avObjects.get(0);
+                if (obj.get("nickname") == null) {
+                    nickname = "暂无昵称";
                 } else {
-                    userName = obj.get("username").toString();
+                    nickname = obj.get("nickname").toString();
                 }
-                if (userName.equals("")) {
+                if (obj.get("objectId") == null) {
+                    objectId = "";
+                } else {
+                    objectId = obj.get("objectId").toString();
+                }
+
+                if (obj.get("user_icon_url") == null) {
+                    user_img = "";
+                } else {
+                    user_img = obj.get("user_icon_url").toString();
+                }
+
+                if (nickname.equals("")) {
                     pinyin = "";
                 } else {
-                    pinyin = HanyuToPinyin.converterToSpell(userName.substring(0, 1));
+                    Log.v(TAG, "###################打印当前的首字母" + nickname.substring(0, 1));
+                    pinyin = HanyuToPinyin.converterToSpell(nickname.substring(0, 1));
+                    Log.v(TAG, "###################打印当前的pinyin" + pinyin);
                 }
-                if(TextUtils.isEmpty(pinyin)){
-                    contactSort="#";
-                }else{
+                if (TextUtils.isEmpty(pinyin)) {
+                    contactSort = "#";
+                } else {
                     contactSort = pinyin.substring(0, 1).toUpperCase();
+                    Log.v(TAG, "###################打印当前的contactSort" + pinyin);
                 }
                 if (contactSort.equals("0") || contactSort.equals("1")
                         || contactSort.equals("2") || contactSort.equals("3")
@@ -270,18 +344,43 @@ public class FollowUserFragment extends Fragment {
                     contactSort = "#";
                 }
                 UserItem userObject = new UserItem();
-                userObject.setUserName(userName);
+                userObject.setUserName(nickname);
                 userObject.setSortLetters(contactSort);
+                userObject.setUser_img(user_img);
+                userObject.setObjectId(objectId);
                 userList.add(userObject);
             }
         }
         pinyinComparator = new PinyinComparator();
         // 根据a-z进行排序源数据
         Collections.sort(userList, pinyinComparator);
-        return  userList;
+        return userList;
     }
 
-    private void setListAdapter(){
 
-    }
+    //创建菜单
+    /**
+     * 菜单创建器，在Item要创建菜单的时候调用。
+     */
+    private SwipeMenuCreator mSwipeMenuCreator = new SwipeMenuCreator() {
+        @Override
+        public void onCreateMenu(SwipeMenu swipeLeftMenu,
+                                 SwipeMenu swipeRightMenu, int viewType) {
+            int width = getResources().getDimensionPixelSize(R.dimen.dp_96);
+            Log.v(TAG, "######################打印当前的菜单" + viewType);
+            // 1. MATCH_PARENT 自适应高度，保持和Item一样高;
+            // 2. 指定具体的高，比如80;
+            // 3. WRAP_CONTENT，自身高度，不推荐;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            SwipeMenuItem closeItem = new SwipeMenuItem(getActivity()).setBackground(android.R.color.holo_red_light)
+                    .setWidth(width)
+                    .setText("取消关注")
+                    .setTextColor(getActivity().getResources()
+                            .getColor(R.color.white))
+                    .setHeight(height);
+
+            // 添加菜单到右侧。
+            swipeRightMenu.addMenuItem(closeItem);
+        }
+    };
 }

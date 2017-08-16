@@ -151,7 +151,9 @@
                     android:id="@+id/me_fans_layout"
                     layout="@layout/activity_me_fans" />
 
-
+                <include
+                    android:id="@+id/me_order_layout"
+                    layout="@layout/activity_me_order" />
                 <include
                     android:id="@+id/me_circle_layout"
                     layout="@layout/activity_me_circle" />

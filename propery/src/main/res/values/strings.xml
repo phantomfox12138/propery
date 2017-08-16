@@ -77,4 +77,10 @@
     <string name="title_activity_home_send">HomeSendActivity</string>
     <string name="haved_follow_user">已关注人</string>
     <string name="haved_follow_circle">已关注圈子</string>
+    <string name="forbid_success">禁言成功</string>
+    <string name="forbid_failed">禁言失败</string>
+    <string name="relieve_success">解除禁言成功</string>
+    <string name="relieve_failed">解除禁言失败</string>
+    <string name="delete_success">删除成功</string>
+    <string name="delete_failed">删除失败</string>
 </resources>

@@ -46,7 +46,6 @@ public class MyFollowActivity extends AppCompatActivity {
         initView();
         initData();
     }
-
     /**
      * 初始化控件和数据
      */
@@ -128,11 +127,10 @@ public class MyFollowActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //Toolbar上的左上角的返回箭头的键值为Android.R.id.home  不是R.id.home
-        switch (item.getItemId()) {
+        switch (item.getItemId()){
             case android.R.id.home:
                 finish();
                 return true;
-
         }
         return super.onOptionsItemSelected(item);
     }

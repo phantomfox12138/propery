@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -74,13 +75,10 @@ public class CircleListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         circleListAdapter = new CircleListAdapter(this);
         circleListAdapter.setmFrom("myCircle");
-        circleListAdapter.setmListData(mDataList);
         mycircle_list.setLayoutManager(new LinearLayoutManager(this));
-        mycircle_list.setAdapter(circleListAdapter);
         mycircle_list.setItemAnimator(new DefaultItemAnimator());
         //添加分割线
         mycircle_list.addItemDecoration(getItemDecoration());
-
         // 设置菜单创建器。
         mycircle_list.setSwipeMenuCreator(swipeMenuCreator);
         mycircle_list.setSwipeMenuItemClickListener(mMenuItemClickListener);
@@ -112,6 +110,8 @@ public class CircleListActivity extends AppCompatActivity {
                 if (e == null) {
                     mDataList.clear();
                     mDataList.addAll(list);
+                    circleListAdapter.setmListData(mDataList);
+                    mycircle_list.setAdapter(circleListAdapter);
                     circleListAdapter.notifyDataSetChanged();
                 } else {
                     Log.v(TAG, "##################" + e);
@@ -186,9 +186,8 @@ public class CircleListActivity extends AppCompatActivity {
             public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
                 // 如果 e 为空，说明保存成功
                 if(e==null){
-                    ToastUtils.showToast(CircleListActivity.this,"圈子解散成功!");
                     removeData(position);
-                    circleListAdapter.notifyDataSetChanged();
+                    ToastUtils.showToast(CircleListActivity.this,"圈子解散成功!");
                 }else{
                     ToastUtils.showToast(CircleListActivity.this,"圈子解散失败!");
                     circleListAdapter.notifyDataSetChanged();
@@ -213,8 +212,22 @@ public class CircleListActivity extends AppCompatActivity {
      * 更新列表数据
      * @param position
      */
-    public void removeData(int position) {
-        mDataList.remove(position);
+    public void removeData(int position){
+        int dataIndex=position-1;
+        mDataList.remove(dataIndex);
         circleListAdapter.notifyDataSetChanged();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        //Toolbar上的左上角的返回箭头的键值为Android.R.id.home  不是R.id.home
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                finish();
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

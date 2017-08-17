@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
  */
 
 public class ForgetFirstFragment extends Fragment implements View.OnClickListener {
-    private final String TAG = "RegisterFirstFragment";
+    private final String TAG ="ForgetFirstFragment";
     private View contentView;
     @Bind(R.id.forget_mobile_edit)
     EditText mMobile_edit;
@@ -73,6 +73,7 @@ public class ForgetFirstFragment extends Fragment implements View.OnClickListene
                     verifyMessageHttp(messageCode);
                     break;
                 case 1:
+                    messageCode = mMobile_message.getText().toString().trim();
                     getMessageHttp(messageCode);
                     break;
                 default:
@@ -180,7 +181,7 @@ public class ForgetFirstFragment extends Fragment implements View.OnClickListene
                     mHandler.sendEmptyMessage(1);
                     Log.v(TAG, "verifyMessageHttp########################" + e);
                 } else {
-                    Log.d(TAG, "Verified failed!");
+                    Log.d(TAG, "verifyMessageHttp######Verified failed!"+e);
                 }
             }
         });
@@ -202,14 +203,15 @@ public class ForgetFirstFragment extends Fragment implements View.OnClickListene
                         public void done(AVUser avUser, AVException e){
                             if(e==null){
                                 Log.v(TAG,"#######################logInInBackground"+e);
+                                String mobile = mMobile_edit.getText().toString();
+                                iForgetFirstClickListener.onNextAction(mobile, messageCode);
+                            }else{
+                                Log.v(TAG, "###################logInInBackground####failed"+e);
                             }
-                            Log.v(TAG, "###################getMessageHttp" + e);
-                            String mobile = mMobile_edit.getText().toString();
-                            iForgetFirstClickListener.onNextAction(mobile, messageCode);
                         }
                     });
-
                 } else {
+                    Log.v(TAG, "###################getMessageHttp####failed"+e);
                     e.printStackTrace();
                 }
             }
@@ -249,8 +251,13 @@ public class ForgetFirstFragment extends Fragment implements View.OnClickListene
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mForgetBtn.setEnabled(true);
-            mForgetBtn.setBackgroundResource(R.drawable.blue_btn_border);
+            if(count==0){
+                mForgetBtn.setEnabled(false);
+                mForgetBtn.setBackgroundResource(R.drawable.grey_bg_with_corner);
+            }else if(count==1){
+                mForgetBtn.setEnabled(true);
+                mForgetBtn.setBackgroundResource(R.drawable.blue_btn_border);
+            }
         }
 
         @Override

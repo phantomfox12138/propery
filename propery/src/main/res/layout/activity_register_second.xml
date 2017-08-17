@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="50dp">
             <EditText
                 android:id="@+id/register_nice_name"
                 android:inputType="text"
@@ -24,7 +24,8 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:textColor="@color/c4343434"
-                android:maxLength="8"/>
+                android:maxLength="8"
+                android:textSize="18sp"/>
         </android.support.design.widget.TextInputLayout>
 
 
@@ -42,6 +43,7 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:textColor="@color/c4343434"
+                android:textSize="18sp"
                 />
         </android.support.design.widget.TextInputLayout>
 
@@ -59,7 +61,8 @@
             android:hint="@string/forget_setting_psd"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:textColor="@color/c4343434"/>
+            android:textColor="@color/c4343434"
+            android:textSize="18sp"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -76,6 +79,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:textColor="@color/c4343434"
+            android:textSize="18sp"
             />
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
@@ -83,7 +87,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/register_second_layout"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="54dp"
         android:orientation="vertical"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
@@ -92,6 +96,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="确定"
-            android:background="@drawable/grey_bg_with_corner"/>
+            android:background="@drawable/blue_btn_border"
+            android:textSize="18sp"
+            android:textColor="@color/white"/>
     </LinearLayout>
 </RelativeLayout>

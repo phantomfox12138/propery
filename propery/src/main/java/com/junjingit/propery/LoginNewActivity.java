@@ -66,7 +66,7 @@ public class LoginNewActivity extends AppCompatActivity
      */
     private void initView()
     {
-        login_lay.getBackground().setAlpha(70);
+        login_lay.getBackground().setAlpha(90);
         mLoginBtn.getBackground().setAlpha(140);
         mLoginBtn.setOnClickListener(new View.OnClickListener()
         {
@@ -121,7 +121,7 @@ public class LoginNewActivity extends AppCompatActivity
                 
                 Intent intent = new Intent(FusionAction.REGISTER_ACTION);
                 startActivity(intent);
-                finish();
+                //finish();
             }
         });
         
@@ -132,7 +132,7 @@ public class LoginNewActivity extends AppCompatActivity
             {
                 Intent intent = new Intent(FusionAction.FORGET_ACTION);
                 startActivity(intent);
-                finish();
+               // finish();
             }
         });
     }

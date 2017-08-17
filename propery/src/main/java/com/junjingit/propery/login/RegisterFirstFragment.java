@@ -219,8 +219,13 @@ public class RegisterFirstFragment extends Fragment implements View.OnClickListe
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mRegisterBtn.setEnabled(true);
-            mRegisterBtn.setBackgroundResource(R.drawable.blue_btn_border);
+            if(count==0){
+                mRegisterBtn.setEnabled(false);
+                mRegisterBtn.setBackgroundResource(R.drawable.grey_bg_with_corner);
+            }else if(count==1){
+                mRegisterBtn.setEnabled(true);
+                mRegisterBtn.setBackgroundResource(R.drawable.blue_btn_border);
+            }
         }
         @Override
         public void afterTextChanged(Editable s) {

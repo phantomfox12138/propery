@@ -4,7 +4,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/cebebeb">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/blue_black">
+        </android.support.v7.widget.Toolbar>
     <FrameLayout
+        android:layout_below="@+id/title_bar"
         android:id="@+id/forget_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

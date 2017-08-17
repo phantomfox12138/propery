@@ -17,7 +17,7 @@
             android:orientation="vertical"
             android:paddingLeft="24dp"
             android:paddingRight="24dp"
-            android:paddingTop="80dp">
+            android:paddingTop="95dp">
             <!-- 账号 -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -31,7 +31,8 @@
                     android:layout_height="wrap_content"
                     android:hint="手机号"
                     android:inputType="number"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
+                    android:textColorHint="#99ffffff"
                     android:textColor="@color/white"
                     android:background="@null"
                     android:maxLength="11"
@@ -40,7 +41,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
                     android:layout_height=".5dp"
-                    android:background="@color/ca3a3a3"/>
+                    android:background="#ccffffff"/>
             </LinearLayout>
            <!-- </android.support.design.widget.TextInputLayout>-->
 
@@ -49,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="27dp"
                 android:orientation="vertical">
                 <EditText
                     android:id="@+id/input_password"
@@ -57,7 +58,8 @@
                     android:layout_height="wrap_content"
                     android:hint="密码"
                     android:inputType="textPassword"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
+                    android:textColorHint="#99ffffff"
                     android:textColor="@color/white"
                     android:background="@null"
                     android:maxLength="25"
@@ -66,7 +68,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
                     android:layout_height=".5dp"
-                    android:background="@color/ca3a3a3"/>
+                    android:background="#ccffffff"/>
             </LinearLayout>
 
             <TextView
@@ -74,21 +76,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:layout_marginTop="8dp"
-                android:text="忘记密码"
+                android:layout_marginTop="9dp"
+                android:text="@string/forget_psd"
                 android:textColor="@color/primary_darker"
-                android:textSize="14dp" />
+                android:textSize="16sp"/>
             <!--登录 -->
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="17dp"
                 android:padding="12dp"
-                android:text="登录"
-                android:textSize="20sp"></android.support.v7.widget.AppCompatButton>
-
+                android:text="@string/login"
+                android:textSize="18sp"
+                android:background="@color/primary_darker"/>
             <!-- 快速注册 -->
             <TextView
                 android:id="@+id/quit_register"
@@ -96,9 +98,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:gravity="center"
-                android:text="还没有账号?快来注册一个"
+                android:text="@string/register"
                 android:textColor="@color/primary_darker"
-                android:textSize="16dip" />
+                android:textSize="16sp"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

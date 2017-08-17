@@ -34,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_register);
         title_bar = (Toolbar) findViewById(R.id.title_bar);
         setSupportActionBar(title_bar);
-        getSupportActionBar().setTitle(getString(R.string.register_title));
+        getSupportActionBar().setTitle(getString(R.string.back_key));
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         registerFirstFragment = new RegisterFirstFragment();

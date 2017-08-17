@@ -14,26 +14,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_48">
-        <EditText
-            android:id="@+id/forget_mobile_edit"
-            android:inputType="number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLength="11"
-            android:hint="@string/message_mobile"
-            android:textColor="@color/c4343434"/>
+            android:layout_marginTop="50dp">
+            <EditText
+                android:id="@+id/forget_mobile_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/message_mobile"
+                android:inputType="number"
+                android:maxLength="11"
+                android:textColor="#333"
+                android:textSize="16sp"/>
         </android.support.design.widget.TextInputLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="4">
+            android:layout_marginTop="@dimen/dp_8"
+            android:weightSum="6">
             <android.support.design.widget.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:layout_marginTop="@dimen/dp_8">
+                android:layout_weight="4">
             <EditText
                 android:id="@+id/forget_message_edit"
                 android:layout_width="match_parent"
@@ -43,25 +44,26 @@
                 android:hint="@string/message_tip"
                 android:inputType="number"
                 android:maxLength="6"
-                android:textColor="@color/c4343434"/>
+                android:textColor="#333"/>
             </android.support.design.widget.TextInputLayout>
             <TextView
                 android:id="@+id/forget_message_txt"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_weight="1"
+                android:layout_height="35dp"
+                android:layout_marginTop="13dp"
+                android:layout_weight="2"
                 android:gravity="center"
                 android:text="@string/message_code"
-                android:background="@color/primary"/>
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:background="@drawable/blue_btn_border"/>
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/forget_first_layout"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="50dp"
         android:orientation="vertical"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
@@ -71,6 +73,7 @@
             android:layout_height="wrap_content"
             android:text="@string/next"
             android:enabled="false"
+            android:textColor="@color/white"
             android:background="@drawable/grey_bg_with_corner"/>
     </LinearLayout>
 </RelativeLayout>

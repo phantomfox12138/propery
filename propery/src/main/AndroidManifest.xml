@@ -42,8 +42,7 @@
         </activity>
         <activity
             android:name=".LoginNewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/loginTheme">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.junjingit.propery.LOGIN_ACTION" />
 

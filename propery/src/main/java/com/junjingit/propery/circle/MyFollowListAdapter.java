@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.avos.avoscloud.AVObject;
 import com.junjingit.propery.R;
@@ -31,6 +33,7 @@ public class MyFollowListAdapter extends RecyclerView.Adapter<MyFollowListAdapte
     private List<AVObject> mListData;
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
     private List<UserItem> userList;
+
     public MyFollowListAdapter(Context mContext,List<AVObject> mListData,List<UserItem> userItemList) {
         this.mContext = mContext;
         this.mListData=mListData;
@@ -50,22 +53,17 @@ public class MyFollowListAdapter extends RecyclerView.Adapter<MyFollowListAdapte
             final UserItem obj = userList.get(position);
             String fansImg="";
             String fansName="";
-       /* if(obj.get("user_icon_url")==null){
-            fansImg="";
-        }else {
-            fansImg=obj.get("user_icon_url").toString();
-        }
-        if (obj.get("username") == null) {
-            fansName = "";
-        } else {
-            fansName = obj.get("username").toString();
-        }*/
             fansName=obj.getUserName().toString();
+            fansImg=obj.getUser_img().toString();
             String currentStr=obj.getSortLetters().toString();
             String previewStr=(position - 1) >= 0?userList.get(position - 1).getSortLetters().toString() : " ";
             if (!previewStr.equals(currentStr)) {
                 holder.alpha.setVisibility(View.VISIBLE);
                 holder.alpha.setText(currentStr);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+               // lp.setMargins(0, 20, 0, 0);
+               // lp
+                holder.item_layout.setLayoutParams(lp);
             } else {
                 holder.alpha.setVisibility(View.GONE);
             }
@@ -82,6 +80,7 @@ public class MyFollowListAdapter extends RecyclerView.Adapter<MyFollowListAdapte
     }
 
     class CircleHolder extends RecyclerView.ViewHolder {
+        private RelativeLayout item_layout;
         private ImageView follow_img;
         private TextView  alpha,follow_name,haved_follow;
         public CircleHolder(View itemView) {
@@ -90,6 +89,7 @@ public class MyFollowListAdapter extends RecyclerView.Adapter<MyFollowListAdapte
             follow_img = itemView.findViewById(R.id.follow_img);
             follow_name = itemView.findViewById(R.id.follow_name);
             haved_follow=itemView.findViewById(R.id.haved_follow);
+            item_layout=itemView.findViewById(R.id.item_layout);
         }
     }
 

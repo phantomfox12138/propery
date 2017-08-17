@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.junjingit.propery.login.ForgetFirstFragment;
 import com.junjingit.propery.login.ForgetSecondFragment;
@@ -23,12 +24,18 @@ public class ForgetActivity extends AppCompatActivity implements
     public ForgetFirstFragment forgetFirstFragment;
     
     public ForgetSecondFragment forgetSecondFragment;
+    private Toolbar title_bar;
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forget);
+        title_bar = (Toolbar) findViewById(R.id.title_bar);
+        setSupportActionBar(title_bar);
+        getSupportActionBar().setTitle(getString(R.string.back_key));
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         forgetFirstFragment = new ForgetFirstFragment();
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();

@@ -16,7 +16,7 @@
     <string name="login_mobil_empty">手机号不能为空!</string>
     <string name="login_mobile_error">手机号输入有误!</string>
     <string name="login_message_error">验证码不能为空!</string>
-    <string name="get_msg_code_again_time"> 重新发送(%1ss) </string>
+    <string name="get_msg_code_again_time">%1ss后重试</string>
     <string name="get_msg_code_again">重新获取</string>
     <string name="login_password_empty">请输入密码!</string>
     <string name="login_sdpassword_empty">请再次输入密码!</string>

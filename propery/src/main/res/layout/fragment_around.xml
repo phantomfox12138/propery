@@ -1,59 +1,49 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eee">
+    android:background="#eee"
+    android:orientation="vertical">
 
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/root_layout"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@color/blue_black"
+        android:paddingTop="25dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="周边"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar_layout"
+        <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+            android:id="@+id/around_list"
             android:layout_width="match_parent"
-            android:layout_height="360dp">
-
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/collapsingToolBar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/white"
-                app:contentScrim="?attr/colorPrimary"
-                app:layout_collapseMode="parallax"
-                app:layout_collapseParallaxMultiplier="0.5"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            android:layout_height="match_parent" />
 
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?android:attr/actionBarSize"
-                    android:minHeight="?attr/actionBarSize"
-                    android:paddingTop="10dp"
-                    app:layout_collapseMode="pin"
-                    app:layout_scrollFlags="scroll|enterAlways"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
-                    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-                <!--<android.support.v7.widget.Toolbar-->
-                <!--android:id="@+id/toolbar"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="?attr/actionBarSize"-->
-                <!--android:background="?attr/colorPrimary"-->
-                <!--android:minHeight="?attr/actionBarSize"-->
-                <!--app:layout_collapseMode="pin"-->
-                <!--app:layout_scrollFlags="scroll|enterAlways"-->
-                <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"-->
-                <!--app:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
-
-            </android.support.design.widget.CollapsingToolbarLayout>
-        </android.support.design.widget.AppBarLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
-    </android.support.design.widget.CoordinatorLayout>
-
-
-</FrameLayout>
+</LinearLayout>

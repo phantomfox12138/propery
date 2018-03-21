@@ -115,7 +115,7 @@ public class CycleActivity extends AppCompatActivity
         private List<AVObject> mDatalist;
         
         //        private
-        
+
         public void setDatalist(List<AVObject> datalist)
         {
             this.mDatalist = datalist;

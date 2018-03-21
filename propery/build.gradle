@@ -72,7 +72,8 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.3.2'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.slider:library:1.1.5@aar'
-    compile 'com.github.varunest:sparkbutton:+'
+    compile 'com.github.varunest:sparkbutton:1.0.5'
+    compile 'com.github.dongjunkun:DropDownMenu:1.0.4'
     testCompile 'junit:junit:4.12'
     compile 'com.belerweb:pinyin4j:2.5.1'
 }

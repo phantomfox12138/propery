@@ -98,6 +98,9 @@ public class MyFollowActivity extends AppCompatActivity {
         private List<Fragment> fragmentList;
         private String tabTitles[] = new String[]{getString(R.string.haved_follow_user),getString(R.string.haved_follow_circle)};
 
+
+
+
         public MyFollowPagerAdapter(FragmentManager fm, List<Fragment> fragmentList) {
             super(fm);
             this.fragmentList = fragmentList;

@@ -38,7 +38,6 @@ public class MyFollowListAdapter extends RecyclerView.Adapter<MyFollowListAdapte
         this.mContext = mContext;
         this.mListData=mListData;
         this.userList=userItemList;
-        Log.v(TAG,"##############MyFollowListAdapter"+userList.size());
     }
 
     @Override

@@ -571,7 +571,8 @@ public class MeFragment extends Fragment implements View.OnClickListener {
             public void done(AVObject avObject, AVException e) {
                 if(e==null){
                     nickName = avObject.getString("nickname");
-                    userIconUrl = avObject.getString("user_icon_url").toString();
+                    userIconUrl = avObject.getString("user_icon_url");
+                    Log.v(TAG,"#####################当前用户的头像"+userIconUrl);
                     user_nickName.setText(nickName);
                     if (!TextUtils.isEmpty(userIconUrl)) {
                         //暂时还没有头像

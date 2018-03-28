@@ -2,7 +2,6 @@ package com.junjingit.propery.circle;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -23,17 +22,14 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.FollowCallback;
-import com.junjingit.propery.HomeListAdapter;
 import com.junjingit.propery.R;
 import com.junjingit.propery.utils.ToastUtils;
-import com.tencent.qc.stat.common.User;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuBridge;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuCreator;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuItem;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
-import com.yanzhenjie.recyclerview.swipe.widget.GridItemDecoration;
 import com.yanzhenjie.recyclerview.swipe.widget.ListItemDecoration;
 
 import java.util.ArrayList;
@@ -88,7 +84,6 @@ public class FollowUserFragment extends Fragment {
         }
         return mRootView;
     }
-
     /**
      * 下拉刷新
      */
@@ -131,7 +126,6 @@ public class FollowUserFragment extends Fragment {
             @Override
             public void done(List<AVUser> avObjects, AVException avException) {
                 if (avException == null && avObjects != null) {
-                    Log.v(TAG, "################打印当前的关注的人数" + avObjects.size());
                     userFollowList.clear();
                     userFollowList.addAll(avObjects);
                     userList = transFormPin(avObjects);
@@ -144,7 +138,6 @@ public class FollowUserFragment extends Fragment {
                     swipe_layout.setRefreshing(false);
                     follow_user_list.loadMoreFinish(false, true);
                 } else {
-                    Log.v(TAG, "############" + avException);
                 }
             }
         });
@@ -201,7 +194,6 @@ public class FollowUserFragment extends Fragment {
             String previewStr = (i - 1) >= 0 ? userList.get(i - 1).getSortLetters().toString() : " ";
             if (!previewStr.equals(currentStr)) {
                 String name = userList.get(i).getSortLetters().toString();
-                Log.v(TAG, "#########initAlpSecData" + name);
                 alphaIndexer.put(name, i);
                 sections[i] = name;
             }
@@ -298,7 +290,7 @@ public class FollowUserFragment extends Fragment {
      */
     private List<UserItem> transFormPin(List<AVUser> avObjects) {
         List<UserItem> userList = new ArrayList<UserItem>();
-        if (avObjects != null) {
+        if (avObjects != null&&avObjects.size()>0) {
             for (int i = 0; i < 5; i++) {
                 String pinyin;
                 String nickname;
@@ -326,15 +318,12 @@ public class FollowUserFragment extends Fragment {
                 if (nickname.equals("")) {
                     pinyin = "";
                 } else {
-                    Log.v(TAG, "###################打印当前的首字母" + nickname.substring(0, 1));
                     pinyin = HanyuToPinyin.converterToSpell(nickname.substring(0, 1));
-                    Log.v(TAG, "###################打印当前的pinyin" + pinyin);
                 }
                 if (TextUtils.isEmpty(pinyin)) {
                     contactSort = "#";
                 } else {
                     contactSort = pinyin.substring(0, 1).toUpperCase();
-                    Log.v(TAG, "###################打印当前的contactSort" + pinyin);
                 }
                 if (contactSort.equals("0") || contactSort.equals("1")
                         || contactSort.equals("2") || contactSort.equals("3")
@@ -367,7 +356,6 @@ public class FollowUserFragment extends Fragment {
         public void onCreateMenu(SwipeMenu swipeLeftMenu,
                                  SwipeMenu swipeRightMenu, int viewType) {
             int width = getResources().getDimensionPixelSize(R.dimen.dp_96);
-            Log.v(TAG, "######################打印当前的菜单" + viewType);
             // 1. MATCH_PARENT 自适应高度，保持和Item一样高;
             // 2. 指定具体的高，比如80;
             // 3. WRAP_CONTENT，自身高度，不推荐;
@@ -383,4 +371,12 @@ public class FollowUserFragment extends Fragment {
             swipeRightMenu.addMenuItem(closeItem);
         }
     };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(overlay!=null){
+            windowManager.removeView(overlay);
+        }
+    }
 }

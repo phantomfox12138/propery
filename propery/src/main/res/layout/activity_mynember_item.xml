@@ -9,8 +9,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="62dp"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16">
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        >
         <ImageView
             android:id="@+id/member_img"
             android:layout_width="42dp"

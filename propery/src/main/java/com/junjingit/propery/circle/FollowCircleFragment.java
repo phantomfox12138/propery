@@ -75,6 +75,7 @@ public class FollowCircleFragment extends Fragment {
         }
         return mRootView;
     }
+
     /**
      * 下拉刷新
      */
@@ -295,6 +296,14 @@ public class FollowCircleFragment extends Fragment {
             mRecyclerView.smoothScrollToPosition(position);
             mToPosition = position;
             mShouldScroll = true;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(overlay!=null){
+            windowManager.removeView(overlay);
         }
     }
 }
